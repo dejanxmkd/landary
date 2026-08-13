@@ -5,8 +5,8 @@ const product=document.querySelector('.product');
 const productImage=product.querySelector('img');
 
 async function loadProductImage(){
-  const parts=await Promise.all([1,2,3,4].map(async n=>{
-    const response=await fetch(`./assets/product-data/part${n}.txt`);
+  const parts=await Promise.all(Array.from({length:8},(_,i)=>i+1).map(async n=>{
+    const response=await fetch(`./assets/product-v2/${String(n).padStart(2,'0')}.txt`);
     if(!response.ok) throw new Error('Product image failed to load');
     return response.text();
   }));
