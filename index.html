@@ -6,17 +6,12 @@
   <title>Landary — Landing Page Section Library</title>
   <meta name="description" content="A clean visual library for choosing landing page sections and building complete pages." />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-configurator.css" />
 </head>
 <body>
   <header class="site-nav">
-    <a class="brand" href="./" aria-label="Landary home">
-      <span class="brand-mark">L</span>
-      <span>Landary</span>
-    </a>
-    <nav class="nav-links" aria-label="Primary navigation">
-      <a class="is-active" href="#library">Library</a>
-      <a href="#how-it-works">How it works</a>
-    </nav>
+    <a class="brand" href="./" aria-label="Landary home"><span class="brand-mark">L</span><span>Landary</span></a>
+    <nav class="nav-links" aria-label="Primary navigation"><a class="is-active" href="#library">Library</a><a href="#how-it-works">How it works</a></nav>
     <a class="nav-action" href="#library">Browse sections</a>
   </header>
 
@@ -29,109 +24,34 @@
         <a class="primary-button" href="#library">Explore the library <span>→</span></a>
       </div>
       <div class="hero-intro__visual" aria-hidden="true">
-        <div class="flow-card flow-card--one"><i></i><b></b><span></span></div>
-        <div class="flow-card flow-card--two"><i></i><b></b><span></span></div>
-        <div class="flow-card flow-card--three"><i></i><b></b><span></span></div>
-        <div class="flow-line"></div>
+        <div class="flow-card flow-card--one"><i></i><b></b><span></span></div><div class="flow-card flow-card--two"><i></i><b></b><span></span></div><div class="flow-card flow-card--three"><i></i><b></b><span></span></div><div class="flow-line"></div>
       </div>
     </section>
 
-    <section class="how" id="how-it-works">
-      <p>Choose category</p><span>→</span><p>Pick a pattern</p><span>→</span><p>Customize</p><span>→</span><p>Build your page</p>
-    </section>
+    <section class="how" id="how-it-works"><p>Choose category</p><span>→</span><p>Pick a pattern</p><span>→</span><p>Customize</p><span>→</span><p>Build your page</p></section>
 
     <section class="library" id="library">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">SECTIONS</p>
-          <h2>Everything you need for a landing page.</h2>
-        </div>
-        <p>Start with the structure you need. Each category opens a focused library of patterns.</p>
-      </div>
-
+      <div class="section-heading"><div><p class="eyebrow">SECTIONS</p><h2>Everything you need for a landing page.</h2></div><p>Start with the structure you need. Each category opens a focused library of patterns.</p></div>
       <div class="section-grid">
-        <a class="section-card" href="heroes.html">
-          <div class="card-visual visual-hero">
-            <div class="simple-browser"><i></i><div><b></b><span></span><em></em></div></div>
-          </div>
-          <div class="card-copy"><div><h3>Hero</h3><p>Strong opening sections for every type of landing page.</p></div><span>01 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-nav">
-            <div class="simple-nav"><b></b><i></i><i></i><i></i><em></em></div>
-          </div>
-          <div class="card-copy"><div><h3>Navigation</h3><p>Simple headers, menus and top bars.</p></div><span>02 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-logos"><div class="simple-logos"><i>●</i><i>■</i><i>▲</i><i>◆</i></div></div>
-          <div class="card-copy"><div><h3>Logo cloud</h3><p>Clean trust sections for customers and partners.</p></div><span>03 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-features"><div class="simple-grid"><i></i><i></i><i></i></div></div>
-          <div class="card-copy"><div><h3>Features</h3><p>Explain your product value clearly.</p></div><span>04 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-content"><div class="simple-split"><div><b></b><span></span><span></span></div><i></i></div></div>
-          <div class="card-copy"><div><h3>Content</h3><p>Text, media and editorial storytelling layouts.</p></div><span>05 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-bento"><div class="simple-bento"><i></i><i></i><i></i></div></div>
-          <div class="card-copy"><div><h3>Bento</h3><p>Structured blocks for dense product information.</p></div><span>06 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-stats"><div class="simple-stat"><strong>98%</strong><span>Happy customers</span></div></div>
-          <div class="card-copy"><div><h3>Stats</h3><p>Simple numbers that establish credibility.</p></div><span>07 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-testimonial"><div class="simple-quote">“Built to be reused.”<span>— Landary</span></div></div>
-          <div class="card-copy"><div><h3>Testimonials</h3><p>Social proof without visual noise.</p></div><span>08 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-pricing"><div class="simple-price"><i></i><i class="featured"></i></div></div>
-          <div class="card-copy"><div><h3>Pricing</h3><p>Clear plan comparison and featured tiers.</p></div><span>09 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-faq"><div class="simple-faq"><p>Question <b>+</b></p><p>Question <b>+</b></p><p>Question <b>+</b></p></div></div>
-          <div class="card-copy"><div><h3>FAQ</h3><p>Answer the important questions quickly.</p></div><span>10 ↗</span></div>
-        </a>
-
-        <a class="section-card section-card--yellow" href="#">
-          <div class="card-visual visual-cta"><div class="simple-cta"><small>READY?</small><strong>Make the next step clear.</strong><i>Get started →</i></div></div>
-          <div class="card-copy"><div><h3>CTA</h3><p>Focused conversion sections with one clear action.</p></div><span>11 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-contact"><div class="simple-form"><i></i><i></i><i class="large"></i><b></b></div></div>
-          <div class="card-copy"><div><h3>Contact</h3><p>Forms and contact touchpoints.</p></div><span>12 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-newsletter"><div class="simple-input"><i></i><b>Join</b></div></div>
-          <div class="card-copy"><div><h3>Newsletter</h3><p>Simple email capture sections.</p></div><span>13 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-blog"><div class="simple-post"><i></i><b></b><span></span></div><div class="simple-post"><i></i><b></b><span></span></div></div>
-          <div class="card-copy"><div><h3>Blog / Resources</h3><p>Editorial cards and resource collections.</p></div><span>14 ↗</span></div>
-        </a>
-
-        <a class="section-card" href="#">
-          <div class="card-visual visual-footer"><div class="simple-footer"><b>L</b><div><i></i><i></i><i></i></div></div></div>
-          <div class="card-copy"><div><h3>Footer</h3><p>Clean endings for every page.</p></div><span>15 ↗</span></div>
-        </a>
+        <a class="section-card" href="heroes.html"><div class="card-visual visual-hero"><div class="simple-browser"><i></i><div><b></b><span></span><em></em></div></div></div><div class="card-copy"><div><h3>Hero</h3><p>Strong opening sections for every type of landing page.</p></div><span>01 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-nav"><div class="simple-nav"><b></b><i></i><i></i><i></i><em></em></div></div><div class="card-copy"><div><h3>Navigation</h3><p>Simple headers, menus and top bars.</p></div><span>02 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-logos"><div class="simple-logos"><i>●</i><i>■</i><i>▲</i><i>◆</i></div></div><div class="card-copy"><div><h3>Logo cloud</h3><p>Clean trust sections for customers and partners.</p></div><span>03 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-features"><div class="simple-grid"><i></i><i></i><i></i></div></div><div class="card-copy"><div><h3>Features</h3><p>Explain your product value clearly.</p></div><span>04 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-content"><div class="simple-split"><div><b></b><span></span><span></span></div><i></i></div></div><div class="card-copy"><div><h3>Content</h3><p>Text, media and editorial storytelling layouts.</p></div><span>05 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-bento"><div class="simple-bento"><i></i><i></i><i></i></div></div><div class="card-copy"><div><h3>Bento</h3><p>Structured blocks for dense product information.</p></div><span>06 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-stats"><div class="simple-stat"><strong>98%</strong><span>Happy customers</span></div></div><div class="card-copy"><div><h3>Stats</h3><p>Simple numbers that establish credibility.</p></div><span>07 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-testimonial"><div class="simple-quote">“Built to be reused.”<span>— Landary</span></div></div><div class="card-copy"><div><h3>Testimonials</h3><p>Social proof without visual noise.</p></div><span>08 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-pricing"><div class="simple-price"><i></i><i class="featured"></i></div></div><div class="card-copy"><div><h3>Pricing</h3><p>Clear plan comparison and featured tiers.</p></div><span>09 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-faq"><div class="simple-faq"><p>Question <b>+</b></p><p>Question <b>+</b></p><p>Question <b>+</b></p></div></div><div class="card-copy"><div><h3>FAQ</h3><p>Answer the important questions quickly.</p></div><span>10 ↗</span></div></a>
+        <a class="section-card section-card--yellow" href="#"><div class="card-visual visual-cta"><div class="simple-cta"><small>READY?</small><strong>Make the next step clear.</strong><i>Get started →</i></div></div><div class="card-copy"><div><h3>CTA</h3><p>Focused conversion sections with one clear action.</p></div><span>11 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-contact"><div class="simple-form"><i></i><i></i><i class="large"></i><b></b></div></div><div class="card-copy"><div><h3>Contact</h3><p>Forms and contact touchpoints.</p></div><span>12 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-newsletter"><div class="simple-input"><i></i><b>Join</b></div></div><div class="card-copy"><div><h3>Newsletter</h3><p>Simple email capture sections.</p></div><span>13 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-blog"><div class="simple-post"><i></i><b></b><span></span></div><div class="simple-post"><i></i><b></b><span></span></div></div><div class="card-copy"><div><h3>Blog / Resources</h3><p>Editorial cards and resource collections.</p></div><span>14 ↗</span></div></a>
+        <a class="section-card" href="#"><div class="card-visual visual-footer"><div class="simple-footer"><b>L</b><div><i></i><i></i><i></i></div></div></div><div class="card-copy"><div><h3>Footer</h3><p>Clean endings for every page.</p></div><span>15 ↗</span></div></a>
       </div>
     </section>
   </main>
-
   <footer class="site-footer"><strong>Landary</strong><span>Reusable sections. Cleaner landing pages.</span></footer>
+  <script src="theme-configurator.js"></script>
 </body>
 </html>
