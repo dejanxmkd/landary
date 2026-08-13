@@ -4,118 +4,139 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Landary — Section Library</title>
-  <meta name="description" content="Browse reusable landing page sections and build complete landing pages." />
+  <meta name="description" content="A visual library for building landing pages section by section." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="./">Landary</a>
-    <nav class="topnav" aria-label="Primary navigation">
-      <a class="topnav__link is-active" href="./">Library</a>
-      <a class="topnav__link" href="#page-builder">Your page <span class="count">0</span></a>
-    </nav>
-  </header>
-
-  <main class="library-shell">
-    <aside class="rail" aria-hidden="true">
-      <span>PAGE SECTIONS</span>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="./"><span class="brand-mark">L</span><span>Landary</span></a>
+      <nav class="side-nav" aria-label="Library navigation">
+        <p>Workspace</p>
+        <a class="is-active" href="./">Library</a>
+        <a href="#">Saved sections</a>
+        <a href="#">Your page <span>0</span></a>
+        <p>Browse</p>
+        <a href="heroes.html">Hero</a>
+        <a href="#">Features</a>
+        <a href="#">Content</a>
+        <a href="#">Pricing</a>
+        <a href="#">Footer</a>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot"></span>Library v0.1</div>
     </aside>
 
-    <section class="library" aria-labelledby="library-title">
-      <div class="library__header">
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Library</span><b>/</b><strong>All sections</strong></div>
+        <div class="top-actions"><button type="button">⌘ K</button><a href="#">Preview page <span>↗</span></a></div>
+      </header>
+
+      <section class="intro">
         <div>
-          <p class="eyebrow">Landing + Library</p>
-          <h1 id="library-title">Section library</h1>
+          <p class="kicker">Build faster, stay consistent</p>
+          <h1>Pick a section.<br><em>Build your page.</em></h1>
         </div>
-        <p class="library__intro">Choose a section category, pick a pattern, customize the content and build your landing page section by section.</p>
-      </div>
+        <p class="intro-copy">A curated collection of responsive landing-page patterns. Choose a category, customize a pattern and add it to your page.</p>
+      </section>
 
-      <div class="section-grid">
-        <a class="category-card" href="heroes.html">
-          <div class="category-card__preview preview-hero">
-            <div class="mock-window">
-              <div class="mock-window__top"><i></i><i></i><i></i></div>
-              <span class="mock-dot"></span>
-              <div class="mock-nav-lines"><i></i><i></i><i></i></div>
-              <div class="mock-copy mock-copy--center"><b></b><i></i><i></i><span></span></div>
-            </div>
-          </div>
-          <div class="category-card__meta"><strong>Hero Sections</strong><span>6 components</span></div>
+      <section class="library-toolbar">
+        <div class="filters"><button class="active" type="button">All</button><button type="button">Marketing</button><button type="button">Content</button><button type="button">Conversion</button></div>
+        <span>15 categories</span>
+      </section>
+
+      <section class="cards" aria-label="Section categories">
+        <a class="section-card hero-card" href="heroes.html">
+          <div class="card-top"><span>01</span><b>6 patterns</b></div>
+          <div class="visual visual-hero"><div class="mini-page"><i class="mini-nav"></i><div class="hero-copy"><i></i><b></b><span></span><em></em></div><div class="hero-media"></div></div></div>
+          <div class="card-bottom"><div><h2>Hero</h2><p>First impressions that convert.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Features">
-          <div class="category-card__preview preview-feature">
-            <div class="split-demo"><div class="split-demo__copy"><small></small><b></b><i></i><i></i><i></i></div><div class="split-demo__media"></div></div>
-          </div>
-          <div class="category-card__meta"><strong>Feature Sections</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>02</span><b>5 patterns</b></div>
+          <div class="visual visual-nav"><div class="nav-stack"><i></i><i></i><i></i></div><div class="nav-bar"><b></b><span></span><span></span><span></span><em></em></div></div>
+          <div class="card-bottom"><div><h2>Navigation</h2><p>Headers, menus and top bars.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="CTA">
-          <div class="category-card__preview preview-cta">
-            <div class="cta-demo"><b></b><strong>Ready to dive in?</strong><span>Start your free trial today.</span><i></i><div><em></em><em></em></div></div>
-          </div>
-          <div class="category-card__meta"><strong>CTA Sections</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>03</span><b>4 patterns</b></div>
+          <div class="visual visual-logos"><div class="logo-row"><i>◆</i><i>●</i><i>✦</i><i>■</i><i>▲</i></div><div class="logo-line"></div></div>
+          <div class="card-bottom"><div><h2>Logo cloud</h2><p>Trust through recognizable brands.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Bento">
-          <div class="category-card__preview preview-bento">
-            <div class="bento-demo"><strong>A better workflow</strong><div class="bento-grid"><i></i><i></i><i></i><i></i></div></div>
-          </div>
-          <div class="category-card__meta"><strong>Bento Grids</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>04</span><b>8 patterns</b></div>
+          <div class="visual visual-features"><div class="feature-grid"><i></i><i></i><i></i><i></i></div></div>
+          <div class="card-bottom"><div><h2>Features</h2><p>Explain value clearly and fast.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Pricing">
-          <div class="category-card__preview preview-pricing">
-            <div class="pricing-demo"><i></i><i class="is-featured"></i><i></i></div>
-          </div>
-          <div class="category-card__meta"><strong>Pricing Sections</strong><span>Coming soon</span></div>
+        <a class="section-card wide-card" href="#">
+          <div class="card-top"><span>05</span><b>6 patterns</b></div>
+          <div class="visual visual-content"><div class="content-copy"><i></i><b></b><b></b><span></span><span></span><span></span></div><div class="content-image"><i></i></div></div>
+          <div class="card-bottom"><div><h2>Content</h2><p>Editorial layouts, text + media and storytelling.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Header">
-          <div class="category-card__preview preview-header">
-            <div class="mock-window mock-window--header"><div class="mock-window__top"><i></i><i></i><i></i></div><div class="header-demo"><small></small><b>About us</b><i></i></div></div>
-          </div>
-          <div class="category-card__meta"><strong>Header Sections</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>06</span><b>5 patterns</b></div>
+          <div class="visual visual-bento"><div class="bento"><i></i><i></i><i></i><i></i></div></div>
+          <div class="card-bottom"><div><h2>Bento</h2><p>Dense information, organized beautifully.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Newsletter">
-          <div class="category-card__preview preview-newsletter">
-            <div class="newsletter-demo"><span>✉</span><strong>Want updates?</strong><b>Sign up to our newsletter</b><i></i><div><em></em><em></em></div></div>
-          </div>
-          <div class="category-card__meta"><strong>Newsletter Sections</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>07</span><b>4 patterns</b></div>
+          <div class="visual visual-stats"><div><strong>98%</strong><span>Customer satisfaction</span></div><i></i><div><strong>24k</strong><span>Active users</span></div></div>
+          <div class="card-bottom"><div><h2>Stats</h2><p>Numbers that make the point.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Stats">
-          <div class="category-card__preview preview-stats">
-            <div class="stats-demo"><strong>Trusted by developers globally</strong><i></i><div><span><b>5M</b><small>API Requests</small></span><span><b>100%</b><small>Uptime</small></span><span><b>50+</b><small>Countries</small></span></div></div>
-          </div>
-          <div class="category-card__meta"><strong>Stats</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>08</span><b>6 patterns</b></div>
+          <div class="visual visual-testimonials"><blockquote>“Exactly what we needed.”</blockquote><div class="avatars"><i></i><i></i><i></i></div></div>
+          <div class="card-bottom"><div><h2>Testimonials</h2><p>Social proof with personality.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Testimonials">
-          <div class="category-card__preview preview-testimonials"><div class="quote-demo"><strong>“I loved it at the very moment I used it.”</strong><i></i><span>● ● ● ●</span></div></div>
-          <div class="category-card__meta"><strong>Testimonials</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>09</span><b>5 patterns</b></div>
+          <div class="visual visual-pricing"><div class="price-card"><span>Starter</span><strong>$19</strong><i></i><i></i><em></em></div><div class="price-card featured"><span>Pro</span><strong>$49</strong><i></i><i></i><em></em></div></div>
+          <div class="card-bottom"><div><h2>Pricing</h2><p>Plans that are easy to compare.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Blog">
-          <div class="category-card__preview preview-blog"><div class="blog-demo"><strong>From the blog</strong><i></i><div><span></span><span></span><span></span></div></div></div>
-          <div class="category-card__meta"><strong>Blog Sections</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>10</span><b>4 patterns</b></div>
+          <div class="visual visual-faq"><div class="faq-row"><span>What is included?</span><b>+</b></div><div class="faq-row"><span>Can I customize it?</span><b>+</b></div><div class="faq-row"><span>Is it responsive?</span><b>+</b></div></div>
+          <div class="card-bottom"><div><h2>FAQ</h2><p>Answer objections before they happen.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Contact">
-          <div class="category-card__preview preview-contact"><div class="contact-demo"><strong>Contact sales</strong><i></i><div><span></span><span></span></div><b></b></div></div>
-          <div class="category-card__meta"><strong>Contact Sections</strong><span>Coming soon</span></div>
+        <a class="section-card wide-card accent-card" href="#">
+          <div class="card-top"><span>11</span><b>5 patterns</b></div>
+          <div class="visual visual-cta"><div><span>Ready when you are.</span><strong>Build something<br>people remember.</strong><button type="button">Get started ↗</button></div></div>
+          <div class="card-bottom"><div><h2>CTA</h2><p>Strong endings with a clear next step.</p></div><span class="arrow">↗</span></div>
         </a>
 
-        <a class="category-card" href="javascript:void(0)" data-coming-soon="Team">
-          <div class="category-card__preview preview-team"><div class="team-demo"><strong>Our Team</strong><i></i><div><span></span><span></span><span></span></div></div></div>
-          <div class="category-card__meta"><strong>Team Sections</strong><span>Coming soon</span></div>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>12</span><b>4 patterns</b></div>
+          <div class="visual visual-contact"><div class="form-demo"><i></i><i></i><i class="large"></i><b></b></div></div>
+          <div class="card-bottom"><div><h2>Contact</h2><p>Forms and conversion touchpoints.</p></div><span class="arrow">↗</span></div>
         </a>
-      </div>
-    </section>
-  </main>
 
-  <div class="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+        <a class="section-card" href="#">
+          <div class="card-top"><span>13</span><b>4 patterns</b></div>
+          <div class="visual visual-news"><span>Stay in the loop.</span><div><i></i><b>Subscribe</b></div></div>
+          <div class="card-bottom"><div><h2>Newsletter</h2><p>Simple ways to grow an audience.</p></div><span class="arrow">↗</span></div>
+        </a>
+
+        <a class="section-card" href="#">
+          <div class="card-top"><span>14</span><b>5 patterns</b></div>
+          <div class="visual visual-blog"><div class="post"><i></i><span></span><b></b></div><div class="post"><i></i><span></span><b></b></div></div>
+          <div class="card-bottom"><div><h2>Blog / Resources</h2><p>Cards, posts and editorial feeds.</p></div><span class="arrow">↗</span></div>
+        </a>
+
+        <a class="section-card" href="#">
+          <div class="card-top"><span>15</span><b>5 patterns</b></div>
+          <div class="visual visual-footer"><div class="footer-logo">L</div><div class="footer-cols"><i></i><i></i><i></i></div><span>© 2026</span></div>
+          <div class="card-bottom"><div><h2>Footer</h2><p>Finish the page cleanly.</p></div><span class="arrow">↗</span></div>
+        </a>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
