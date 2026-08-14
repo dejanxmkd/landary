@@ -22,7 +22,12 @@
       <div class="coffee-layout">
         <div class="coffee-gallery"><div class="gallery-stack">
           <div class="image-carousel" data-image-carousel>
-            <figure class="product-frame"><img data-carousel-image src="${pair[0]}" alt="${product.name} product view"></figure>
+            <div class="image-viewport">
+              <div class="image-track" data-image-track>
+                <figure class="product-frame image-panel"><img data-carousel-image="0" src="${pair[0]}" alt="${product.name} front"></figure>
+                <figure class="product-frame image-panel"><img data-carousel-image="1" src="${pair[1]}" alt="${product.name} back"></figure>
+              </div>
+            </div>
             <button class="carousel-arrow carousel-arrow--prev" type="button" data-image-prev aria-label="Previous product image"><span class="material-icons" aria-hidden="true">chevron_left</span></button>
             <button class="carousel-arrow carousel-arrow--next" type="button" data-image-next aria-label="Next product image"><span class="material-icons" aria-hidden="true">chevron_right</span></button>
             <div class="product-dots" role="tablist" aria-label="Product images">
@@ -86,20 +91,23 @@
     const product=PRODUCTS[index];
     const current=state[index];
     const pair=product.images[current.grind]||product.images[product.defaultGrind];
-    const image=slide.querySelector('[data-carousel-image]');
-    const next=pair[current.image]||pair[0];
-    if(!image)return;
-    const apply=()=>{image.src=next;image.alt=`${product.name} ${current.image===0?'front':'back'}`};
-    if(!animate){apply()}else{
-      image.getAnimations().forEach(animation=>animation.cancel());
-      const out=image.animate([{opacity:1,transform:'translateX(0) scale(1)'},{opacity:0,transform:`translateX(${current.image===0?'18px':'-18px'}) scale(.985)`}],{duration:180,easing:'ease',fill:'forwards'});
-      out.addEventListener('finish',()=>{
-        apply();
-        out.cancel();
-        image.animate([{opacity:0,transform:`translateX(${current.image===0?'-18px':'18px'}) scale(.985)`},{opacity:1,transform:'translateX(0) scale(1)'}],{duration:520,easing:'cubic-bezier(.16,1,.3,1)'});
-      },{once:true});
+    const images=[...slide.querySelectorAll('[data-carousel-image]')];
+    const trackEl=slide.querySelector('[data-image-track]');
+    images.forEach((image,imageIndex)=>{
+      const src=pair[imageIndex]||pair[0];
+      image.src=src;
+      image.alt=`${product.name} ${imageIndex===0?'front':'back'} · ${current.grind}`;
+    });
+    if(trackEl){
+      trackEl.style.setProperty('--image-index',String(current.image));
+      trackEl.classList.toggle('is-instant',!animate);
+      if(!animate)requestAnimationFrame(()=>trackEl.classList.remove('is-instant'));
     }
-    slide.querySelectorAll('[data-image-dot]').forEach(dot=>{const active=Number(dot.dataset.imageDot)===current.image;dot.classList.toggle('is-active',active);dot.setAttribute('aria-selected',String(active))});
+    slide.querySelectorAll('[data-image-dot]').forEach(dot=>{
+      const active=Number(dot.dataset.imageDot)===current.image;
+      dot.classList.toggle('is-active',active);
+      dot.setAttribute('aria-selected',String(active));
+    });
   }
 
   function setImage(index,imageIndex){
@@ -143,7 +151,7 @@
     });
   }
 
-  function closeDetails(index){
+  function finishClose(index){
     const slide=slides[index];
     const shell=slide.querySelector('.copy-shell');
     const toggle=slide.querySelector('[data-toggle-details]');
@@ -159,21 +167,41 @@
 
     const targetTop=(innerHeight-collapsedHeight)/2;
     const dy=targetTop-current.top;
-
     slide.classList.add('is-closing');
     if(toggle)toggle.textContent='View Details';
     shell.getAnimations().forEach(animation=>animation.cancel());
     const animation=shell.animate(
       [{transform:'translateY(0)'},{transform:`translateY(${dy}px)`}],
-      {duration:950,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'}
+      {duration:820,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'}
     );
-
     animation.addEventListener('finish',()=>{
       slide.classList.remove('is-closing','is-detail');
       document.body.classList.remove('details-open');
+      slide.scrollTop=0;
       animation.cancel();
       detailIndex=-1;
     },{once:true});
+  }
+
+  function closeDetails(index){
+    const slide=slides[index];
+    if(slide.classList.contains('is-closing'))return;
+    const startTop=slide.scrollTop;
+    if(startTop<=2){finishClose(index);return}
+
+    const duration=Math.min(650,Math.max(360,startTop*.35));
+    const started=performance.now();
+    slide.classList.add('is-returning');
+    const ease=t=>1-Math.pow(1-t,4);
+    const step=now=>{
+      const t=Math.min(1,(now-started)/duration);
+      slide.scrollTop=startTop*(1-ease(t));
+      if(t<1){requestAnimationFrame(step);return}
+      slide.scrollTop=0;
+      slide.classList.remove('is-returning');
+      finishClose(index);
+    };
+    requestAnimationFrame(step);
   }
 
   track.addEventListener('click',event=>{
@@ -182,7 +210,7 @@
     const imageDot=event.target.closest('[data-image-dot]');if(imageDot){setImage(index,Number(imageDot.dataset.imageDot));return}
     if(event.target.closest('[data-image-prev]')){setImage(index,state[index].image===0?1:0);return}
     if(event.target.closest('[data-image-next]')){setImage(index,state[index].image===1?0:1);return}
-    const grind=event.target.closest('[data-grind]');if(grind){current.grind=grind.dataset.grind;slide.querySelectorAll('[data-grind]').forEach(btn=>btn.classList.toggle('is-selected',btn===grind));updateImages(index);return}
+    const grind=event.target.closest('[data-grind]');if(grind){current.grind=grind.dataset.grind;slide.querySelectorAll('[data-grind]').forEach(btn=>btn.classList.toggle('is-selected',btn===grind));updateImages(index,false);return}
     const purchase=event.target.closest('[data-purchase]');if(purchase){current.purchase=purchase.dataset.purchase;updatePurchase(index);return}
     const bags=event.target.closest('[data-bags]');if(bags){current.bags=Number(bags.dataset.bags);current.discount=Number(bags.dataset.discount);slide.querySelectorAll('[data-bags]').forEach(btn=>btn.classList.toggle('is-selected',btn===bags));updatePurchase(index);return}
     if(event.target.closest('[data-qty-minus]')){current.qty=Math.max(1,current.qty-1);updatePurchase(index);return}
@@ -202,6 +230,6 @@
   addEventListener('resize',()=>{if(detailIndex<0)renderHorizontal()});
   addEventListener('keydown',event=>{if(event.key==='Escape'&&detailIndex>=0)closeDetails(detailIndex)});
   history.scrollRestoration='auto';
-  PRODUCTS.forEach((_,index)=>updatePurchase(index));
+  PRODUCTS.forEach((_,index)=>{updatePurchase(index);updateImages(index,false)});
   requestAnimationFrame(renderHorizontal);
 })();
