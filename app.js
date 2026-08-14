@@ -51,7 +51,7 @@
     {Ground:[PRODUCT_IMAGES['espresso-roast'],'./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png'],'Whole Bean':[PRODUCT_IMAGES['espresso-roast'],'./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png']}
   ];
 
-  let scene=0,locked=false,detailOpen=false,detailIndex=0,wheelReady=true,wheelTimer=null,touchStartY=null;
+  let scene=0,coffeeIndex=0,locked=false,detailOpen=false,detailIndex=0,wheelReady=true,wheelTimer=null,touchStartY=null;
   const transition=`transform ${DURATION}ms ${EASE},opacity ${DURATION}ms ${EASE},filter ${DURATION}ms ${EASE}`;
   const setBg=color=>[stage,document.body,document.documentElement].forEach(el=>el.style.backgroundColor=color);
   const mobile=()=>innerWidth<=640;
@@ -85,12 +85,16 @@
 
   function setCoffee(index,position){
     const {panel,product,copy}=items[index],active=position==='active';
-    panel.style.display='block';panel.style.visibility='visible';panel.style.pointerEvents=active?'auto':'none';panel.style.zIndex=active?'6':'5';
-    panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform=active?'translateY(0)':position==='before'?'translateY(-100vh)':'translateY(100vh)';
+    panel.style.display='block';panel.style.visibility='visible';panel.style.pointerEvents=active?'auto':'none';panel.style.zIndex='2';
+    panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='none';
     if(product){product.style.visibility='visible';product.style.opacity='1';product.style.filter='blur(0)';product.style.transform=productTarget()}
     if(copy){copy.style.visibility='visible';copy.style.opacity='1';copy.style.filter='blur(0)';copy.style.transform=copyTarget()}
   }
-  function renderCoffee(activeIndex){panels.forEach((_,i)=>setCoffee(i,i===activeIndex?'active':i<activeIndex?'before':'after'));setBg(COLORS[activeIndex])}
+  function renderCoffee(activeIndex){
+    coffeeIndex=Math.max(0,Math.min(panels.length-1,activeIndex));
+    panels.forEach((panel,i)=>{panel.style.pointerEvents=i===coffeeIndex?'auto':'none';panel.classList.toggle('is-active-coffee',i===coffeeIndex)});
+    setBg(COLORS[coffeeIndex]);
+  }
   function resetScene(){
     setTransitions();
     hero.style.transition='none';story.style.transition='none';
@@ -101,28 +105,21 @@
   }
 
   function goToScene(next){
-    if(detailOpen||next<0||next>panels.length+1||next===scene)return;
+    if(detailOpen||next<0||next>2||next===scene)return;
     const previous=scene,direction=next>previous?1:-1;scene=next;
     if(next===0){
-      hideStory(-1);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO);placeHero('above');setTimeout(showHero,180);
-    }
-    else if(next===1){
-      hideHero(direction);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO);placeStory(direction);setTimeout(showStory,260);
-    }
-    else{
-      const coffeeIndex=next-2;hideHero(direction);
-      if(previous===1){
-        hideStory(1);panels.forEach((_,i)=>setCoffee(i,i<coffeeIndex?'before':'after'));setBg(COLORS[coffeeIndex]);setTimeout(()=>renderCoffee(coffeeIndex),340);
-      }
-      else{hideStory(direction);renderCoffee(coffeeIndex)}
+      hideStory(-1);setBg(INTRO);placeHero('above');setTimeout(showHero,180);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';
+    }else if(next===1){
+      hideHero(direction);setBg(INTRO);placeStory(direction);setTimeout(showStory,260);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';
+    }else{
+      hideHero(direction);hideStory(1);coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';renderCoffee(coffeeIndex);
     }
   }
 
   function syncSceneFromScroll(){
     if(detailOpen)return;
-    const maxScene=panels.length+1;
-    const next=Math.max(0,Math.min(maxScene,Math.round(window.scrollY/Math.max(window.innerHeight,1))));
-    if(next!==scene){locked=false;goToScene(next)}
+    const next=Math.max(0,Math.min(2,Math.round(window.scrollY/Math.max(window.innerHeight,1))));
+    if(next!==scene)goToScene(next);
   }
 
   function selectedGrind(){return document.querySelector('.choice-tab.is-selected')?.dataset.grind||'Ground'}
@@ -145,7 +142,7 @@
     else{description.style.maxHeight='220px';description.style.marginTop='24px';description.style.opacity='1';description.style.transform='translateY(0)';description.style.overflow='hidden'}
   }
   function openDetail(e){
-    e?.preventDefault();const requested=Number(e?.currentTarget?.dataset.openProduct),index=Number.isInteger(requested)?requested:Math.max(0,scene-2);if(detailOpen||scene!==index+2)return;
+    e?.preventDefault();const requested=Number(e?.currentTarget?.dataset.openProduct),index=Number.isInteger(requested)?requested:coffeeIndex;if(detailOpen||scene!==2||index!==coffeeIndex)return;
     const {panel,product,copy}=items[index];if(!panel||!product||!copy)return;const description=copy.querySelector('.product-copy__description');
     if(detailBack&&detailBack.parentElement!==copy)copy.insertBefore(detailBack,copy.firstChild);if(inlineDetail&&inlineDetail.parentElement!==copy)copy.appendChild(inlineDetail);syncDetailContent(index);
     const before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];detailOpen=true;detailIndex=index;document.body.classList.add('detail-open');panel.classList.add('is-detail');panel.style.zIndex='10';panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='translateY(0)';panel.style.pointerEvents='auto';
@@ -164,11 +161,21 @@
   function updatePurchase(){const original=20*bagCount,subscription=original*(1-discount/100),total=(purchaseMode==='subscribe'?subscription:original)*qty;if(subscribeOriginal)subscribeOriginal.textContent=money(original);if(subscribePrice)subscribePrice.textContent=money(subscription);if(oneTimePrice)oneTimePrice.textContent=money(original);if(cartTotal)cartTotal.textContent=money(total);if(qtyLabel)qtyLabel.textContent=qty;purchaseCards.forEach(card=>{const selected=card.dataset.purchaseCard===purchaseMode;card.classList.toggle('is-selected',selected);const icon=card.querySelector('.radio-icon');if(icon)icon.textContent=selected?'radio_button_checked':'radio_button_unchecked'})}
   document.querySelectorAll('[data-purchase]').forEach(button=>button.addEventListener('click',()=>{purchaseMode=button.dataset.purchase;updatePurchase()}));
   bagOptions.forEach(button=>button.addEventListener('click',()=>{bagCount=Number(button.dataset.bags);discount=Number(button.dataset.discount);bagOptions.forEach(item=>item.classList.toggle('is-selected',item===button));updatePurchase()}));
-  grindOptions.forEach(button=>button.addEventListener('click',()=>{grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));const index=detailOpen?detailIndex:Math.max(0,scene-2);if(detailOpen){syncDetailImages(index);return}const image=items[index]?.product?.querySelector('img'),src=GRIND_IMAGES[index]?.[button.dataset.grind];if(image&&src)image.src=src}));
+  grindOptions.forEach(button=>button.addEventListener('click',()=>{grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));const index=detailOpen?detailIndex:coffeeIndex;if(detailOpen){syncDetailImages(index);return}const image=items[index]?.product?.querySelector('img'),src=GRIND_IMAGES[index]?.[button.dataset.grind];if(image&&src)image.src=src}));
   document.querySelector('[data-qty-minus]')?.addEventListener('click',()=>{qty=Math.max(1,qty-1);updatePurchase()});
   document.querySelector('[data-qty-plus]')?.addEventListener('click',()=>{qty+=1;updatePurchase()});
   document.querySelectorAll('[data-open-product]').forEach(link=>link.addEventListener('click',openDetail));
   document.querySelector('[data-close-product]')?.addEventListener('click',closeDetail);
+
+  const coffeeTrack=document.createElement('div');
+  coffeeTrack.className='coffee-horizontal-track';
+  const coffeeParent=panels[0]?.parentElement;
+  if(coffeeParent){coffeeParent.insertBefore(coffeeTrack,panels[0]);panels.forEach(panel=>{panel.classList.add('coffee-horizontal-section');coffeeTrack.appendChild(panel)})}
+  coffeeTrack.addEventListener('scroll',()=>{
+    if(detailOpen)return;
+    const next=Math.max(0,Math.min(panels.length-1,Math.round(coffeeTrack.scrollLeft/Math.max(innerWidth,1))));
+    if(next!==coffeeIndex)renderCoffee(next);
+  },{passive:true});
 
   addEventListener('scroll',syncSceneFromScroll,{passive:true});
   addEventListener('keydown',e=>{if(detailOpen&&e.key==='Escape')closeDetail()});
@@ -176,7 +183,7 @@
 
   const scrollTrack=document.createElement('div');
   scrollTrack.className='native-scroll-track';
-  for(let i=0;i<panels.length+2;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
+  for(let i=0;i<3;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
   main.appendChild(scrollTrack);
   history.scrollRestoration='auto';
   document.body.style.overflowY='auto';
@@ -184,5 +191,5 @@
   document.body.classList.remove('detail-open');
   panels.forEach(panel=>panel.classList.remove('is-detail'));
   loadImages();updatePurchase();setTransitions();resetScene();
-  requestAnimationFrame(syncSceneFromScroll);
+  coffeeTrack.style.opacity='0';coffeeTrack.style.pointerEvents='none';requestAnimationFrame(()=>{syncSceneFromScroll();if(scene===2){coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';renderCoffee(coffeeIndex)}});
 })();
