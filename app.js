@@ -2,7 +2,6 @@
   const main=document.getElementById('cinematic-scroll');
   const stage=document.querySelector('.stage');
   const hero=document.querySelector('.hero__content');
-  const scrollCue=document.querySelector('.scroll-cue');
   const story=document.querySelector('.story__copy');
   const panels=[...document.querySelectorAll('.coffee-panel')];
   if(!main||!stage||!hero||!story||!panels.length)return;
@@ -75,10 +74,14 @@
     panels.forEach((panel,i)=>{panel.style.transition=transition;if(items[i].product)items[i].product.style.transition=transition;if(items[i].copy)items[i].copy.style.transition=transition});
     [stage,document.body,document.documentElement].forEach(el=>el.style.transition=`background-color ${DURATION}ms ${EASE}`);
   }
-  function hideHero(direction=1){hero.style.opacity='0';hero.style.filter='blur(12px)';hero.style.transform=`translateY(${direction>0?-10:10}vh) scale(.985)`;if(scrollCue)scrollCue.style.opacity='0'}
-  function showHero(){hero.style.opacity='1';hero.style.filter='blur(0)';hero.style.transform='translateY(0) scale(1)';if(scrollCue)scrollCue.style.opacity='1'}
-  function hideStory(direction=1){story.style.opacity='0';story.style.filter='blur(12px)';story.style.transform=`translateY(${direction>0?-10:10}vh) scale(.985)`}
+  function placeHero(position='below'){
+    hero.style.opacity='0';hero.style.filter='blur(12px)';hero.style.transform=`translateY(${position==='below'?12:-12}vh) scale(.985)`;
+  }
+  function showHero(){hero.style.opacity='1';hero.style.filter='blur(0)';hero.style.transform='translateY(0) scale(1)'}
+  function hideHero(direction=1){hero.style.opacity='0';hero.style.filter='blur(12px)';hero.style.transform=`translateY(${direction>0?-10:10}vh) scale(.985)`}
+  function placeStory(direction=1){story.style.opacity='0';story.style.filter='blur(12px)';story.style.transform=`translateY(${direction>0?12:-12}vh) scale(.985)`}
   function showStory(){story.style.opacity='1';story.style.filter='blur(0)';story.style.transform='translateY(0) scale(1)'}
+  function hideStory(direction=1){story.style.opacity='0';story.style.filter='blur(12px)';story.style.transform=`translateY(${direction>0?-10:10}vh) scale(.985)`}
 
   function setCoffee(index,position){
     const {panel,product,copy}=items[index],active=position==='active';
@@ -88,16 +91,29 @@
     if(copy){copy.style.visibility='visible';copy.style.opacity=active?'1':'0';copy.style.filter=active?'blur(0)':'blur(12px)';copy.style.transform=active?copyTarget():copyOffscreen(position)}
   }
   function renderCoffee(activeIndex){panels.forEach((_,i)=>setCoffee(i,i===activeIndex?'active':i<activeIndex?'before':'after'));setBg(COLORS[activeIndex])}
-  function resetScene(){setTransitions();showHero();hideStory(1);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO)}
+  function resetScene(){
+    setTransitions();
+    hero.style.transition='none';story.style.transition='none';
+    placeHero('below');placeStory(1);
+    panels.forEach((_,i)=>setCoffee(i,'after'));
+    setBg(INTRO);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{setTransitions();showHero()}));
+  }
 
   function goToScene(next){
     if(locked||detailOpen||next<0||next>panels.length+1||next===scene)return;
     locked=true;const previous=scene,direction=next>previous?1:-1;scene=next;
-    if(next===0){hideStory(-1);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO);setTimeout(showHero,90)}
-    else if(next===1){hideHero(direction);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO);setTimeout(showStory,previous>1?320:180)}
+    if(next===0){
+      hideStory(-1);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO);placeHero('above');setTimeout(showHero,180);
+    }
+    else if(next===1){
+      hideHero(direction);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO);placeStory(direction);setTimeout(showStory,260);
+    }
     else{
       const coffeeIndex=next-2;hideHero(direction);
-      if(previous===1){hideStory(1);panels.forEach((_,i)=>setCoffee(i,i<coffeeIndex?'before':'after'));setBg(COLORS[coffeeIndex]);setTimeout(()=>renderCoffee(coffeeIndex),320)}
+      if(previous===1){
+        hideStory(1);panels.forEach((_,i)=>setCoffee(i,i<coffeeIndex?'before':'after'));setBg(COLORS[coffeeIndex]);setTimeout(()=>renderCoffee(coffeeIndex),340);
+      }
       else{hideStory(direction);renderCoffee(coffeeIndex)}
     }
     setTimeout(()=>locked=false,LOCK);
