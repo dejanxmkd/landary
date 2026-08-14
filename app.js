@@ -25,10 +25,9 @@
           <figure class="product-frame product-frame--secondary"><img data-back src="${pair[1]}" alt="${product.name} back"></figure>
         </div></div>
         <div class="coffee-copy"><div class="copy-shell">
-          <button class="detail-back" type="button" data-close-details><span class="material-icons" aria-hidden="true">arrow_back</span><span>Back</span></button>
           <h2 class="copy-title">${product.name}</h2>
           <p class="copy-description">${product.description}</p>
-          <a class="view-details" href="#" data-open-details>View Details</a>
+          <a class="view-details" href="#" data-toggle-details>View Details</a>
           <div class="detail-content">
             <dl class="detail-meta"><div><dt>Flavor Notes</dt><dd>${product.flavor}</dd></div><div><dt>Roast Profile</dt><dd>${product.roast}</dd></div><div><dt>Bag Size</dt><dd>${product.size}</dd></div></dl>
             <div class="detail-form">
@@ -83,17 +82,28 @@
     slide.querySelectorAll('[data-purchase-card]').forEach(card=>{const selected=card.dataset.purchaseCard===current.purchase;card.classList.toggle('is-selected',selected);const icon=card.querySelector('.radio-icon');if(icon)icon.textContent=selected?'radio_button_checked':'radio_button_unchecked'});
   }
 
-  function flip(elements,mutate){
-    const before=elements.map(el=>el?.getBoundingClientRect());mutate();requestAnimationFrame(()=>requestAnimationFrame(()=>{elements.forEach((el,i)=>{if(!el||!before[i])return;const after=el.getBoundingClientRect();const dx=before[i].left-after.left;const dy=before[i].top-after.top;if(Math.abs(dx)<1&&Math.abs(dy)<1)return;el.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:900,easing:'cubic-bezier(.16,1,.3,1)'})})}))
+  function openDetails(index){
+    if(detailIndex>=0)return;
+    const slide=slides[index];
+    const toggle=slide.querySelector('[data-toggle-details]');
+    detailIndex=index;
+    slide.classList.add('is-detail');
+    document.body.classList.add('details-open');
+    if(toggle)toggle.textContent='Close Details';
   }
 
-  function openDetails(index){if(detailIndex>=0)return;const slide=slides[index];const shell=slide.querySelector('.copy-shell');const front=slide.querySelector('.product-frame:first-child img');detailIndex=index;flip([shell,front],()=>{slide.classList.add('is-detail');document.body.classList.add('details-open')})}
-  function closeDetails(index){const slide=slides[index];const shell=slide.querySelector('.copy-shell');const front=slide.querySelector('.product-frame:first-child img');flip([shell,front],()=>{slide.classList.remove('is-detail');slide.scrollTop=0;document.body.classList.remove('details-open')});detailIndex=-1}
+  function closeDetails(index){
+    const slide=slides[index];
+    const toggle=slide.querySelector('[data-toggle-details]');
+    slide.classList.remove('is-detail');
+    document.body.classList.remove('details-open');
+    if(toggle)toggle.textContent='View Details';
+    detailIndex=-1;
+  }
 
   track.addEventListener('click',event=>{
     const slide=event.target.closest('.coffee-slide');if(!slide)return;const index=Number(slide.dataset.index);const current=state[index];
-    if(event.target.closest('[data-open-details]')){event.preventDefault();openDetails(index);return}
-    if(event.target.closest('[data-close-details]')){closeDetails(index);return}
+    const toggle=event.target.closest('[data-toggle-details]');if(toggle){event.preventDefault();if(slide.classList.contains('is-detail'))closeDetails(index);else openDetails(index);return}
     const grind=event.target.closest('[data-grind]');if(grind){current.grind=grind.dataset.grind;slide.querySelectorAll('[data-grind]').forEach(btn=>btn.classList.toggle('is-selected',btn===grind));updateImages(index);return}
     const purchase=event.target.closest('[data-purchase]');if(purchase){current.purchase=purchase.dataset.purchase;updatePurchase(index);return}
     const bags=event.target.closest('[data-bags]');if(bags){current.bags=Number(bags.dataset.bags);current.discount=Number(bags.dataset.discount);slide.querySelectorAll('[data-bags]').forEach(btn=>btn.classList.toggle('is-selected',btn===bags));updatePurchase(index);return}
