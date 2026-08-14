@@ -1,0 +1,23 @@
+name: Fix detail sticky animation
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-detail-sticky-animation.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python .github/scripts/fix_detail_sticky_animation.py
+      - run: node --check app.js
+      - run: grep -q "position:sticky;top:0;align-self:start" style.css
+      - run: grep -q "function animateCopyLayout" app.js
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add style.css app.js
+          git commit -m "Smooth and stick product detail copy"
+          git push origin HEAD:main
