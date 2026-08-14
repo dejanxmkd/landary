@@ -1,0 +1,82 @@
+name: Organize product assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/organize-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  organize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Organize product images and clean unused assets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Replace the old placeholder file with a real folder.
+          rm -f assets/product_images
+          mkdir -p assets/product_images
+
+          # Extract every Giannos product ZIP into its own clean product folder.
+          for zip in assets/Giannos\ *.zip; do
+            [ -e "$zip" ] || continue
+            name="$(basename "$zip" .zip)"
+            slug="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g')"
+            target="assets/product_images/$slug"
+            rm -rf "$target"
+            mkdir -p "$target"
+            unzip -q "$zip" -d "$target"
+
+            # Flatten a redundant single top-level folder created by some ZIP tools.
+            while true; do
+              shopt -s dotglob nullglob
+              entries=("$target"/*)
+              shopt -u dotglob nullglob
+              if [ "${#entries[@]}" -eq 1 ] && [ -d "${entries[0]}" ]; then
+                inner="${entries[0]}"
+                tmp="${target}.tmp"
+                rm -rf "$tmp"
+                mkdir -p "$tmp"
+                shopt -s dotglob nullglob
+                mv "$inner"/* "$tmp"/ || true
+                shopt -u dotglob nullglob
+                rm -rf "$target"
+                mv "$tmp" "$target"
+              else
+                break
+              fi
+            done
+          done
+
+          # Remove archives after successful extraction.
+          rm -f assets/Giannos\ *.zip
+
+          # Remove old experiments / duplicated image chunks that are not referenced by the site.
+          rm -rf assets/fullres assets/product-data assets/product-original
+          rm -f assets/ping3.txt assets/giannos-brazil-roast-ground-beans.webp
+
+          # Keep assets/fonts and assets/product-v2 because the current website still references them.
+
+      - name: Commit organized assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A assets
+          if git diff --cached --quiet; then
+            echo "No asset changes to commit."
+            exit 0
+          fi
+          git commit -m "Organize product images and clean assets"
+          git push origin HEAD:main
