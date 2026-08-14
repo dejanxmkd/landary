@@ -1,225 +1,110 @@
 (()=>{
-  const main=document.getElementById('cinematic-scroll');
-  const stage=document.querySelector('.stage');
-  const hero=document.querySelector('.hero__content');
-  const story=document.querySelector('.story__copy');
-  const panels=[...document.querySelectorAll('.coffee-panel')];
-  if(!main||!stage||!hero||!story||!panels.length)return;
+  const coffeeSection=document.getElementById('coffee-scroll');
+  const track=document.getElementById('coffee-track');
+  if(!coffeeSection||!track)return;
 
-  const items=panels.map(panel=>({panel,product:panel.querySelector('.product'),copy:panel.querySelector('.product-copy')}));
-  const detailBack=document.querySelector('[data-close-product]');
-  const inlineDetail=document.querySelector('[data-inline-detail]');
-  const detailMetaValues=[...document.querySelectorAll('.detail-meta dd')];
-
-  const INTRO='#3d5825';
-  const COLORS=['#4D6E48','#1C6E95','#563B66','#CF9A35','#634227','#332016'];
-  const DURATION=1380;
-  const LOCK=1540;
-  const MORPH=1000;
-  const EASE='cubic-bezier(.16,1,.3,1)';
-
-  const PRODUCT_IMAGES={
-    brazil:{Ground:'./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-front.png','Whole Bean':'./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-front.png'},
-    'french-vanilla':'./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-front.png',
-    'colombian-roast':'./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-front.png',
-    'original-roast':'./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-front.png',
-    hazelnut:'./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png',
-    'espresso-roast':'./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png'
-  };
-  const PRODUCT_DETAILS=[
-    ['Chocolate, caramel and naturally sweet body','Medium','12 ounces'],
-    ['Rich vanilla, subtle nuttiness and creamy finish','Medium','12 ounces'],
-    ['Milk chocolate, citrus and a smooth finish','Medium','12 ounces'],
-    ['Rich aroma, layered flavor and a hint of sweetness','Medium','12 ounces'],
-    ['Earthy sweetness and warm roasted hazelnut','Medium','12 ounces'],
-    ['Rich aroma, layered flavor and a rounded finish','Medium','12 ounces']
-  ];
-  const GRIND_IMAGES=[
-    {Ground:PRODUCT_IMAGES.brazil.Ground,'Whole Bean':PRODUCT_IMAGES.brazil['Whole Bean']},
-    {Ground:PRODUCT_IMAGES['french-vanilla'],'Whole Bean':PRODUCT_IMAGES['french-vanilla']},
-    {Ground:'./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-front.png','Whole Bean':'./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-front.png'},
-    {Ground:'./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-front.png','Whole Bean':'./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-front.png'},
-    {Ground:PRODUCT_IMAGES.hazelnut,'Whole Bean':PRODUCT_IMAGES.hazelnut},
-    {Ground:PRODUCT_IMAGES['espresso-roast'],'Whole Bean':PRODUCT_IMAGES['espresso-roast']}
-  ];
-  const DETAIL_IMAGES=[
-    {Ground:[PRODUCT_IMAGES.brazil.Ground,'./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-back.png'],'Whole Bean':[PRODUCT_IMAGES.brazil['Whole Bean'],'./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-back.png']},
-    {Ground:[PRODUCT_IMAGES['french-vanilla'],'./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png'],'Whole Bean':[PRODUCT_IMAGES['french-vanilla'],'./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png']},
-    {Ground:[GRIND_IMAGES[2].Ground,'./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-back.png'],'Whole Bean':[GRIND_IMAGES[2]['Whole Bean'],'./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-back.png']},
-    {Ground:[GRIND_IMAGES[3].Ground,'./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-back.png'],'Whole Bean':[GRIND_IMAGES[3]['Whole Bean'],'./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-back.png']},
-    {Ground:[PRODUCT_IMAGES.hazelnut,'./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png'],'Whole Bean':[PRODUCT_IMAGES.hazelnut,'./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png']},
-    {Ground:[PRODUCT_IMAGES['espresso-roast'],'./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png'],'Whole Bean':[PRODUCT_IMAGES['espresso-roast'],'./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png']}
+  const PRODUCTS=[
+    {slug:'brazil',name:'Giannos Brazil Roast',color:'#4D6E48',description:'A smooth, medium roast from Brazil with a naturally sweet body and soft notes of chocolate and caramel. Choose it whole bean for maximum freshness, or ground and ready for the way you brew every day.',flavor:'Chocolate, caramel and naturally sweet body',roast:'Medium',size:'12 ounces',defaultGrind:'Ground',images:{Ground:['./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-front.png','./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-front.png','./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-back.png']}},
+    {slug:'french-vanilla',name:'Giannos French Vanilla',color:'#1C6E95',description:'Rich vanilla flavor, subtle nuttiness, and a creamy finish come together in a comforting medium roast made for easy mornings and familiar routines.',flavor:'Rich vanilla, subtle nuttiness and creamy finish',roast:'Medium',size:'12 ounces',defaultGrind:'Ground',images:{Ground:['./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-front.png','./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-front.png','./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png']}},
+    {slug:'colombian',name:'Giannos Colombian Roast',color:'#563B66',description:'A balanced medium roast with milk chocolate, hints of citrus, and a smooth finish. Choose whole bean or ground for a classic cup with brightness, body, and everyday drinkability.',flavor:'Milk chocolate, citrus and a smooth finish',roast:'Medium',size:'12 ounces',defaultGrind:'Ground',images:{Ground:['./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-front.png','./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-front.png','./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-back.png']}},
+    {slug:'original',name:'Giannos Original Roast',color:'#CF9A35',description:'Rich aroma, layered flavor, and a full finish with just a hint of sweetness and no lingering aftertaste. A balanced medium roast made to feel familiar from the very first cup.',flavor:'Rich aroma, layered flavor and a hint of sweetness',roast:'Medium',size:'12 ounces',defaultGrind:'Ground',images:{Ground:['./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-front.png','./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-front.png','./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-back.png']}},
+    {slug:'hazelnut',name:'Giannos Hazelnut',color:'#634227',description:'Earthy, sweet, and warmly roasted with a marbled hazelnut character that lingers into a long, smooth finish. A comforting medium roast made for slower cups and easy everyday brewing.',flavor:'Earthy sweetness and warm roasted hazelnut',roast:'Medium',size:'12 ounces',defaultGrind:'Ground',images:{Ground:['./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png','./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png','./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png']}},
+    {slug:'espresso',name:'Giannos Espresso Roast',color:'#332016',description:'Rich aroma, layered flavor, and a hint of sweetness carried into a full, rounded finish. A medium roast built for espresso with enough depth to stay bold and smooth in every shot.',flavor:'Rich aroma, layered flavor and a rounded finish',roast:'Medium',size:'12 ounces',defaultGrind:'Whole Bean',images:{Ground:['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png'],'Whole Bean':['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png']}}
   ];
 
-  let scene=0,coffeeIndex=0,locked=false,detailOpen=false,detailIndex=0,wheelReady=true,wheelTimer=null,touchStartY=null;
-  const transition=`transform ${DURATION}ms ${EASE},opacity ${DURATION}ms ${EASE},filter ${DURATION}ms ${EASE}`;
-  const setBg=color=>[stage,document.body,document.documentElement].forEach(el=>el.style.backgroundColor=color);
-  const mobile=()=>innerWidth<=640;
-  const productTarget=()=>mobile()?'translate(-50%,-50%) scale(.88)':'translate(calc(-50% - 25vw),-50%) scale(1)';
-  const copyTarget=()=>mobile()?'translateY(0)':'translate(0,-50%)';
-  const productOffscreen=position=>mobile()
-    ?position==='before'?'translate(-50%,-72%) scale(.94)':'translate(-50%,-28%) scale(.94)'
-    :position==='before'?'translate(calc(-50% - 25vw),calc(-50% - 24vh)) scale(.96)':'translate(calc(-50% - 25vw),calc(-50% + 24vh)) scale(.96)';
-  const copyOffscreen=position=>mobile()
-    ?position==='before'?'translateY(-20vh)':'translateY(20vh)'
-    :position==='before'?'translate(0,calc(-50% - 22vh))':'translate(0,calc(-50% + 22vh))';
+  const state=PRODUCTS.map(product=>({grind:product.defaultGrind,purchase:'subscribe',bags:1,discount:10,qty:1}));
+  const money=value=>`$${value.toFixed(2)}`;
 
-  function loadImages(){
-    const first=items[0]?.product?.querySelector('img');
-    if(first)first.src=PRODUCT_IMAGES.brazil.Ground;
-    document.querySelectorAll('[data-coffee-image]').forEach(img=>{const src=PRODUCT_IMAGES[img.dataset.coffeeImage];if(src)img.src=src});
-  }
-  function setTransitions(){
-    hero.style.transition=transition;story.style.transition=transition;
-    panels.forEach((panel,i)=>{panel.style.transition=transition;if(items[i].product)items[i].product.style.transition=transition;if(items[i].copy)items[i].copy.style.transition=transition});
-    [stage,document.body,document.documentElement].forEach(el=>el.style.transition=`background-color ${DURATION}ms ${EASE}`);
-  }
-  function placeHero(position='below'){
-    hero.style.opacity='0';hero.style.filter='blur(12px)';hero.style.transform=`translateY(${position==='below'?12:-12}vh) scale(.985)`;
-  }
-  function showHero(){hero.style.opacity='1';hero.style.filter='blur(0)';hero.style.transform='translateY(0) scale(1)'}
-  function hideHero(direction=1){hero.style.opacity='0';hero.style.filter='blur(12px)';hero.style.transform=`translateY(${direction>0?-10:10}vh) scale(.985)`}
-  function placeStory(direction=1){story.style.opacity='0';story.style.filter='blur(12px)';story.style.transform=`translateY(${direction>0?12:-12}vh) scale(.985)`}
-  function showStory(){story.style.opacity='1';story.style.filter='blur(0)';story.style.transform='translateY(0) scale(1)'}
-  function hideStory(direction=1){story.style.opacity='0';story.style.filter='blur(12px)';story.style.transform=`translateY(${direction>0?-10:10}vh) scale(.985)`}
-
-  function setCoffee(index,position){
-    const {panel,product,copy}=items[index],active=position==='active';
-    panel.style.display='block';panel.style.visibility='visible';panel.style.pointerEvents=active?'auto':'none';panel.style.zIndex='2';
-    panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='none';
-    if(product){product.style.visibility='visible';product.style.opacity='1';product.style.filter='blur(0)';product.style.transform=productTarget()}
-    if(copy){copy.style.visibility='visible';copy.style.opacity='1';copy.style.filter='blur(0)';copy.style.transform=copyTarget()}
-  }
-  function renderCoffee(activeIndex){
-    coffeeIndex=Math.max(0,Math.min(panels.length-1,activeIndex));
-    panels.forEach((panel,i)=>{panel.style.pointerEvents=i===coffeeIndex?'auto':'none';panel.classList.toggle('is-active-coffee',i===coffeeIndex)});
-    setBg(COLORS[coffeeIndex]);
-  }
-  function resetScene(){
-    setTransitions();
-    hero.style.transition='none';story.style.transition='none';
-    placeHero('below');placeStory(1);
-    panels.forEach((_,i)=>setCoffee(i,'after'));
-    setBg(INTRO);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{setTransitions();if(scene===0)showHero()}));
+  function slideTemplate(product,index){
+    const grind=product.defaultGrind;
+    const pair=product.images[grind];
+    return `<article class="coffee-slide" data-index="${index}" style="--accent:${product.color}">
+      <div class="coffee-layout">
+        <div class="coffee-gallery"><div class="gallery-stack">
+          <figure class="product-frame"><img data-front src="${pair[0]}" alt="${product.name} front"></figure>
+          <figure class="product-frame product-frame--secondary"><img data-back src="${pair[1]}" alt="${product.name} back"></figure>
+        </div></div>
+        <div class="coffee-copy"><div class="copy-shell">
+          <button class="detail-back" type="button" data-close-details><span class="material-icons" aria-hidden="true">arrow_back</span><span>Back</span></button>
+          <h2 class="copy-title">${product.name}</h2>
+          <p class="copy-description">${product.description}</p>
+          <a class="view-details" href="#" data-open-details>View Details</a>
+          <div class="detail-content">
+            <dl class="detail-meta"><div><dt>Flavor Notes</dt><dd>${product.flavor}</dd></div><div><dt>Roast Profile</dt><dd>${product.roast}</dd></div><div><dt>Bag Size</dt><dd>${product.size}</dd></div></dl>
+            <div class="detail-form">
+              <section class="detail-block"><div class="grind-options" role="group" aria-label="Coffee format"><button class="choice-tab ${grind==='Ground'?'is-selected':''}" type="button" data-grind="Ground">Ground</button><button class="choice-tab ${grind==='Whole Bean'?'is-selected':''}" type="button" data-grind="Whole Bean">Whole Bean</button></div></section>
+              <section class="detail-block purchase-card is-selected" data-purchase-card="subscribe"><button class="purchase-card__head" type="button" data-purchase="subscribe"><span class="material-icons radio-icon" aria-hidden="true">radio_button_checked</span><strong>Subscribe &amp; Save</strong><span class="purchase-card__prices"><s data-subscribe-original>$20.00</s><b data-subscribe-price>$18.00</b></span></button><div class="purchase-card__body"><h3>Select Quantity</h3><div class="bag-options"><button class="bag-option is-selected" type="button" data-bags="1" data-discount="10"><span>Single</span><b>Save 10%</b></button><button class="bag-option" type="button" data-bags="3" data-discount="15"><span>3-Bags</span><b>Save 15%</b></button><button class="bag-option" type="button" data-bags="6" data-discount="20"><span>6-Bags</span><b>Save 20%</b></button></div><h3>Select Frequency</h3><div class="frequency-field"><select class="frequency-select" aria-label="Delivery frequency"><option>Every Month</option><option>Every 2 Months</option><option>Every 3 Months</option><option>Deliver every 21 days</option><option>Deliver every 30 days</option><option>Deliver every 60 days</option></select><span class="material-icons frequency-field__icon" aria-hidden="true">expand_more</span></div><div class="subscription-benefits"><span><i class="material-icons" aria-hidden="true">check_circle</i><em>Up to 20% off on every order</em></span><span><i class="material-icons" aria-hidden="true">check_circle</i><em>Free shipping within the US</em></span><span><i class="material-icons" aria-hidden="true">check_circle</i><em>Early access to new products</em></span></div></div></section>
+              <section class="detail-block purchase-card" data-purchase-card="one-time"><button class="purchase-card__head" type="button" data-purchase="one-time"><span class="material-icons radio-icon" aria-hidden="true">radio_button_unchecked</span><strong>One Time Purchase</strong><span class="purchase-card__prices"><b data-one-time-price>$20.00</b></span></button></section>
+              <section class="detail-block cart-block"><div class="quantity-stepper" aria-label="Quantity"><button type="button" data-qty-minus aria-label="Decrease quantity"><span class="material-icons" aria-hidden="true">remove</span></button><span data-qty>1</span><button type="button" data-qty-plus aria-label="Increase quantity"><span class="material-icons" aria-hidden="true">add</span></button></div><button class="add-cart" type="button">Add to Cart · <span data-cart-total>$18.00</span></button></section>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </article>`;
   }
 
-  function goToScene(next){
-    if(detailOpen||next<0||next>2||next===scene)return;
-    const previous=scene,direction=next>previous?1:-1;scene=next;
-    if(next===0){
-      hideStory(-1);setBg(INTRO);placeHero('above');setTimeout(showHero,180);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';coffeeTrack.style.filter='blur(12px)';coffeeTrack.style.transform='translateY(12vh) scale(.985)';
-    }else if(next===1){
-      hideHero(direction);setBg(INTRO);placeStory(direction);setTimeout(showStory,260);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';coffeeTrack.style.filter='blur(12px)';coffeeTrack.style.transform=direction<0?'translateY(12vh) scale(.985)':'translateY(12vh) scale(.985)';
-    }else{
-      hideHero(direction);hideStory(1);
-      renderCoffee(coffeeIndex);
-      coffeeTrack.scrollLeft=coffeeIndex*innerWidth;
-      coffeeTrack.style.pointerEvents='auto';
-      coffeeTrack.style.opacity='1';
-      coffeeTrack.style.filter='blur(0)';
-      coffeeTrack.style.transform='translateY(0) scale(1)';
-    }
+  track.innerHTML=PRODUCTS.map(slideTemplate).join('');
+  const slides=[...track.querySelectorAll('.coffee-slide')];
+
+  function sectionMetrics(){const start=coffeeSection.offsetTop;const distance=Math.max(coffeeSection.offsetHeight-innerHeight,1);return{start,distance}}
+  let activeIndex=0;
+  let detailIndex=-1;
+  let snapTimer=0;
+  let snapping=false;
+
+  function renderHorizontal(){
+    const{start,distance}=sectionMetrics();
+    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));
+    const exact=progress*(PRODUCTS.length-1);
+    activeIndex=Math.max(0,Math.min(PRODUCTS.length-1,Math.round(exact)));
+    track.style.transform=`translate3d(${-exact*100}vw,0,0)`;
   }
 
-  function syncSceneFromScroll(){
-    if(detailOpen)return;
-    const vh=Math.max(window.innerHeight,1);
-    const next=Math.max(0,Math.min(2,Math.round(window.scrollY/vh)));
-    if(next!==scene)goToScene(next);
+  function snapToNearest(){
+    if(detailIndex>=0||snapping)return;
+    const{start,distance}=sectionMetrics();
+    if(scrollY<start-2||scrollY>start+distance+2)return;
+    const step=distance/(PRODUCTS.length-1);
+    const index=Math.max(0,Math.min(PRODUCTS.length-1,Math.round((scrollY-start)/step)));
+    const target=start+index*step;
+    if(Math.abs(scrollY-target)<3)return;
+    snapping=true;
+    scrollTo({top:target,behavior:'smooth'});
+    setTimeout(()=>{snapping=false},520);
   }
 
-  function selectedGrind(){return document.querySelector('.choice-tab.is-selected')?.dataset.grind||'Ground'}
-  function detailPair(index,grind=selectedGrind()){const variants=DETAIL_IMAGES[index];return variants?.[grind]||variants?.Ground||variants?.['Whole Bean']||[]}
-  function removeSecondary(index){const gallery=items[index]?.product?.parentElement;gallery?.querySelector('.detail-product-secondary')?.remove();if(gallery)gallery.scrollTop=0}
-  function syncDetailImages(index){
-    const {product}=items[index]||{},gallery=product?.parentElement,pair=detailPair(index),front=product?.querySelector('img');if(front&&pair[0])front.src=pair[0];if(!gallery)return;
-    let secondary=gallery.querySelector('.detail-product-secondary');
-    if(pair[1]){if(!secondary){secondary=document.createElement('figure');secondary.className='product detail-product-secondary';secondary.innerHTML='<img alt="Coffee bag back">';gallery.appendChild(secondary)}const back=secondary.querySelector('img');if(back)back.src=pair[1]}
-  }
-  function syncDetailContent(index){const values=PRODUCT_DETAILS[index]||PRODUCT_DETAILS[0];detailMetaValues.forEach((el,i)=>el.textContent=values[i]||'—');syncDetailImages(index)}
-  function animateVertical(els,before,done){
-    const animations=[];els.forEach((el,i)=>{if(!el||!before[i])return;const after=el.getBoundingClientRect(),dy=before[i].top-after.top;if(Math.abs(dy)<1)return;animations.push(el.animate([{translate:`0 ${dy}px`},{translate:'0 0'}],{duration:MORPH,easing:EASE,fill:'both'}))});
-    Promise.all(animations.map(a=>a.finished.catch(()=>{}))).then(()=>{animations.forEach(a=>a.cancel());done?.()});
-  }
-  const afterLayout=cb=>requestAnimationFrame(()=>requestAnimationFrame(cb));
-  function collapseDescription(description,collapsed){
-    if(!description)return;description.style.transition=`opacity ${MORPH}ms ${EASE},transform ${MORPH}ms ${EASE},max-height ${MORPH}ms ${EASE},margin ${MORPH}ms ${EASE}`;
-    if(collapsed){description.style.maxHeight='0';description.style.marginTop='0';description.style.opacity='0';description.style.transform='translateY(-24px)';description.style.overflow='hidden'}
-    else{description.style.maxHeight='220px';description.style.marginTop='24px';description.style.opacity='1';description.style.transform='translateY(0)';description.style.overflow='hidden'}
-  }
-  function openDetail(e){
-    e?.preventDefault();const requested=Number(e?.currentTarget?.dataset.openProduct),index=Number.isInteger(requested)?requested:coffeeIndex;if(detailOpen||scene<2||index!==coffeeIndex)return;
-    const {panel,product,copy}=items[index];if(!panel||!product||!copy)return;const description=copy.querySelector('.product-copy__description');
-    if(detailBack&&detailBack.parentElement!==copy)copy.insertBefore(detailBack,copy.firstChild);if(inlineDetail&&inlineDetail.parentElement!==copy)copy.appendChild(inlineDetail);syncDetailContent(index);
-    const before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];detailOpen=true;detailIndex=index;document.body.classList.add('detail-open');panel.classList.add('is-detail');panel.style.zIndex='10';panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='translateY(0)';panel.style.pointerEvents='auto';
-    product.style.transition='none';product.style.opacity='1';product.style.filter='blur(0)';product.style.transform='translateX(-50%)';copy.style.transition='none';copy.style.opacity='1';copy.style.filter='blur(0)';copy.style.transform='none';
-    if(innerWidth>840){copy.style.top='0';copy.style.height='100svh';copy.style.paddingTop='32px';copy.style.paddingBottom='32px'}
-    afterLayout(()=>{animateVertical([product,copy],before);requestAnimationFrame(()=>collapseDescription(description,true))});
-  }
-  function closeDetail(){
-    if(!detailOpen)return;const {panel,product,copy}=items[detailIndex];if(!panel||!product||!copy)return;const description=copy.querySelector('.product-copy__description'),before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];
-    detailOpen=false;collapseDescription(description,false);document.body.classList.remove('detail-open');copy.style.top='';copy.style.height='';copy.style.paddingTop='';copy.style.paddingBottom='';removeSecondary(detailIndex);panel.classList.remove('is-detail');setTransitions();renderCoffee(detailIndex);
-    afterLayout(()=>animateVertical([product,copy],before,()=>setTimeout(()=>{if(!description)return;description.style.transition='';description.style.maxHeight='';description.style.marginTop='';description.style.opacity='';description.style.transform='';description.style.overflow=''},80)));
+  function onScroll(){if(detailIndex>=0)return;renderHorizontal();clearTimeout(snapTimer);snapTimer=setTimeout(snapToNearest,140)}
+
+  function updateImages(index){const slide=slides[index];const product=PRODUCTS[index];const pair=product.images[state[index].grind]||product.images[product.defaultGrind];slide.querySelector('[data-front]').src=pair[0];slide.querySelector('[data-back]').src=pair[1]}
+
+  function updatePurchase(index){
+    const slide=slides[index];const current=state[index];const original=20*current.bags;const subscription=original*(1-current.discount/100);const unit=current.purchase==='subscribe'?subscription:original;
+    slide.querySelector('[data-subscribe-original]').textContent=money(original);slide.querySelector('[data-subscribe-price]').textContent=money(subscription);slide.querySelector('[data-one-time-price]').textContent=money(original);slide.querySelector('[data-cart-total]').textContent=money(unit*current.qty);slide.querySelector('[data-qty]').textContent=current.qty;
+    slide.querySelectorAll('[data-purchase-card]').forEach(card=>{const selected=card.dataset.purchaseCard===current.purchase;card.classList.toggle('is-selected',selected);const icon=card.querySelector('.radio-icon');if(icon)icon.textContent=selected?'radio_button_checked':'radio_button_unchecked'});
   }
 
-  const purchaseCards=[...document.querySelectorAll('[data-purchase-card]')],bagOptions=[...document.querySelectorAll('.bag-option')],grindOptions=[...document.querySelectorAll('.choice-tab')],subscribeOriginal=document.querySelector('[data-subscribe-original]'),subscribePrice=document.querySelector('[data-subscribe-price]'),oneTimePrice=document.querySelector('[data-one-time-price]'),cartTotal=document.querySelector('[data-cart-total]'),qtyLabel=document.querySelector('[data-qty]');
-  let purchaseMode='subscribe',bagCount=1,discount=10,qty=1;const money=v=>`$${v.toFixed(2)}`;
-  function updatePurchase(){const original=20*bagCount,subscription=original*(1-discount/100),total=(purchaseMode==='subscribe'?subscription:original)*qty;if(subscribeOriginal)subscribeOriginal.textContent=money(original);if(subscribePrice)subscribePrice.textContent=money(subscription);if(oneTimePrice)oneTimePrice.textContent=money(original);if(cartTotal)cartTotal.textContent=money(total);if(qtyLabel)qtyLabel.textContent=qty;purchaseCards.forEach(card=>{const selected=card.dataset.purchaseCard===purchaseMode;card.classList.toggle('is-selected',selected);const icon=card.querySelector('.radio-icon');if(icon)icon.textContent=selected?'radio_button_checked':'radio_button_unchecked'})}
-  document.querySelectorAll('[data-purchase]').forEach(button=>button.addEventListener('click',()=>{purchaseMode=button.dataset.purchase;updatePurchase()}));
-  bagOptions.forEach(button=>button.addEventListener('click',()=>{bagCount=Number(button.dataset.bags);discount=Number(button.dataset.discount);bagOptions.forEach(item=>item.classList.toggle('is-selected',item===button));updatePurchase()}));
-  grindOptions.forEach(button=>button.addEventListener('click',()=>{grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));const index=detailOpen?detailIndex:coffeeIndex;if(detailOpen){syncDetailImages(index);return}const image=items[index]?.product?.querySelector('img'),src=GRIND_IMAGES[index]?.[button.dataset.grind];if(image&&src)image.src=src}));
-  document.querySelector('[data-qty-minus]')?.addEventListener('click',()=>{qty=Math.max(1,qty-1);updatePurchase()});
-  document.querySelector('[data-qty-plus]')?.addEventListener('click',()=>{qty+=1;updatePurchase()});
-  document.querySelectorAll('[data-open-product]').forEach(link=>link.addEventListener('click',openDetail));
-  document.querySelector('[data-close-product]')?.addEventListener('click',closeDetail);
-
-  const coffeeTrack=document.createElement('div');
-  coffeeTrack.className='coffee-horizontal-track';
-  const coffeeParent=panels[0]?.parentElement;
-  if(coffeeParent){coffeeParent.insertBefore(coffeeTrack,panels[0]);panels.forEach(panel=>{panel.classList.add('coffee-horizontal-section');coffeeTrack.appendChild(panel)})}
-
-  let coffeeWheelLocked=false;
-  function moveCoffeeByWheel(direction){
-    if(detailOpen||scene!==2||coffeeWheelLocked)return false;
-    const next=coffeeIndex+direction;
-    if(next<0||next>=panels.length)return false;
-    coffeeWheelLocked=true;
-    renderCoffee(next);
-    coffeeTrack.scrollTo({left:next*innerWidth,top:0,behavior:'smooth'});
-    try{sessionStorage.setItem('giannosCoffeeIndex',String(next))}catch(_){ }
-    setTimeout(()=>coffeeWheelLocked=false,650);
-    return true;
+  function flip(elements,mutate){
+    const before=elements.map(el=>el?.getBoundingClientRect());mutate();requestAnimationFrame(()=>requestAnimationFrame(()=>{elements.forEach((el,i)=>{if(!el||!before[i])return;const after=el.getBoundingClientRect();const dx=before[i].left-after.left;const dy=before[i].top-after.top;if(Math.abs(dx)<1&&Math.abs(dy)<1)return;el.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:900,easing:'cubic-bezier(.16,1,.3,1)'})})}))
   }
-  function onCoffeeWheel(e){
-    if(detailOpen||scene!==2)return;
-    const delta=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;
-    if(Math.abs(delta)<3)return;
-    const direction=delta>0?1:-1;
-    if(moveCoffeeByWheel(direction))e.preventDefault();
-  }
-  document.addEventListener('wheel',onCoffeeWheel,{passive:false,capture:true});
 
-  coffeeTrack.addEventListener('scroll',()=>{
-    if(detailOpen||scene!==2)return;
-    const next=Math.max(0,Math.min(panels.length-1,Math.round(coffeeTrack.scrollLeft/Math.max(innerWidth,1))));
-    if(next!==coffeeIndex){renderCoffee(next);try{sessionStorage.setItem('giannosCoffeeIndex',String(next))}catch(_){ }}
-  },{passive:true});
+  function openDetails(index){if(detailIndex>=0)return;const slide=slides[index];const shell=slide.querySelector('.copy-shell');const front=slide.querySelector('.product-frame:first-child img');detailIndex=index;flip([shell,front],()=>{slide.classList.add('is-detail');document.body.classList.add('details-open')})}
+  function closeDetails(index){const slide=slides[index];const shell=slide.querySelector('.copy-shell');const front=slide.querySelector('.product-frame:first-child img');flip([shell,front],()=>{slide.classList.remove('is-detail');slide.scrollTop=0;document.body.classList.remove('details-open')});detailIndex=-1}
 
-  addEventListener('scroll',syncSceneFromScroll,{passive:true});
-  addEventListener('keydown',e=>{if(detailOpen&&e.key==='Escape')closeDetail()});
-  addEventListener('resize',()=>{if(detailOpen)return;syncSceneFromScroll();setTransitions();if(scene===0)showHero();else if(scene===1)showStory();else renderCoffee(coffeeIndex)});
+  track.addEventListener('click',event=>{
+    const slide=event.target.closest('.coffee-slide');if(!slide)return;const index=Number(slide.dataset.index);const current=state[index];
+    if(event.target.closest('[data-open-details]')){event.preventDefault();openDetails(index);return}
+    if(event.target.closest('[data-close-details]')){closeDetails(index);return}
+    const grind=event.target.closest('[data-grind]');if(grind){current.grind=grind.dataset.grind;slide.querySelectorAll('[data-grind]').forEach(btn=>btn.classList.toggle('is-selected',btn===grind));updateImages(index);return}
+    const purchase=event.target.closest('[data-purchase]');if(purchase){current.purchase=purchase.dataset.purchase;updatePurchase(index);return}
+    const bags=event.target.closest('[data-bags]');if(bags){current.bags=Number(bags.dataset.bags);current.discount=Number(bags.dataset.discount);slide.querySelectorAll('[data-bags]').forEach(btn=>btn.classList.toggle('is-selected',btn===bags));updatePurchase(index);return}
+    if(event.target.closest('[data-qty-minus]')){current.qty=Math.max(1,current.qty-1);updatePurchase(index);return}
+    if(event.target.closest('[data-qty-plus]')){current.qty+=1;updatePurchase(index)}
+  });
 
-  const scrollTrack=document.createElement('div');
-  scrollTrack.className='native-scroll-track';
-  for(let i=0;i<3;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
-  main.appendChild(scrollTrack);
+  addEventListener('scroll',onScroll,{passive:true});
+  addEventListener('resize',()=>{if(detailIndex<0)renderHorizontal()});
+  addEventListener('keydown',event=>{if(event.key==='Escape'&&detailIndex>=0)closeDetails(detailIndex)});
   history.scrollRestoration='auto';
-  document.body.style.overflowY='auto';
-  document.body.style.overflowX='hidden';
-  document.body.classList.remove('detail-open');
-  panels.forEach(panel=>panel.classList.remove('is-detail'));
-  loadImages();updatePurchase();setTransitions();resetScene();
-  try{const saved=Number(sessionStorage.getItem('giannosCoffeeIndex'));if(Number.isInteger(saved))coffeeIndex=Math.max(0,Math.min(panels.length-1,saved))}catch(_){ }
-  coffeeTrack.style.opacity='0';coffeeTrack.style.pointerEvents='none';requestAnimationFrame(()=>{syncSceneFromScroll();if(scene===2){coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';renderCoffee(coffeeIndex);coffeeTrack.scrollLeft=coffeeIndex*innerWidth}});
+  PRODUCTS.forEach((_,index)=>updatePurchase(index));
+  requestAnimationFrame(renderHorizontal);
 })();
