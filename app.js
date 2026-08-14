@@ -32,7 +32,7 @@
   const EASE='cubic-bezier(.22,1,.36,1)';
   const COFFEE_START=.34;
   const COFFEE_END=.96;
-  const SNAP_DELAY=170;
+  const SNAP_DELAY=1000;
 
   const PRODUCT_IMAGES={
     brazil:{Ground:'./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-front.png','Whole Bean':'./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-front.png'},
