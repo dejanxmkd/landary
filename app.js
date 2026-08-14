@@ -23,6 +23,8 @@
         <div class="coffee-gallery"><div class="gallery-stack">
           <div class="image-carousel" data-image-carousel>
             <figure class="product-frame"><img data-carousel-image src="${pair[0]}" alt="${product.name} product view"></figure>
+            <button class="carousel-arrow carousel-arrow--prev" type="button" data-image-prev aria-label="Previous product image"><span class="material-icons" aria-hidden="true">chevron_left</span></button>
+            <button class="carousel-arrow carousel-arrow--next" type="button" data-image-next aria-label="Next product image"><span class="material-icons" aria-hidden="true">chevron_right</span></button>
             <div class="product-dots" role="tablist" aria-label="Product images">
               <button class="product-dot is-active" type="button" data-image-dot="0" aria-label="Show front image" aria-selected="true"></button>
               <button class="product-dot" type="button" data-image-dot="1" aria-label="Show back image" aria-selected="false"></button>
@@ -178,6 +180,8 @@
     const slide=event.target.closest('.coffee-slide');if(!slide)return;const index=Number(slide.dataset.index);const current=state[index];
     const toggle=event.target.closest('[data-toggle-details]');if(toggle){event.preventDefault();if(slide.classList.contains('is-detail'))closeDetails(index);else openDetails(index);return}
     const imageDot=event.target.closest('[data-image-dot]');if(imageDot){setImage(index,Number(imageDot.dataset.imageDot));return}
+    if(event.target.closest('[data-image-prev]')){setImage(index,state[index].image===0?1:0);return}
+    if(event.target.closest('[data-image-next]')){setImage(index,state[index].image===1?0:1);return}
     const grind=event.target.closest('[data-grind]');if(grind){current.grind=grind.dataset.grind;slide.querySelectorAll('[data-grind]').forEach(btn=>btn.classList.toggle('is-selected',btn===grind));updateImages(index);return}
     const purchase=event.target.closest('[data-purchase]');if(purchase){current.purchase=purchase.dataset.purchase;updatePurchase(index);return}
     const bags=event.target.closest('[data-bags]');if(bags){current.bags=Number(bags.dataset.bags);current.discount=Number(bags.dataset.discount);slide.querySelectorAll('[data-bags]').forEach(btn=>btn.classList.toggle('is-selected',btn===bags));updatePurchase(index);return}
