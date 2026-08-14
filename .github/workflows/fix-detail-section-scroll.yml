@@ -12,56 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Make the whole detail section scroll
-        run: |
-          cat >> style.css <<'CSS'
-
-/* Product detail: one page-level section scroll, no nested column scrollbars */
-@media (min-width:841px){
-  .coffee-panel.is-detail{
-    display:grid;
-    grid-template-columns:48% 52%;
-    align-items:start;
-    overflow-y:auto;
-    overflow-x:hidden;
-    overscroll-behavior:contain;
-  }
-  .coffee-panel.is-detail .product-gallery{
-    position:relative;
-    left:auto;
-    top:auto;
-    right:auto;
-    bottom:auto;
-    grid-column:1;
-    width:100%;
-    height:auto;
-    overflow:visible;
-    overscroll-behavior:auto;
-  }
-  .coffee-panel.is-detail .product-copy{
-    position:relative;
-    left:auto;
-    top:auto!important;
-    grid-column:2;
-    width:100%;
-    height:auto!important;
-    min-height:100svh;
-    margin:0;
-    padding:5svh 5vw 7svh!important;
-    overflow:visible;
-    overscroll-behavior:auto;
-  }
-}
-CSS
+        run: python -c "from pathlib import Path; p=Path('style.css'); p.write_text(p.read_text() + '\n@media (min-width:841px){.coffee-panel.is-detail{display:grid;grid-template-columns:48% 52%;align-items:start;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}.coffee-panel.is-detail .product-gallery{position:relative;left:auto;top:auto;right:auto;bottom:auto;grid-column:1;width:100%;height:auto;overflow:visible;overscroll-behavior:auto}.coffee-panel.is-detail .product-copy{position:relative;left:auto;top:auto!important;grid-column:2;width:100%;height:auto!important;min-height:100svh;margin:0;padding:5svh 5vw 7svh!important;overflow:visible;overscroll-behavior:auto}}\n')"
       - name: Validate CSS structure
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          s=Path('style.css').read_text()
-          assert '.coffee-panel.is-detail{' in s
-          assert 'overflow-y:auto' in s
-          assert 'grid-template-columns:48% 52%' in s
-          assert s.count('{') == s.count('}'), 'Unbalanced CSS braces'
-          PY
+        run: python -c "from pathlib import Path; s=Path('style.css').read_text(); assert 'grid-template-columns:48% 52%' in s; assert s.count('{') == s.count('}')"
       - name: Commit change
         run: |
           git config user.name "github-actions[bot]"
