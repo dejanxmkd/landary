@@ -173,9 +173,9 @@
   document.querySelectorAll('[data-open-product]').forEach(link=>link.addEventListener('click',openDetail));
   document.querySelector('[data-close-product]')?.addEventListener('click',closeDetail);
 
-  document.addEventListener('wheel',onWheel,{passive:false,capture:true});
-  addEventListener('touchstart',onTouchStart,{passive:true});
-  addEventListener('touchend',onTouchEnd,{passive:true});
+  stage.addEventListener('wheel',onWheel,{passive:false,capture:true});
+  stage.addEventListener('touchstart',onTouchStart,{passive:true,capture:true});
+  stage.addEventListener('touchend',onTouchEnd,{passive:true,capture:true});
   addEventListener('keydown',e=>{if(detailOpen){if(e.key==='Escape')closeDetail();return}if(e.key==='ArrowDown'||e.key==='PageDown'){e.preventDefault();goToScene(scene+1)}if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();goToScene(scene-1)}});
   addEventListener('resize',()=>{if(detailOpen)return;setTransitions();if(scene===0)showHero();else if(scene===1)showStory();else renderCoffee(scene-2)});
 
