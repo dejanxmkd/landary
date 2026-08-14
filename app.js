@@ -12,7 +12,7 @@
     {slug:'espresso',name:'Giannos Espresso Roast',color:'#332016',description:'Rich aroma, layered flavor, and a hint of sweetness carried into a full, rounded finish. A medium roast built for espresso with enough depth to stay bold and smooth in every shot.',flavor:'Rich aroma, layered flavor and a rounded finish',roast:'Medium',size:'12 ounces',defaultGrind:'Whole Bean',images:{Ground:['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png'],'Whole Bean':['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png']}}
   ];
 
-  const state=PRODUCTS.map(product=>({grind:product.defaultGrind,purchase:'subscribe',bags:1,discount:10,qty:1}));
+  const state=PRODUCTS.map(product=>({grind:product.defaultGrind,purchase:'subscribe',bags:1,discount:10,qty:1,image:0}));
   const money=value=>`$${value.toFixed(2)}`;
 
   function slideTemplate(product,index){
@@ -21,8 +21,13 @@
     return `<article class="coffee-slide" data-index="${index}" style="--accent:${product.color}">
       <div class="coffee-layout">
         <div class="coffee-gallery"><div class="gallery-stack">
-          <figure class="product-frame"><img data-front src="${pair[0]}" alt="${product.name} front"></figure>
-          <figure class="product-frame product-frame--secondary"><img data-back src="${pair[1]}" alt="${product.name} back"></figure>
+          <div class="image-carousel" data-image-carousel>
+            <figure class="product-frame"><img data-carousel-image src="${pair[0]}" alt="${product.name} product view"></figure>
+            <div class="product-dots" role="tablist" aria-label="Product images">
+              <button class="product-dot is-active" type="button" data-image-dot="0" aria-label="Show front image" aria-selected="true"></button>
+              <button class="product-dot" type="button" data-image-dot="1" aria-label="Show back image" aria-selected="false"></button>
+            </div>
+          </div>
         </div></div>
         <div class="coffee-copy"><div class="copy-shell">
           <h2 class="copy-title">${product.name}</h2>
@@ -74,7 +79,33 @@
 
   function onScroll(){if(detailIndex>=0)return;renderHorizontal();clearTimeout(snapTimer);snapTimer=setTimeout(snapToNearest,140)}
 
-  function updateImages(index){const slide=slides[index];const product=PRODUCTS[index];const pair=product.images[state[index].grind]||product.images[product.defaultGrind];slide.querySelector('[data-front]').src=pair[0];slide.querySelector('[data-back]').src=pair[1]}
+  function updateImages(index,animate=false){
+    const slide=slides[index];
+    const product=PRODUCTS[index];
+    const current=state[index];
+    const pair=product.images[current.grind]||product.images[product.defaultGrind];
+    const image=slide.querySelector('[data-carousel-image]');
+    const next=pair[current.image]||pair[0];
+    if(!image)return;
+    const apply=()=>{image.src=next;image.alt=`${product.name} ${current.image===0?'front':'back'}`};
+    if(!animate){apply()}else{
+      image.getAnimations().forEach(animation=>animation.cancel());
+      const out=image.animate([{opacity:1,transform:'translateX(0) scale(1)'},{opacity:0,transform:`translateX(${current.image===0?'18px':'-18px'}) scale(.985)`}],{duration:180,easing:'ease',fill:'forwards'});
+      out.addEventListener('finish',()=>{
+        apply();
+        out.cancel();
+        image.animate([{opacity:0,transform:`translateX(${current.image===0?'-18px':'18px'}) scale(.985)`},{opacity:1,transform:'translateX(0) scale(1)'}],{duration:520,easing:'cubic-bezier(.16,1,.3,1)'});
+      },{once:true});
+    }
+    slide.querySelectorAll('[data-image-dot]').forEach(dot=>{const active=Number(dot.dataset.imageDot)===current.image;dot.classList.toggle('is-active',active);dot.setAttribute('aria-selected',String(active))});
+  }
+
+  function setImage(index,imageIndex){
+    const next=Math.max(0,Math.min(1,imageIndex));
+    if(state[index].image===next)return;
+    state[index].image=next;
+    updateImages(index,true);
+  }
 
   function updatePurchase(index){
     const slide=slides[index];const current=state[index];const original=20*current.bags;const subscription=original*(1-current.discount/100);const unit=current.purchase==='subscribe'?subscription:original;
@@ -146,11 +177,21 @@
   track.addEventListener('click',event=>{
     const slide=event.target.closest('.coffee-slide');if(!slide)return;const index=Number(slide.dataset.index);const current=state[index];
     const toggle=event.target.closest('[data-toggle-details]');if(toggle){event.preventDefault();if(slide.classList.contains('is-detail'))closeDetails(index);else openDetails(index);return}
+    const imageDot=event.target.closest('[data-image-dot]');if(imageDot){setImage(index,Number(imageDot.dataset.imageDot));return}
     const grind=event.target.closest('[data-grind]');if(grind){current.grind=grind.dataset.grind;slide.querySelectorAll('[data-grind]').forEach(btn=>btn.classList.toggle('is-selected',btn===grind));updateImages(index);return}
     const purchase=event.target.closest('[data-purchase]');if(purchase){current.purchase=purchase.dataset.purchase;updatePurchase(index);return}
     const bags=event.target.closest('[data-bags]');if(bags){current.bags=Number(bags.dataset.bags);current.discount=Number(bags.dataset.discount);slide.querySelectorAll('[data-bags]').forEach(btn=>btn.classList.toggle('is-selected',btn===bags));updatePurchase(index);return}
     if(event.target.closest('[data-qty-minus]')){current.qty=Math.max(1,current.qty-1);updatePurchase(index);return}
     if(event.target.closest('[data-qty-plus]')){current.qty+=1;updatePurchase(index)}
+  });
+
+  slides.forEach((slide,index)=>{
+    const carousel=slide.querySelector('[data-image-carousel]');
+    if(!carousel)return;
+    let startX=0,startY=0,tracking=false;
+    carousel.addEventListener('pointerdown',event=>{if(!slide.classList.contains('is-detail'))return;tracking=true;startX=event.clientX;startY=event.clientY;carousel.setPointerCapture?.(event.pointerId)});
+    carousel.addEventListener('pointerup',event=>{if(!tracking)return;tracking=false;const dx=event.clientX-startX;const dy=event.clientY-startY;if(Math.abs(dx)>46&&Math.abs(dx)>Math.abs(dy)*1.25)setImage(index,dx<0?1:0)});
+    carousel.addEventListener('pointercancel',()=>{tracking=false});
   });
 
   addEventListener('scroll',onScroll,{passive:true});
