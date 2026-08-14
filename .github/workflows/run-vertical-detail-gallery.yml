@@ -26,3 +26,4 @@ jobs:
           git add app.js
           git commit -m "Add vertical front and back product detail gallery"
           git push origin HEAD:main
+# retry
