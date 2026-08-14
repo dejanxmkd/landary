@@ -1,0 +1,41 @@
+name: Center product images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/center-product-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  center:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Center product images vertically
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          css = Path('style.css')
+          s = css.read_text()
+          s = s.replace(".product--ready{opacity:1;filter:none;transform:translate(calc(-50% - 25vw),calc(-50% + 8vh)) scale(1)}", ".product--ready{opacity:1;filter:none;transform:translate(calc(-50% - 25vw),-50%) scale(1)}")
+          css.write_text(s)
+
+          js = Path('app.js')
+          s = js.read_text()
+          s = s.replace("product.style.transform=`translate(-50%,calc(-50% + ${innerHeight*.07}px)) scale(1)`", "product.style.transform='translate(-50%,-50%) scale(1)'")
+          s = s.replace("product.style.transform=`translate(calc(-50% + ${targetX}px),calc(-50% + ${innerHeight*.08}px)) scale(1)`", "product.style.transform=`translate(calc(-50% + ${targetX}px),-50%) scale(1)`")
+          s = s.replace("product.style.transform='translate(-50%,calc(-50% + 6vh)) scale(.92)'", "product.style.transform='translate(-50%,-50%) scale(.92)'")
+          s = s.replace("`translate(calc(-50% + ${targetX}px),calc(-50% + ${innerHeight*.08}px)) scale(1)`", "`translate(calc(-50% + ${targetX}px),-50%) scale(1)`")
+          js.write_text(s)
+          PY
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js style.css
+          git commit -m "Center product images in viewport"
+          git push origin HEAD:main
