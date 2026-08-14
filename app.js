@@ -14,6 +14,17 @@
   const brazilCopy=items[0].copy;
   const brazilImage=brazilProduct?.querySelector('img');
   const brazilDescription=brazil.querySelector('.product-copy__description');
+  const detailBack=document.querySelector('[data-close-product]');
+  const inlineDetail=document.querySelector('[data-inline-detail]');
+  const detailMetaValues=[...document.querySelectorAll('.detail-meta dd')];
+  const PRODUCT_DETAILS=[
+    ['Chocolate, caramel and naturally sweet body','Medium','12 ounces'],
+    ['Rich vanilla, subtle nuttiness and creamy finish','Medium','12 ounces'],
+    ['Milk chocolate, citrus and a smooth finish','Medium','12 ounces'],
+    ['Rich aroma, layered flavor and a hint of sweetness','Medium','12 ounces'],
+    ['Earthy sweetness and warm roasted hazelnut','Medium','12 ounces'],
+    ['Rich aroma, layered flavor and a rounded finish','Medium','12 ounces']
+  ];
 
   const INTRO='#3d5825';
   const COLORS=['#4D6E48','#1C6E95','#563B66','#CF9A35','#634227','#332016'];
@@ -30,8 +41,17 @@
     hazelnut:'./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png',
     'espresso-roast':'./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png'
   };
+  const GRIND_IMAGES=[
+    {Ground:PRODUCT_IMAGES.brazil.Ground,'Whole Bean':PRODUCT_IMAGES.brazil['Whole Bean']},
+    {Ground:PRODUCT_IMAGES['french-vanilla'],'Whole Bean':PRODUCT_IMAGES['french-vanilla']},
+    {Ground:'./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-front.png','Whole Bean':'./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-front.png'},
+    {Ground:'./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-front.png','Whole Bean':'./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-front.png'},
+    {Ground:PRODUCT_IMAGES.hazelnut,'Whole Bean':PRODUCT_IMAGES.hazelnut},
+    {Ground:PRODUCT_IMAGES['espresso-roast'],'Whole Bean':PRODUCT_IMAGES['espresso-roast']}
+  ];
 
   let detailOpen=false;
+  let detailIndex=0;
   let renderRaf=0;
 
   const clamp=(v,min=0,max=1)=>Math.min(Math.max(v,min),max);
@@ -40,6 +60,8 @@
   const smooth=t=>t*t*(3-2*t);
   const maxScroll=()=>Math.max(main.offsetHeight-innerHeight,1);
   const progress=()=>clamp(scrollY/maxScroll());
+  const currentCoffeePhase=()=>map(progress(),COFFEE_START,COFFEE_END)*(panels.length-1);
+  const activeCoffeeIndex=()=>Math.max(0,Math.min(panels.length-1,Math.round(currentCoffeePhase())));
 
   function hexToRgb(hex){
     const clean=hex.replace('#','');
@@ -154,8 +176,8 @@
     renderRaf=requestAnimationFrame(renderScene);
   }
 
-  function animateVertical(before,done){
-    const els=[brazilProduct,brazilCopy],animations=[];
+  function animateVerticalFor(els,before,done){
+    const animations=[];
     els.forEach((el,index)=>{
       if(!el||!before[index])return;
       const after=el.getBoundingClientRect();
@@ -170,91 +192,57 @@
   }
   const afterLayout=cb=>requestAnimationFrame(()=>requestAnimationFrame(cb));
 
-  function collapseDescription(collapsed){
-    if(!brazilDescription)return;
-    brazilDescription.style.transition=`opacity ${MORPH}ms ${EASE},transform ${MORPH}ms ${EASE},max-height ${MORPH}ms ${EASE},margin ${MORPH}ms ${EASE}`;
-    if(collapsed){
-      brazilDescription.style.maxHeight='0';
-      brazilDescription.style.marginTop='0';
-      brazilDescription.style.opacity='0';
-      brazilDescription.style.transform='translateY(-28px)';
-      brazilDescription.style.overflow='hidden';
-    }else{
-      brazilDescription.style.maxHeight='220px';
-      brazilDescription.style.marginTop='24px';
-      brazilDescription.style.opacity='1';
-      brazilDescription.style.transform='translateY(0)';
-      brazilDescription.style.overflow='hidden';
-    }
+  function collapseDescription(description,collapsed){
+    if(!description)return;
+    description.style.transition=`opacity ${MORPH}ms ${EASE},transform ${MORPH}ms ${EASE},max-height ${MORPH}ms ${EASE},margin ${MORPH}ms ${EASE}`;
+    if(collapsed){description.style.maxHeight='0';description.style.marginTop='0';description.style.opacity='0';description.style.transform='translateY(-28px)';description.style.overflow='hidden'}
+    else{description.style.maxHeight='220px';description.style.marginTop='24px';description.style.opacity='1';description.style.transform='translateY(0)';description.style.overflow='hidden'}
   }
-
+  function syncDetailContent(index){
+    const values=PRODUCT_DETAILS[index]||PRODUCT_DETAILS[0];
+    detailMetaValues.forEach((el,i)=>{el.textContent=values[i]||'—'});
+    const image=items[index]?.product?.querySelector('img');
+    const selected=document.querySelector('.choice-tab.is-selected')?.dataset.grind||'Ground';
+    const variants=GRIND_IMAGES[index];
+    if(image&&variants)image.src=variants[selected]||variants.Ground||variants['Whole Bean'];
+  }
   function openDetail(e){
     e?.preventDefault();
-    const p=progress();
-    const phase=map(p,COFFEE_START,COFFEE_END)*(panels.length-1);
-    if(detailOpen||Math.abs(phase)>.42)return;
-
-    const before=[brazilProduct?.getBoundingClientRect(),brazilCopy?.getBoundingClientRect()];
+    if(detailOpen)return;
+    const phase=currentCoffeePhase();
+    const index=activeCoffeeIndex();
+    if(Math.abs(phase-index)>.42)return;
+    const {panel,product,copy}=items[index];
+    if(!panel||!product||!copy)return;
+    const description=copy.querySelector('.product-copy__description');
+    if(detailBack&&detailBack.parentElement!==copy)copy.insertBefore(detailBack,copy.firstChild);
+    if(inlineDetail&&inlineDetail.parentElement!==copy)copy.appendChild(inlineDetail);
+    syncDetailContent(index);
+    const before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];
     detailOpen=true;
+    detailIndex=index;
     document.body.classList.add('detail-open');
-    brazil.classList.add('is-detail');
-    brazil.style.zIndex='10';
-    brazil.style.opacity='1';
-    brazil.style.filter='blur(0)';
-    brazil.style.transform='translateX(0)';
-    brazil.style.pointerEvents='auto';
-
-    if(brazilProduct){
-      brazilProduct.style.transition='none';
-      brazilProduct.style.opacity='1';
-      brazilProduct.style.filter='blur(0)';
-      brazilProduct.style.transform='translateX(-50%)';
-    }
-    if(brazilCopy){
-      brazilCopy.style.transition='none';
-      brazilCopy.style.opacity='1';
-      brazilCopy.style.filter='blur(0)';
-      brazilCopy.style.transform='none';
-      if(innerWidth>840){
-        brazilCopy.style.top='0';
-        brazilCopy.style.height='100svh';
-        brazilCopy.style.paddingTop='32px';
-        brazilCopy.style.paddingBottom='32px';
-      }
-    }
-
-    afterLayout(()=>{
-      animateVertical(before);
-      requestAnimationFrame(()=>collapseDescription(true));
-    });
+    panel.classList.add('is-detail');
+    panel.style.zIndex='10';panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='translateX(0)';panel.style.pointerEvents='auto';
+    product.style.transition='none';product.style.opacity='1';product.style.filter='blur(0)';product.style.transform='translateX(-50%)';
+    copy.style.transition='none';copy.style.opacity='1';copy.style.filter='blur(0)';copy.style.transform='none';
+    if(innerWidth>840){copy.style.top='0';copy.style.height='100svh';copy.style.paddingTop='32px';copy.style.paddingBottom='32px'}
+    afterLayout(()=>{animateVerticalFor([product,copy],before);requestAnimationFrame(()=>collapseDescription(description,true))});
   }
-
   function closeDetail(){
     if(!detailOpen)return;
-    const before=[brazilProduct?.getBoundingClientRect(),brazilCopy?.getBoundingClientRect()];
+    const {panel,product,copy}=items[detailIndex];
+    if(!panel||!product||!copy)return;
+    const description=copy.querySelector('.product-copy__description');
+    const before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];
     detailOpen=false;
-    collapseDescription(false);
+    collapseDescription(description,false);
     document.body.classList.remove('detail-open');
-
-    if(brazilCopy){
-      brazilCopy.style.top='';
-      brazilCopy.style.height='';
-      brazilCopy.style.paddingTop='';
-      brazilCopy.style.paddingBottom='';
-    }
-    brazil.classList.remove('is-detail');
+    copy.style.top='';copy.style.height='';copy.style.paddingTop='';copy.style.paddingBottom='';
+    panel.classList.remove('is-detail');
     renderScene();
-
-    afterLayout(()=>animateVertical(before,()=>{
-      setTimeout(()=>{
-        if(!brazilDescription)return;
-        brazilDescription.style.transition='';
-        brazilDescription.style.maxHeight='';
-        brazilDescription.style.marginTop='';
-        brazilDescription.style.opacity='';
-        brazilDescription.style.transform='';
-        brazilDescription.style.overflow='';
-      },80);
+    afterLayout(()=>animateVerticalFor([product,copy],before,()=>{
+      setTimeout(()=>{if(!description)return;description.style.transition='';description.style.maxHeight='';description.style.marginTop='';description.style.opacity='';description.style.transform='';description.style.overflow=''},80);
     }));
   }
 
@@ -288,12 +276,11 @@
 
   document.querySelectorAll('[data-purchase]').forEach(button=>button.addEventListener('click',()=>{purchaseMode=button.dataset.purchase;updatePurchase()}));
   bagOptions.forEach(button=>button.addEventListener('click',()=>{bagCount=Number(button.dataset.bags);discount=Number(button.dataset.discount);bagOptions.forEach(item=>item.classList.toggle('is-selected',item===button));updatePurchase()}));
-  grindOptions.forEach(button=>button.addEventListener('click',()=>{grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));const src=PRODUCT_IMAGES.brazil[button.dataset.grind];if(brazilImage&&src)brazilImage.src=src}));
+  grindOptions.forEach(button=>button.addEventListener('click',()=>{grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));const index=detailOpen?detailIndex:activeCoffeeIndex(),image=items[index]?.product?.querySelector('img'),variants=GRIND_IMAGES[index],src=variants?.[button.dataset.grind];if(image&&src)image.src=src}));
   document.querySelector('[data-qty-minus]')?.addEventListener('click',()=>{qty=Math.max(1,qty-1);updatePurchase()});
   document.querySelector('[data-qty-plus]')?.addEventListener('click',()=>{qty+=1;updatePurchase()});
-  document.querySelector('[data-open-product]')?.addEventListener('click',openDetail);
+  document.querySelectorAll('[data-open-product]').forEach(link=>link.addEventListener('click',openDetail));
   document.querySelector('[data-close-product]')?.addEventListener('click',closeDetail);
-  document.querySelectorAll('.product-copy__details:not([data-open-product])').forEach(link=>link.addEventListener('click',e=>e.preventDefault()));
 
   addEventListener('scroll',scheduleRender,{passive:true});
   addEventListener('resize',()=>{positionScrollCue();scheduleRender()});
@@ -301,7 +288,7 @@
 
   history.scrollRestoration='manual';
   document.body.classList.remove('detail-open');
-  brazil.classList.remove('is-detail');
+  panels.forEach(panel=>panel.classList.remove('is-detail'));
   loadImages();
   updatePurchase();
   positionScrollCue();
