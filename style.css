@@ -12,7 +12,7 @@ main{position:relative;min-height:100svh}
 .hero__title{margin:0;max-width:1380px;font-size:clamp(94px,8.7vw,138px);line-height:.88}
 .hero__title span{display:block;white-space:nowrap}
 .hero__subtitle{max-width:1000px;margin:38px 0 0;color:rgba(255,255,255,.82);font-size:32px;line-height:1.35;font-weight:300;text-wrap:balance}
-.scroll-cue{position:fixed;left:0;right:0;bottom:42px;width:max-content;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(255,255,255,.66);font-size:10px;line-height:1;font-weight:600;letter-spacing:.18em;text-transform:uppercase;transition:opacity .55s ease}
+.scroll-cue{position:fixed;left:0;right:0;bottom:42px;width:max-content;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(255,255,255,.66);font-size:10px;line-height:1;font-weight:600;letter-spacing:.18em;text-transform:uppercase;transition:transform 1380ms cubic-bezier(.16,1,.3,1),opacity 1380ms cubic-bezier(.16,1,.3,1),filter 1380ms cubic-bezier(.16,1,.3,1)}
 .scroll-cue>span:first-child{writing-mode:vertical-rl;text-orientation:mixed}.scroll-cue__arrow{display:block;font-size:18px;line-height:1;font-weight:400;letter-spacing:0;animation:scrollCueArrow 1.7s cubic-bezier(.22,1,.36,1) infinite}
 @keyframes scrollCueArrow{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(7px);opacity:1}}
 .intro{opacity:0;filter:blur(14px);transform:translateY(42px);animation:introReveal 1.8s cubic-bezier(.16,1,.3,1) forwards}.intro-1{animation-delay:.08s}.intro-2{animation-delay:.38s}.intro-3{animation-delay:.7s}

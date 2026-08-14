@@ -108,14 +108,18 @@
     if(detailOpen||next<0||next>panels.length+1||next===scene)return;
     const previous=scene,direction=next>previous?1:-1;scene=next;
     if(next===0){
-      hideStory(-1);setBg(INTRO);placeHero('above');setTimeout(showHero,180);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';
+      hideStory(-1);setBg(INTRO);placeHero('above');setTimeout(showHero,180);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';coffeeTrack.style.filter='blur(12px)';coffeeTrack.style.transform='translateY(12vh) scale(.985)';
     }else if(next===1){
-      hideHero(direction);setBg(INTRO);placeStory(direction);setTimeout(showStory,260);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';
+      hideHero(direction);setBg(INTRO);placeStory(direction);setTimeout(showStory,260);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';coffeeTrack.style.filter='blur(12px)';coffeeTrack.style.transform=direction<0?'translateY(12vh) scale(.985)':'translateY(12vh) scale(.985)';
     }else{
-      hideHero(direction);hideStory(1);coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';
+      hideHero(direction);hideStory(1);
       const nextCoffee=Math.max(0,Math.min(panels.length-1,next-2));
       renderCoffee(nextCoffee);
-      coffeeTrack.scrollTo({left:nextCoffee*innerWidth,top:0,behavior:'smooth'});
+      coffeeTrack.scrollLeft=nextCoffee*innerWidth;
+      coffeeTrack.style.pointerEvents='auto';
+      coffeeTrack.style.opacity='1';
+      coffeeTrack.style.filter='blur(0)';
+      coffeeTrack.style.transform='translateY(0) scale(1)';
     }
   }
 
