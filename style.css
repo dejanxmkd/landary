@@ -63,4 +63,3 @@ main{height:100svh}
 @media(max-width:350px){.hero__title{font-size:36px}.story__title{font-size:34px}.product-copy__title{font-size:32px}.hero__subtitle{font-size:20px;font-weight:300}}
 @media(prefers-reduced-motion:reduce){.intro{opacity:1;filter:none;transform:none;animation:none}.scroll-cue__arrow{animation:none}.inline-detail{transition:none}}
 
-@media (min-width:841px){.coffee-panel.is-detail{display:grid;grid-template-columns:48% 52%;align-items:start;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}.coffee-panel.is-detail .product-gallery{position:relative;left:auto;top:auto;right:auto;bottom:auto;grid-column:1;width:100%;height:auto;overflow:visible;overscroll-behavior:auto}.coffee-panel.is-detail .product-copy{position:relative;left:auto;top:auto!important;grid-column:2;width:100%;height:auto!important;min-height:100svh;margin:0;padding:5svh 5vw 7svh!important;overflow:visible;overscroll-behavior:auto}}

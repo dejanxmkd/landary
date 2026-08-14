@@ -85,10 +85,10 @@
 
   function setCoffee(index,position){
     const {panel,product,copy}=items[index],active=position==='active';
-    panel.style.display='block';panel.style.visibility='visible';panel.style.pointerEvents=active?'auto':'none';panel.style.zIndex=active?'6':'2';
-    panel.style.opacity=active?'1':'0';panel.style.filter=active?'blur(0)':'blur(12px)';panel.style.transform=active?'translateY(0)':position==='before'?'translateY(-72vh)':'translateY(72vh)';
-    if(product){product.style.visibility='visible';product.style.opacity=active?'1':'0';product.style.filter=active?'blur(0)':'blur(12px)';product.style.transform=active?productTarget():productOffscreen(position)}
-    if(copy){copy.style.visibility='visible';copy.style.opacity=active?'1':'0';copy.style.filter=active?'blur(0)':'blur(12px)';copy.style.transform=active?copyTarget():copyOffscreen(position)}
+    panel.style.display='block';panel.style.visibility='visible';panel.style.pointerEvents=active?'auto':'none';panel.style.zIndex=active?'6':'5';
+    panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform=active?'translateY(0)':position==='before'?'translateY(-100vh)':'translateY(100vh)';
+    if(product){product.style.visibility='visible';product.style.opacity='1';product.style.filter='blur(0)';product.style.transform=productTarget()}
+    if(copy){copy.style.visibility='visible';copy.style.opacity='1';copy.style.filter='blur(0)';copy.style.transform=copyTarget()}
   }
   function renderCoffee(activeIndex){panels.forEach((_,i)=>setCoffee(i,i===activeIndex?'active':i<activeIndex?'before':'after'));setBg(COLORS[activeIndex])}
   function resetScene(){
