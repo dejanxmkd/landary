@@ -101,8 +101,8 @@
   }
 
   function goToScene(next){
-    if(locked||detailOpen||next<0||next>panels.length+1||next===scene)return;
-    locked=true;const previous=scene,direction=next>previous?1:-1;scene=next;
+    if(detailOpen||next<0||next>panels.length+1||next===scene)return;
+    const previous=scene,direction=next>previous?1:-1;scene=next;
     if(next===0){
       hideStory(-1);panels.forEach((_,i)=>setCoffee(i,'after'));setBg(INTRO);placeHero('above');setTimeout(showHero,180);
     }
@@ -116,16 +116,13 @@
       }
       else{hideStory(direction);renderCoffee(coffeeIndex)}
     }
-    setTimeout(()=>locked=false,LOCK);
   }
 
-  function wheelDirection(e){
-    if(Math.abs(e.deltaY)<3)return 0;clearTimeout(wheelTimer);wheelTimer=setTimeout(()=>wheelReady=true,170);if(!wheelReady)return 0;wheelReady=false;return e.deltaY>0?1:-1;
-  }
-  function onWheel(e){if(detailOpen)return;e.preventDefault();const dir=wheelDirection(e);if(dir&&!locked)goToScene(scene+dir)}
-  function onTouchStart(e){if(!detailOpen)touchStartY=e.touches?.[0]?.clientY??null}
-  function onTouchEnd(e){
-    if(detailOpen||locked||touchStartY===null)return;const endY=e.changedTouches?.[0]?.clientY;if(typeof endY!=='number'){touchStartY=null;return}const delta=touchStartY-endY;touchStartY=null;if(Math.abs(delta)>=36)goToScene(scene+(delta>0?1:-1));
+  function syncSceneFromScroll(){
+    if(detailOpen)return;
+    const maxScene=panels.length+1;
+    const next=Math.max(0,Math.min(maxScene,Math.round(window.scrollY/Math.max(window.innerHeight,1))));
+    if(next!==scene){locked=false;goToScene(next)}
   }
 
   function selectedGrind(){return document.querySelector('.choice-tab.is-selected')?.dataset.grind||'Ground'}
@@ -173,11 +170,19 @@
   document.querySelectorAll('[data-open-product]').forEach(link=>link.addEventListener('click',openDetail));
   document.querySelector('[data-close-product]')?.addEventListener('click',closeDetail);
 
-  stage.addEventListener('wheel',onWheel,{passive:false,capture:true});
-  stage.addEventListener('touchstart',onTouchStart,{passive:true,capture:true});
-  stage.addEventListener('touchend',onTouchEnd,{passive:true,capture:true});
-  addEventListener('keydown',e=>{if(detailOpen){if(e.key==='Escape')closeDetail();return}if(e.key==='ArrowDown'||e.key==='PageDown'){e.preventDefault();goToScene(scene+1)}if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();goToScene(scene-1)}});
-  addEventListener('resize',()=>{if(detailOpen)return;setTransitions();if(scene===0)showHero();else if(scene===1)showStory();else renderCoffee(scene-2)});
+  addEventListener('scroll',syncSceneFromScroll,{passive:true});
+  addEventListener('keydown',e=>{if(detailOpen&&e.key==='Escape')closeDetail()});
+  addEventListener('resize',()=>{if(detailOpen)return;syncSceneFromScroll();setTransitions();if(scene===0)showHero();else if(scene===1)showStory();else renderCoffee(scene-2)});
 
-  history.scrollRestoration='manual';main.style.height='100svh';document.body.style.overflow='hidden';document.body.classList.remove('detail-open');panels.forEach(panel=>panel.classList.remove('is-detail'));loadImages();updatePurchase();setTransitions();resetScene();
+  const scrollTrack=document.createElement('div');
+  scrollTrack.className='native-scroll-track';
+  for(let i=0;i<panels.length+2;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
+  main.appendChild(scrollTrack);
+  history.scrollRestoration='auto';
+  document.body.style.overflowY='auto';
+  document.body.style.overflowX='hidden';
+  document.body.classList.remove('detail-open');
+  panels.forEach(panel=>panel.classList.remove('is-detail'));
+  loadImages();updatePurchase();setTransitions();resetScene();
+  requestAnimationFrame(syncSceneFromScroll);
 })();

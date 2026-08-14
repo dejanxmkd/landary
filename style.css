@@ -1,9 +1,9 @@
 *{box-sizing:border-box}
 :root{--font-body:'Overpass',sans-serif;--font-title:'TAY Rosemary',serif;--bg:#3d5825;--text:#fff;--intro-text:#fff;--muted:rgba(255,255,255,.72)}
 html{background:var(--bg);color:var(--text);font-family:var(--font-body)}
-body{margin:0;background:var(--bg);color:var(--text);overflow:hidden;font-family:var(--font-body)}
-main{height:100svh}
-.stage{position:fixed;inset:0;width:100vw;height:100svh;overflow:hidden;background:var(--bg);pointer-events:auto;touch-action:none}
+body{margin:0;background:var(--bg);color:var(--text);overflow-x:hidden;overflow-y:auto;font-family:var(--font-body)}
+main{position:relative;min-height:100svh}
+.stage{position:fixed;inset:0;width:100vw;height:100svh;overflow:hidden;background:var(--bg);pointer-events:auto}
 .layer{position:absolute;inset:0;display:grid;place-items:center;padding:48px 28px;text-align:center;pointer-events:none}
 .hero{z-index:1;color:var(--intro-text)}.story{z-index:2;color:var(--intro-text)}
 .hero__content,.story__copy,.coffee-panel,.product,.product-copy{will-change:transform,opacity,filter}
@@ -63,3 +63,5 @@ main{height:100svh}
 @media(max-width:350px){.hero__title{font-size:36px}.story__title{font-size:34px}.product-copy__title{font-size:32px}.hero__subtitle{font-size:20px;font-weight:300}}
 @media(prefers-reduced-motion:reduce){.intro{opacity:1;filter:none;transform:none;animation:none}.scroll-cue__arrow{animation:none}.inline-detail{transition:none}}
 
+
+.native-scroll-track{position:relative;z-index:-1;width:100%;pointer-events:none}.native-scroll-stop{height:100svh;scroll-snap-align:start;scroll-snap-stop:always}html{scroll-snap-type:y mandatory;scroll-behavior:smooth}body.detail-open{overflow:hidden}
