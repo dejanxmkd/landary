@@ -1,7 +1,6 @@
 from pathlib import Path
 import re
 
-# index.html: make non-Brazil panels structurally match Brazil and enable View Details.
 p=Path('index.html')
 h=p.read_text()
 products=[
@@ -30,12 +29,10 @@ for index in range(1,6):
 h=h.replace('data-open-product>View Details</a>','data-open-product="0">View Details</a>',1)
 p.write_text(h)
 
-# style.css: generalize detail layout from Brazil to all coffee panels.
 p=Path('style.css')
 c=p.read_text().replace('.coffee-panel--brazil.is-detail','.coffee-panel.is-detail')
 p.write_text(c)
 
-# app.js: use one shared detail component for the active coffee.
 p=Path('app.js')
 s=p.read_text()
 
@@ -56,7 +53,7 @@ if anchor not in s:
     raise SystemExit('detail anchor not found')
 s=s.replace(anchor,insert,1)
 
-m=re.search(r"  const PRODUCT_IMAGES=\{.*?\};",s)
+m=re.search(r"const PRODUCT_IMAGES=\{.*?\};",s)
 if not m:
     raise SystemExit('PRODUCT_IMAGES not found')
 variants="""
@@ -76,15 +73,15 @@ if old_anim not in s:
     raise SystemExit('animateVertical not found')
 s=s.replace(old_anim,new_anim,1)
 
-start=s.find('  function collapseDescription(')
-end=s.find('  const purchaseCards=',start)
+start=s.find('function collapseDescription(')
+end=s.find('const purchaseCards=',start)
 if start<0 or end<0:
     raise SystemExit('detail function block not found')
-generic="""  function collapseDescription(description,collapsed){if(!description)return;description.style.transition=`opacity ${MORPH}ms ${EASE},transform ${MORPH}ms ${EASE},max-height ${MORPH}ms ${EASE},margin ${MORPH}ms ${EASE}`;if(collapsed){description.style.maxHeight='0';description.style.marginTop='0';description.style.opacity='0';description.style.transform='translateY(-28px)';description.style.overflow='hidden'}else{description.style.maxHeight='220px';description.style.marginTop='24px';description.style.opacity='1';description.style.transform='translateY(0)';description.style.overflow='hidden'}}
+generic="""function collapseDescription(description,collapsed){if(!description)return;description.style.transition=`opacity ${MORPH}ms ${EASE},transform ${MORPH}ms ${EASE},max-height ${MORPH}ms ${EASE},margin ${MORPH}ms ${EASE}`;if(collapsed){description.style.maxHeight='0';description.style.marginTop='0';description.style.opacity='0';description.style.transform='translateY(-28px)';description.style.overflow='hidden'}else{description.style.maxHeight='220px';description.style.marginTop='24px';description.style.opacity='1';description.style.transform='translateY(0)';description.style.overflow='hidden'}}
   function syncDetailContent(index){const values=PRODUCT_DETAILS[index]||PRODUCT_DETAILS[0];detailMetaValues.forEach((el,i)=>{el.textContent=values[i]||'—'});const image=items[index]?.product?.querySelector('img'),selected=document.querySelector('.choice-tab.is-selected')?.dataset.grind||'Ground',variants=GRIND_IMAGES[index];if(image&&variants)image.src=variants[selected]||variants.Ground||variants['Whole Bean']}
   function openDetail(e){e?.preventDefault();if(state.mode!=='coffee'||state.detail)return;const index=state.active,{panel,product,copy}=items[index];if(!panel||!product||!copy)return;const description=copy.querySelector('.product-copy__description');if(detailBack&&detailBack.parentElement!==copy)copy.insertBefore(detailBack,copy.firstChild);if(inlineDetail&&inlineDetail.parentElement!==copy)copy.appendChild(inlineDetail);syncDetailContent(index);const before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];state.detail=true;document.body.classList.add('detail-open');panel.classList.add('is-detail');panel.style.zIndex='10';panel.style.opacity='1';panel.style.transform='translateX(0)';product.style.transition='none';product.style.opacity='1';product.style.filter='blur(0)';product.style.transform='translateX(-50%)';copy.style.transition='none';copy.style.opacity='1';copy.style.filter='blur(0)';copy.style.transform='none';if(innerWidth>840){copy.style.top='0';copy.style.height='100svh';copy.style.paddingTop='32px';copy.style.paddingBottom='32px'}afterLayout(()=>{animateVerticalFor([product,copy],before);requestAnimationFrame(()=>collapseDescription(description,true))})}
   function closeDetail(){if(!state.detail)return;const index=state.active,{panel,product,copy}=items[index];if(!panel||!product||!copy)return;const description=copy.querySelector('.product-copy__description'),before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];state.detail=false;collapseDescription(description,false);document.body.classList.remove('detail-open');copy.style.top='';copy.style.height='';copy.style.paddingTop='';copy.style.paddingBottom='';panel.classList.remove('is-detail');applyCoffeePanel(index,'active');afterLayout(()=>animateVerticalFor([product,copy],before,()=>{setTimeout(()=>{if(!description)return;description.style.transition='';description.style.maxHeight='';description.style.marginTop='';description.style.opacity='';description.style.transform='';description.style.overflow=''},80)}))}
-"""
+  """
 s=s[:start]+generic+s[end:]
 
 old_grind="grindOptions.forEach(button=>button.addEventListener('click',()=>{grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));const src=PRODUCT_IMAGES.brazil[button.dataset.grind];if(brazilImage&&src)brazilImage.src=src}))"
