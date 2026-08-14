@@ -173,7 +173,7 @@
   document.querySelectorAll('[data-open-product]').forEach(link=>link.addEventListener('click',openDetail));
   document.querySelector('[data-close-product]')?.addEventListener('click',closeDetail);
 
-  addEventListener('wheel',onWheel,{passive:false});
+  document.addEventListener('wheel',onWheel,{passive:false,capture:true});
   addEventListener('touchstart',onTouchStart,{passive:true});
   addEventListener('touchend',onTouchEnd,{passive:true});
   addEventListener('keydown',e=>{if(detailOpen){if(e.key==='Escape')closeDetail();return}if(e.key==='ArrowDown'||e.key==='PageDown'){e.preventDefault();goToScene(scene+1)}if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();goToScene(scene-1)}});
