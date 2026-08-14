@@ -82,22 +82,42 @@
     slide.querySelectorAll('[data-purchase-card]').forEach(card=>{const selected=card.dataset.purchaseCard===current.purchase;card.classList.toggle('is-selected',selected);const icon=card.querySelector('.radio-icon');if(icon)icon.textContent=selected?'radio_button_checked':'radio_button_unchecked'});
   }
 
+  function animateCopyLayout(slide,mutate){
+    const shell=slide.querySelector('.copy-shell');
+    if(!shell){mutate();return}
+    const before=shell.getBoundingClientRect();
+    mutate();
+    const after=shell.getBoundingClientRect();
+    const dx=before.left-after.left;
+    const dy=before.top-after.top;
+    if(Math.abs(dx)<1&&Math.abs(dy)<1)return;
+    shell.getAnimations().forEach(animation=>animation.cancel());
+    shell.animate(
+      [{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],
+      {duration:950,easing:'cubic-bezier(.16,1,.3,1)'}
+    );
+  }
+
   function openDetails(index){
     if(detailIndex>=0)return;
     const slide=slides[index];
     const toggle=slide.querySelector('[data-toggle-details]');
     detailIndex=index;
-    slide.classList.add('is-detail');
-    document.body.classList.add('details-open');
-    if(toggle)toggle.textContent='Close Details';
+    animateCopyLayout(slide,()=>{
+      slide.classList.add('is-detail');
+      document.body.classList.add('details-open');
+      if(toggle)toggle.textContent='Close Details';
+    });
   }
 
   function closeDetails(index){
     const slide=slides[index];
     const toggle=slide.querySelector('[data-toggle-details]');
-    slide.classList.remove('is-detail');
-    document.body.classList.remove('details-open');
-    if(toggle)toggle.textContent='View Details';
+    animateCopyLayout(slide,()=>{
+      slide.classList.remove('is-detail');
+      document.body.classList.remove('details-open');
+      if(toggle)toggle.textContent='View Details';
+    });
     detailIndex=-1;
   }
 
