@@ -101,7 +101,7 @@
     placeHero('below');placeStory(1);
     panels.forEach((_,i)=>setCoffee(i,'after'));
     setBg(INTRO);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{setTransitions();showHero()}));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{setTransitions();if(scene===0)showHero()}));
   }
 
   function goToScene(next){
