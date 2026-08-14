@@ -1,0 +1,71 @@
+name: Fix detail section scroll
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-detail-section-scroll.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make the whole detail section scroll
+        run: |
+          cat >> style.css <<'CSS'
+
+/* Product detail: one page-level section scroll, no nested column scrollbars */
+@media (min-width:841px){
+  .coffee-panel.is-detail{
+    display:grid;
+    grid-template-columns:48% 52%;
+    align-items:start;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+  }
+  .coffee-panel.is-detail .product-gallery{
+    position:relative;
+    left:auto;
+    top:auto;
+    right:auto;
+    bottom:auto;
+    grid-column:1;
+    width:100%;
+    height:auto;
+    overflow:visible;
+    overscroll-behavior:auto;
+  }
+  .coffee-panel.is-detail .product-copy{
+    position:relative;
+    left:auto;
+    top:auto!important;
+    grid-column:2;
+    width:100%;
+    height:auto!important;
+    min-height:100svh;
+    margin:0;
+    padding:5svh 5vw 7svh!important;
+    overflow:visible;
+    overscroll-behavior:auto;
+  }
+}
+CSS
+      - name: Validate CSS structure
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('style.css').read_text()
+          assert '.coffee-panel.is-detail{' in s
+          assert 'overflow-y:auto' in s
+          assert 'grid-template-columns:48% 52%' in s
+          assert s.count('{') == s.count('}'), 'Unbalanced CSS braces'
+          PY
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add style.css
+          git commit -m "Use one scroll for the full product detail section"
+          git push origin HEAD:main
