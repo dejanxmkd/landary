@@ -1,0 +1,29 @@
+from pathlib import Path
+
+js=Path('app.js')
+s=js.read_text()
+old="""  function setCoffee(index,position){
+    const {panel,product,copy}=items[index],active=position==='active';
+    panel.style.display='block';panel.style.visibility='visible';panel.style.pointerEvents=active?'auto':'none';panel.style.zIndex=active?'6':'2';
+    panel.style.opacity=active?'1':'0';panel.style.filter=active?'blur(0)':'blur(12px)';panel.style.transform=active?'translateY(0)':position==='before'?'translateY(-72vh)':'translateY(72vh)';
+    if(product){product.style.visibility='visible';product.style.opacity=active?'1':'0';product.style.filter=active?'blur(0)':'blur(12px)';product.style.transform=active?productTarget():productOffscreen(position)}
+    if(copy){copy.style.visibility='visible';copy.style.opacity=active?'1':'0';copy.style.filter=active?'blur(0)':'blur(12px)';copy.style.transform=active?copyTarget():copyOffscreen(position)}
+  }"""
+new="""  function setCoffee(index,position){
+    const {panel,product,copy}=items[index],active=position==='active';
+    panel.style.display='block';panel.style.visibility='visible';panel.style.pointerEvents=active?'auto':'none';panel.style.zIndex=active?'6':'5';
+    panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform=active?'translateY(0)':position==='before'?'translateY(-100vh)':'translateY(100vh)';
+    if(product){product.style.visibility='visible';product.style.opacity='1';product.style.filter='blur(0)';product.style.transform=productTarget()}
+    if(copy){copy.style.visibility='visible';copy.style.opacity='1';copy.style.filter='blur(0)';copy.style.transform=copyTarget()}
+  }"""
+if old not in s:
+    raise SystemExit('setCoffee block not found')
+s=s.replace(old,new,1)
+js.write_text(s)
+
+css=Path('style.css')
+c=css.read_text()
+wrong="\n@media (min-width:841px){.coffee-panel.is-detail{display:grid;grid-template-columns:48% 52%;align-items:start;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}.coffee-panel.is-detail .product-gallery{position:relative;left:auto;top:auto;right:auto;bottom:auto;grid-column:1;width:100%;height:auto;overflow:visible;overscroll-behavior:auto}.coffee-panel.is-detail .product-copy{position:relative;left:auto;top:auto!important;grid-column:2;width:100%;height:auto!important;min-height:100svh;margin:0;padding:5svh 5vw 7svh!important;overflow:visible;overscroll-behavior:auto}}"
+if wrong in c:
+    c=c.replace(wrong,'',1)
+css.write_text(c)
