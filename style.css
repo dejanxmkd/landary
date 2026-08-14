@@ -3,6 +3,7 @@
   --font-body:'Overpass',sans-serif;
   --font-title:'TAY Rosemary',serif;
   --intro:#3d5825;
+  --intro-light:#fff;
   --text:#fff;
   --muted:rgba(255,255,255,.72);
   --ease:cubic-bezier(.16,1,.3,1);
@@ -15,7 +16,7 @@ body{margin:0;background:var(--intro);color:var(--text);font-family:var(--font-b
 button,select{font:inherit}
 button,a{color:inherit}
 .landing{width:100%}
-.section{position:relative;width:100%;height:100svh;display:grid;place-items:center;padding:var(--page-inline);background:var(--intro);overflow:hidden}
+.section{position:relative;width:100%;height:100svh;display:grid;place-items:center;padding:var(--page-inline);background:var(--intro-light);color:var(--intro);overflow:hidden}
 .intro-copy{width:min(1420px,100%);text-align:center}
 .display-title{margin:0;font-family:var(--font-title);font-size:clamp(86px,8.7vw,138px);font-weight:400;line-height:.88;letter-spacing:-.032em}
 .display-title span{display:block;white-space:nowrap}
