@@ -1,0 +1,42 @@
+name: Fix cart block styling
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-cart-block.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update cart styles
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('style.css')
+          s=p.read_text()
+          old=".detail-block--cart{display:grid;grid-template-columns:1fr;gap:0;padding:0}"
+          new=".detail-block--cart{display:grid;grid-template-columns:1fr;gap:0;margin:0;padding:0;border:0;background:transparent}"
+          if old not in s:
+              raise SystemExit('cart block rule not found')
+          s=s.replace(old,new,1)
+          old2=".add-cart{width:100%;min-height:64px;padding:0 22px;border:0;background:#fff;color:#4D6E48;font-size:16px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}"
+          new2=".add-cart{width:100%;min-height:64px;margin:0;padding:0;border:0;background:#fff;color:#4D6E48;font-size:16px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}.coffee-panel--brazil .add-cart{color:#4D6E48}.coffee-panel--vanilla .add-cart{color:#1C6E95}.coffee-panel--colombian .add-cart{color:#563B66}.coffee-panel--original .add-cart{color:#CF9A35}.coffee-panel--hazelnut .add-cart{color:#634227}.coffee-panel--espresso .add-cart{color:#332016}"
+          if old2 not in s:
+              raise SystemExit('add cart rule not found')
+          s=s.replace(old2,new2,1)
+          p.write_text(s)
+          PY
+      - name: Verify styles
+        run: |
+          grep -q '.detail-block--cart{display:grid;grid-template-columns:1fr;gap:0;margin:0;padding:0;border:0;background:transparent}' style.css
+          grep -q '.coffee-panel--espresso .add-cart{color:#332016}' style.css
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add style.css
+          git commit -m "Remove cart block spacing and match button text to coffee colors"
+          git push origin HEAD:main
