@@ -105,20 +105,25 @@
   }
 
   function goToScene(next){
-    if(detailOpen||next<0||next>2||next===scene)return;
+    if(detailOpen||next<0||next>panels.length+1||next===scene)return;
     const previous=scene,direction=next>previous?1:-1;scene=next;
     if(next===0){
       hideStory(-1);setBg(INTRO);placeHero('above');setTimeout(showHero,180);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';
     }else if(next===1){
       hideHero(direction);setBg(INTRO);placeStory(direction);setTimeout(showStory,260);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';
     }else{
-      hideHero(direction);hideStory(1);coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';renderCoffee(coffeeIndex);
+      hideHero(direction);hideStory(1);coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';
+      const nextCoffee=Math.max(0,Math.min(panels.length-1,next-2));
+      renderCoffee(nextCoffee);
+      coffeeTrack.scrollTo({left:nextCoffee*innerWidth,top:0,behavior:'smooth'});
     }
   }
 
   function syncSceneFromScroll(){
     if(detailOpen)return;
-    const next=Math.max(0,Math.min(2,Math.round(window.scrollY/Math.max(window.innerHeight,1))));
+    const vh=Math.max(window.innerHeight,1);
+    const maxScene=panels.length+1;
+    const next=Math.max(0,Math.min(maxScene,Math.round(window.scrollY/vh)));
     if(next!==scene)goToScene(next);
   }
 
@@ -142,7 +147,7 @@
     else{description.style.maxHeight='220px';description.style.marginTop='24px';description.style.opacity='1';description.style.transform='translateY(0)';description.style.overflow='hidden'}
   }
   function openDetail(e){
-    e?.preventDefault();const requested=Number(e?.currentTarget?.dataset.openProduct),index=Number.isInteger(requested)?requested:coffeeIndex;if(detailOpen||scene!==2||index!==coffeeIndex)return;
+    e?.preventDefault();const requested=Number(e?.currentTarget?.dataset.openProduct),index=Number.isInteger(requested)?requested:coffeeIndex;if(detailOpen||scene<2||index!==coffeeIndex)return;
     const {panel,product,copy}=items[index];if(!panel||!product||!copy)return;const description=copy.querySelector('.product-copy__description');
     if(detailBack&&detailBack.parentElement!==copy)copy.insertBefore(detailBack,copy.firstChild);if(inlineDetail&&inlineDetail.parentElement!==copy)copy.appendChild(inlineDetail);syncDetailContent(index);
     const before=[product.getBoundingClientRect(),copy.getBoundingClientRect()];detailOpen=true;detailIndex=index;document.body.classList.add('detail-open');panel.classList.add('is-detail');panel.style.zIndex='10';panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='translateY(0)';panel.style.pointerEvents='auto';
@@ -171,11 +176,6 @@
   coffeeTrack.className='coffee-horizontal-track';
   const coffeeParent=panels[0]?.parentElement;
   if(coffeeParent){coffeeParent.insertBefore(coffeeTrack,panels[0]);panels.forEach(panel=>{panel.classList.add('coffee-horizontal-section');coffeeTrack.appendChild(panel)})}
-  coffeeTrack.addEventListener('scroll',()=>{
-    if(detailOpen)return;
-    const next=Math.max(0,Math.min(panels.length-1,Math.round(coffeeTrack.scrollLeft/Math.max(innerWidth,1))));
-    if(next!==coffeeIndex)renderCoffee(next);
-  },{passive:true});
 
   addEventListener('scroll',syncSceneFromScroll,{passive:true});
   addEventListener('keydown',e=>{if(detailOpen&&e.key==='Escape')closeDetail()});
@@ -183,7 +183,7 @@
 
   const scrollTrack=document.createElement('div');
   scrollTrack.className='native-scroll-track';
-  for(let i=0;i<3;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
+  for(let i=0;i<panels.length+2;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
   main.appendChild(scrollTrack);
   history.scrollRestoration='auto';
   document.body.style.overflowY='auto';
@@ -191,5 +191,5 @@
   document.body.classList.remove('detail-open');
   panels.forEach(panel=>panel.classList.remove('is-detail'));
   loadImages();updatePurchase();setTransitions();resetScene();
-  coffeeTrack.style.opacity='0';coffeeTrack.style.pointerEvents='none';requestAnimationFrame(()=>{syncSceneFromScroll();if(scene===2){coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';renderCoffee(coffeeIndex)}});
+  coffeeTrack.style.opacity='0';coffeeTrack.style.pointerEvents='none';requestAnimationFrame(()=>{syncSceneFromScroll();if(scene>=2){coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';const i=Math.max(0,scene-2);renderCoffee(i);coffeeTrack.scrollLeft=i*innerWidth}});
 })();

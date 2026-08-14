@@ -68,7 +68,7 @@ main{position:relative;min-height:100svh}
 
 
 /* Three vertical sections: Hero, Story, then native horizontal coffee sections */
-.coffee-horizontal-track{position:absolute;inset:0;z-index:6;display:flex;width:100vw;height:100svh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;transition:opacity .55s ease;-ms-overflow-style:none;scrollbar-width:none}
+.coffee-horizontal-track{position:absolute;inset:0;z-index:6;display:flex;width:100vw;height:100svh;overflow-x:hidden;overflow-y:hidden;scroll-behavior:smooth;overscroll-behavior:contain;transition:opacity .55s ease;-ms-overflow-style:none;scrollbar-width:none}
 .coffee-horizontal-track::-webkit-scrollbar{display:none}
 .coffee-horizontal-section{position:relative!important;inset:auto!important;flex:0 0 100vw;width:100vw;height:100svh;min-width:100vw;scroll-snap-align:start;scroll-snap-stop:always;opacity:1!important;filter:none!important;transform:none!important;overflow:hidden}
 .coffee-horizontal-section .product-gallery{position:absolute;inset:0}
