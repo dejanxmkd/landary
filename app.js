@@ -84,7 +84,7 @@
         if(index===0){
           product.style.transform=mobile?'translate(-50%,-62%) scale(.78)':'translate(calc(-50% - 25vw),-50%) scale(1)';
         }else{
-          product.style.transform=mobile?'translate(-50%,-62%) scale(.78)':'translate(calc(-50% - 25vw),calc(-50% + 8vh)) scale(1)';
+          product.style.transform=mobile?'translate(-50%,-62%) scale(.78)':'translate(calc(-50% - 25vw),-50%) scale(1)';
         }
       }
       if(copy){
