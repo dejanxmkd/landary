@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 p=Path('app.js')
 s=p.read_text()
@@ -16,41 +17,16 @@ if anchor not in s:
 
 detail_images=anchor+"""
   const DETAIL_IMAGES=[
-    {
-      Ground:['./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-front.png','./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-back.png'],
-      'Whole Bean':['./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-front.png','./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-back.png']
-    },
-    {
-      Ground:['./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-front.png','./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png'],
-      'Whole Bean':['./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-front.png','./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png']
-    },
-    {
-      Ground:['./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-front.png','./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-back.png'],
-      'Whole Bean':['./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-front.png','./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-back.png']
-    },
-    {
-      Ground:['./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-front.png','./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-back.png'],
-      'Whole Bean':['./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-front.png','./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-back.png']
-    },
-    {
-      Ground:['./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png','./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png'],
-      'Whole Bean':['./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png','./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png']
-    },
-    {
-      Ground:['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png'],
-      'Whole Bean':['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png']
-    }
+    {Ground:['./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-front.png','./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-front.png','./assets/product_images/giannos-brazil-roast/Giannos Brazil Roast/giannos-brazil-whole-back.png']},
+    {Ground:['./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-front.png','./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-front.png','./assets/product_images/giannos-french-vanilla/Giannos French Vanilla/giannos-french-vanilla-ground-back.png']},
+    {Ground:['./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-front.png','./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-front.png','./assets/product_images/giannos-colombian-roast/Giannos Colombian Roast/giannos-colombia-whole-back.png']},
+    {Ground:['./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-front.png','./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-front.png','./assets/product_images/giannos-original-roast/Giannos Original Roast/giannos-original-whole-back.png']},
+    {Ground:['./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png','./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png'],'Whole Bean':['./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-front.png','./assets/product_images/giannos-hazelnut/Giannos Hazelnut/giannos-hazelnut-ground-back.png']},
+    {Ground:['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png'],'Whole Bean':['./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-front.png','./assets/product_images/giannos-espresso-roast/Giannos Espresso Roast/giannos-espresso-whole-back.png']}
   ];"""
 s=s.replace(anchor,detail_images,1)
 
-old_sync="""  function syncDetailContent(index){
-    const values=PRODUCT_DETAILS[index]||PRODUCT_DETAILS[0];
-    detailMetaValues.forEach((el,i)=>{el.textContent=values[i]||'—'});
-    const image=items[index]?.product?.querySelector('img');
-    const selected=document.querySelector('.choice-tab.is-selected')?.dataset.grind||'Ground';
-    const variants=GRIND_IMAGES[index];
-    if(image&&variants)image.src=variants[selected]||variants.Ground||variants['Whole Bean'];
-  }"""
+sync_pattern=r"  function syncDetailContent\(index\)\{.*?\n  \}\n\n  function openDetail"
 new_sync="""  function selectedGrind(){return document.querySelector('.choice-tab.is-selected')?.dataset.grind||'Ground'}
   function detailPair(index,grind=selectedGrind()){
     const variants=DETAIL_IMAGES[index];
@@ -69,7 +45,7 @@ new_sync="""  function selectedGrind(){return document.querySelector('.choice-ta
         secondary=document.createElement('figure');
         secondary.className='product detail-product-secondary';
         const image=document.createElement('img');
-        image.alt=`${items[index]?.copy?.querySelector('.product-copy__title')?.textContent||'Coffee'} back`; 
+        image.alt=`${items[index]?.copy?.querySelector('.product-copy__title')?.textContent||'Coffee'} back`;
         secondary.appendChild(image);
         gallery.appendChild(secondary);
       }
@@ -86,42 +62,46 @@ new_sync="""  function selectedGrind(){return document.querySelector('.choice-ta
     const values=PRODUCT_DETAILS[index]||PRODUCT_DETAILS[0];
     detailMetaValues.forEach((el,i)=>{el.textContent=values[i]||'—'});
     syncDetailImages(index);
-  }"""
-if old_sync not in s:
-    raise SystemExit('syncDetailContent block not found')
-s=s.replace(old_sync,new_sync,1)
+  }
 
-old_open="""    panel.classList.add('is-detail');
-    panel.style.zIndex='10';panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='translateX(0)';panel.style.pointerEvents='auto';"""
-new_open="""    panel.classList.add('is-detail');
+  function openDetail"""
+s,count=re.subn(sync_pattern,new_sync,s,count=1,flags=re.S)
+if count!=1:
+    raise SystemExit('syncDetailContent block not found')
+
+open_marker="""    panel.classList.add('is-detail');
+    panel.style.zIndex='10';"""
+open_replacement="""    panel.classList.add('is-detail');
     const gallery=product.parentElement;
     if(gallery)gallery.scrollTop=0;
-    panel.style.zIndex='10';panel.style.opacity='1';panel.style.filter='blur(0)';panel.style.transform='translateX(0)';panel.style.pointerEvents='auto';"""
-if old_open not in s:
+    panel.style.zIndex='10';"""
+if open_marker not in s:
     raise SystemExit('open detail panel block not found')
-s=s.replace(old_open,new_open,1)
+s=s.replace(open_marker,open_replacement,1)
 
-old_close="""    copy.style.top='';copy.style.height='';copy.style.paddingTop='';copy.style.paddingBottom='';
+close_marker="""    copy.style.paddingBottom='';
     panel.classList.remove('is-detail');
     renderScene();"""
-new_close="""    copy.style.top='';copy.style.height='';copy.style.paddingTop='';copy.style.paddingBottom='';
+close_replacement="""    copy.style.paddingBottom='';
     removeDetailSecondary(detailIndex);
     panel.classList.remove('is-detail');
     renderScene();"""
-if old_close not in s:
+if close_marker not in s:
     raise SystemExit('close detail block not found')
-s=s.replace(old_close,new_close,1)
+s=s.replace(close_marker,close_replacement,1)
 
-old_grind="""  grindOptions.forEach(button=>button.addEventListener('click',()=>{grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));const index=detailOpen?detailIndex:activeCoffeeIndex(),image=items[index]?.product?.querySelector('img'),variants=GRIND_IMAGES[index],src=variants?.[button.dataset.grind];if(image&&src)image.src=src}));"""
+grind_pattern=r"  grindOptions\.forEach\(button=>button\.addEventListener\('click',\(\)=>\{.*?\n  \}\)\);"
 new_grind="""  grindOptions.forEach(button=>button.addEventListener('click',()=>{
     grindOptions.forEach(item=>item.classList.toggle('is-selected',item===button));
     const index=detailOpen?detailIndex:activeCoffeeIndex();
     if(detailOpen){syncDetailImages(index);return}
-    const image=items[index]?.product?.querySelector('img'),variants=GRIND_IMAGES[index],src=variants?.[button.dataset.grind];
+    const image=items[index]?.product?.querySelector('img');
+    const variants=GRIND_IMAGES[index];
+    const src=variants?.[button.dataset.grind];
     if(image&&src)image.src=src;
   }));"""
-if old_grind not in s:
+s,count=re.subn(grind_pattern,new_grind,s,count=1,flags=re.S)
+if count!=1:
     raise SystemExit('grind listener not found')
-s=s.replace(old_grind,new_grind,1)
 
 p.write_text(s)
