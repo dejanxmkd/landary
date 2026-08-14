@@ -1,0 +1,22 @@
+name: Fix global wheel capture
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-global-wheel-capture.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python .github/scripts/fix_global_wheel_capture.py
+      - run: node --check app.js
+      - run: grep -q "document.addEventListener('wheel',onWheel,{passive:false,capture:true})" app.js
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js
+          git commit -m "Capture wheel events across the full viewport"
+          git push origin HEAD:main
