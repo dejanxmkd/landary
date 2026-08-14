@@ -105,7 +105,7 @@
   }
 
   function goToScene(next){
-    if(detailOpen||next<0||next>panels.length+1||next===scene)return;
+    if(detailOpen||next<0||next>2||next===scene)return;
     const previous=scene,direction=next>previous?1:-1;scene=next;
     if(next===0){
       hideStory(-1);setBg(INTRO);placeHero('above');setTimeout(showHero,180);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';coffeeTrack.style.filter='blur(12px)';coffeeTrack.style.transform='translateY(12vh) scale(.985)';
@@ -113,9 +113,8 @@
       hideHero(direction);setBg(INTRO);placeStory(direction);setTimeout(showStory,260);coffeeTrack.style.pointerEvents='none';coffeeTrack.style.opacity='0';coffeeTrack.style.filter='blur(12px)';coffeeTrack.style.transform=direction<0?'translateY(12vh) scale(.985)':'translateY(12vh) scale(.985)';
     }else{
       hideHero(direction);hideStory(1);
-      const nextCoffee=Math.max(0,Math.min(panels.length-1,next-2));
-      renderCoffee(nextCoffee);
-      coffeeTrack.scrollLeft=nextCoffee*innerWidth;
+      renderCoffee(coffeeIndex);
+      coffeeTrack.scrollLeft=coffeeIndex*innerWidth;
       coffeeTrack.style.pointerEvents='auto';
       coffeeTrack.style.opacity='1';
       coffeeTrack.style.filter='blur(0)';
@@ -126,8 +125,7 @@
   function syncSceneFromScroll(){
     if(detailOpen)return;
     const vh=Math.max(window.innerHeight,1);
-    const maxScene=panels.length+1;
-    const next=Math.max(0,Math.min(maxScene,Math.round(window.scrollY/vh)));
+    const next=Math.max(0,Math.min(2,Math.round(window.scrollY/vh)));
     if(next!==scene)goToScene(next);
   }
 
@@ -181,13 +179,40 @@
   const coffeeParent=panels[0]?.parentElement;
   if(coffeeParent){coffeeParent.insertBefore(coffeeTrack,panels[0]);panels.forEach(panel=>{panel.classList.add('coffee-horizontal-section');coffeeTrack.appendChild(panel)})}
 
+  let coffeeWheelLocked=false;
+  function moveCoffeeByWheel(direction){
+    if(detailOpen||scene!==2||coffeeWheelLocked)return false;
+    const next=coffeeIndex+direction;
+    if(next<0||next>=panels.length)return false;
+    coffeeWheelLocked=true;
+    renderCoffee(next);
+    coffeeTrack.scrollTo({left:next*innerWidth,top:0,behavior:'smooth'});
+    try{sessionStorage.setItem('giannosCoffeeIndex',String(next))}catch(_){ }
+    setTimeout(()=>coffeeWheelLocked=false,650);
+    return true;
+  }
+  function onCoffeeWheel(e){
+    if(detailOpen||scene!==2)return;
+    const delta=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;
+    if(Math.abs(delta)<3)return;
+    const direction=delta>0?1:-1;
+    if(moveCoffeeByWheel(direction))e.preventDefault();
+  }
+  document.addEventListener('wheel',onCoffeeWheel,{passive:false,capture:true});
+
+  coffeeTrack.addEventListener('scroll',()=>{
+    if(detailOpen||scene!==2)return;
+    const next=Math.max(0,Math.min(panels.length-1,Math.round(coffeeTrack.scrollLeft/Math.max(innerWidth,1))));
+    if(next!==coffeeIndex){renderCoffee(next);try{sessionStorage.setItem('giannosCoffeeIndex',String(next))}catch(_){ }}
+  },{passive:true});
+
   addEventListener('scroll',syncSceneFromScroll,{passive:true});
   addEventListener('keydown',e=>{if(detailOpen&&e.key==='Escape')closeDetail()});
-  addEventListener('resize',()=>{if(detailOpen)return;syncSceneFromScroll();setTransitions();if(scene===0)showHero();else if(scene===1)showStory();else renderCoffee(scene-2)});
+  addEventListener('resize',()=>{if(detailOpen)return;syncSceneFromScroll();setTransitions();if(scene===0)showHero();else if(scene===1)showStory();else renderCoffee(coffeeIndex)});
 
   const scrollTrack=document.createElement('div');
   scrollTrack.className='native-scroll-track';
-  for(let i=0;i<panels.length+2;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
+  for(let i=0;i<3;i++){const stop=document.createElement('div');stop.className='native-scroll-stop';stop.setAttribute('aria-hidden','true');scrollTrack.appendChild(stop)}
   main.appendChild(scrollTrack);
   history.scrollRestoration='auto';
   document.body.style.overflowY='auto';
@@ -195,5 +220,6 @@
   document.body.classList.remove('detail-open');
   panels.forEach(panel=>panel.classList.remove('is-detail'));
   loadImages();updatePurchase();setTransitions();resetScene();
-  coffeeTrack.style.opacity='0';coffeeTrack.style.pointerEvents='none';requestAnimationFrame(()=>{syncSceneFromScroll();if(scene>=2){coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';const i=Math.max(0,scene-2);renderCoffee(i);coffeeTrack.scrollLeft=i*innerWidth}});
+  try{const saved=Number(sessionStorage.getItem('giannosCoffeeIndex'));if(Number.isInteger(saved))coffeeIndex=Math.max(0,Math.min(panels.length-1,saved))}catch(_){ }
+  coffeeTrack.style.opacity='0';coffeeTrack.style.pointerEvents='none';requestAnimationFrame(()=>{syncSceneFromScroll();if(scene===2){coffeeTrack.style.opacity='1';coffeeTrack.style.pointerEvents='auto';renderCoffee(coffeeIndex);coffeeTrack.scrollLeft=coffeeIndex*innerWidth}});
 })();
