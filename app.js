@@ -55,8 +55,6 @@
   track.innerHTML=PRODUCTS.map(slideTemplate).join('');
   const slides=[...track.querySelectorAll('.coffee-slide')];
   let detailIndex=-1;
-  let snapTimer=0;
-  let snapping=false;
 
   function sectionMetrics(){
     const start=coffeeSection.offsetTop;
@@ -64,67 +62,22 @@
     return {start,distance};
   }
 
-  function globalStops(){
-    const hero=document.querySelector('.section--hero');
-    const story=document.querySelector('.section--story');
-    const oliveIntro=document.querySelector('.section--olive-intro');
-    const oliveStory=document.querySelector('.section--olive-story');
-    const honeyIntro=document.querySelector('.section--honey-intro');
-    const honeyStory=document.querySelector('.section--honey-story');
-    const{start,distance}=sectionMetrics();
-    const gate=Math.min(120,Math.max(64,innerHeight*.14));
-    const coffeeStart=start+gate;
-    const coffeeDistance=Math.max(distance-gate,1);
-    const coffeeStep=coffeeDistance/(PRODUCTS.length-1);
-    const stops=[];
-    if(hero)stops.push({y:hero.offsetTop});
-    if(story)stops.push({y:story.offsetTop});
-    PRODUCTS.forEach((_,index)=>stops.push({y:coffeeStart+coffeeStep*index}));
-    if(oliveIntro)stops.push({y:oliveIntro.offsetTop});
-    if(oliveStory)stops.push({y:oliveStory.offsetTop});
-    if(typeof window.__oliveSnapStops==='function')stops.push(...window.__oliveSnapStops().map(stop=>({y:stop.y})));
-    if(honeyIntro)stops.push({y:honeyIntro.offsetTop});
-    if(honeyStory)stops.push({y:honeyStory.offsetTop});
-    if(typeof window.__honeySnapStops==='function')stops.push(...window.__honeySnapStops().map(stop=>({y:stop.y})));
-    return stops.sort((a,b)=>a.y-b.y);
-  }
-
   function renderHorizontal(){
     const{start,distance}=sectionMetrics();
-    const gate=Math.min(120,Math.max(64,innerHeight*.14));
-    const activeStart=start+gate;
-    const activeDistance=Math.max(distance-gate,1);
-    const progress=Math.max(0,Math.min(1,(scrollY-activeStart)/activeDistance));
+    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));
     const exact=progress*(PRODUCTS.length-1);
     track.style.transform=`translate3d(${-exact*100}vw,0,0)`;
     slides.forEach((slide,index)=>{
-      const distanceFromActive=Math.min(1,Math.abs(index-exact));
-      slide.style.setProperty('--micro-opacity',(1-distanceFromActive*.06).toFixed(3));
-      slide.style.setProperty('--micro-scale',(1-distanceFromActive*.012).toFixed(4));
+      const d=Math.min(1,Math.abs(index-exact));
+      slide.style.setProperty('--micro-opacity',(1-d*.10).toFixed(3));
+      slide.style.setProperty('--micro-scale',(1-d*.015).toFixed(4));
+      slide.style.setProperty('--micro-y',`${(d*10).toFixed(1)}px`);
     });
   }
 
-  function snapToNearest(){
-    if(detailIndex>=0||window.__oliveDetailOpen||window.__honeyDetailOpen||snapping)return;
-    const stops=globalStops();
-    if(!stops.length)return;
-    let target=stops[0].y;
-    let nearest=Math.abs(scrollY-target);
-    for(let i=1;i<stops.length;i++){
-      const distance=Math.abs(scrollY-stops[i].y);
-      if(distance<nearest){nearest=distance;target=stops[i].y}
-    }
-    if(Math.abs(scrollY-target)<3)return;
-    snapping=true;
-    scrollTo({top:target,behavior:'smooth'});
-    setTimeout(()=>{snapping=false},460);
-  }
-
   function onScroll(){
-    if(detailIndex>=0||window.__oliveDetailOpen||window.__honeyDetailOpen)return;
+    if(detailIndex>=0)return;
     renderHorizontal();
-    clearTimeout(snapTimer);
-    snapTimer=setTimeout(snapToNearest,80);
   }
 
   function renderCarousel(index,animate=true){
@@ -236,60 +189,15 @@
     if(event.target.closest('[data-qty-plus]')){current.qty+=1;updatePurchase(index)}
   });
 
-  function updateSectionSequence(){
-    const hero=document.querySelector('.section--hero');
-    const story=document.querySelector('.section--story');
-    const oliveIntro=document.querySelector('.section--olive-intro');
-    const oliveStory=document.querySelector('.section--olive-story');
-    const oliveSection=document.getElementById('olive-scroll');
-    const honeyIntro=document.querySelector('.section--honey-intro');
-    const honeyStory=document.querySelector('.section--honey-story');
-    const honeySection=document.getElementById('honey-scroll');
-    const groups=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection,honeyIntro,honeyStory,honeySection].filter(Boolean);
-    const y=scrollY;
-    const vh=Math.max(innerHeight,1);
-    const gate=Math.min(120,Math.max(64,vh*.14));
-
-    groups.forEach(group=>{
-      group.classList.remove('is-sequence-active','is-sequence-leaving');
-    });
-
-    for(let i=0;i<groups.length;i++){
-      const group=groups[i];
-      const start=group.offsetTop;
-      const end=start+group.offsetHeight;
-      const isFirst=i===0;
-      const isLast=i===groups.length-1;
-      const enterAt=isFirst?start:start+gate;
-      const leaveAt=isLast?end:end-gate;
-
-      if(y>=enterAt&&y<leaveAt){
-        group.classList.add('is-sequence-active');
-        break;
-      }
-
-      if(y>=leaveAt&&y<end&& !isLast){
-        group.classList.add('is-sequence-leaving');
-        break;
-      }
-
-      if(y>=start&&y<enterAt&& !isFirst){
-        // Deliberately keep both adjacent sections hidden inside the handoff gap.
-        break;
-      }
-    }
-  }
-
   const introObserver=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>entry.target.classList.toggle('is-cinematic-active',entry.isIntersecting&&entry.intersectionRatio>.45));
-  },{threshold:[0,.45,.7]});
+    entries.forEach(entry=>entry.target.classList.toggle('is-visible',entry.isIntersecting&&entry.intersectionRatio>.32));
+  },{threshold:[0,.32,.65],rootMargin:'-6% 0px -6% 0px'});
   document.querySelectorAll('.section').forEach(section=>introObserver.observe(section));
 
   slides.forEach((slide,index)=>{initImageCarousel(slide,index);updatePurchase(index)});
   addEventListener('scroll',onScroll,{passive:true});
-  addEventListener('scroll',updateSectionSequence,{passive:true});
-  addEventListener('resize',()=>{if(detailIndex<0){renderHorizontal()}updateSectionSequence()});
+  addEventListener('resize',()=>{if(detailIndex<0)renderHorizontal()});
   addEventListener('keydown',event=>{if(event.key==='Escape'&&detailIndex>=0)closeDetails(detailIndex)});
   history.scrollRestoration='auto';
-  requestAnimationFrame(()=>{renderHorizontal();updateSectionSequence()});
+  requestAnimationFrame(renderHorizontal);
 })();

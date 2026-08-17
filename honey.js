@@ -74,33 +74,25 @@
   track.innerHTML=PRODUCTS.map(productTemplate).join('');
   const slides=[...track.querySelectorAll('.honey-slide')];
   let detailIndex=-1;
-  window.__honeyDetailOpen=false;
 
   function metrics(){
     const start=section.offsetTop;
     const distance=Math.max(section.offsetHeight-innerHeight,1);
-    const gate=Math.min(120,Math.max(64,innerHeight*.14));
-    const activeStart=start+gate;
-    const activeDistance=Math.max(distance-gate,1);
-    return{start,distance,activeStart,activeDistance};
+    return{start,distance};
   }
 
   function render(){
-    const{activeStart,activeDistance}=metrics();
-    const progress=Math.max(0,Math.min(1,(scrollY-activeStart)/activeDistance));
+    const{start,distance}=metrics();
+    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));
     const exact=progress*(PRODUCTS.length-1);
     track.style.transform=`translate3d(${-progress*100}vw,0,0)`;
     slides.forEach((slide,index)=>{
-      const distanceFromActive=Math.min(1,Math.abs(index-exact));
-      slide.style.setProperty('--micro-opacity',(1-distanceFromActive*.06).toFixed(3));
-      slide.style.setProperty('--micro-scale',(1-distanceFromActive*.012).toFixed(4));
+      const d=Math.min(1,Math.abs(index-exact));
+      slide.style.setProperty('--micro-opacity',(1-d*.10).toFixed(3));
+      slide.style.setProperty('--micro-scale',(1-d*.015).toFixed(4));
+      slide.style.setProperty('--micro-y',`${(d*10).toFixed(1)}px`);
     });
   }
-
-  window.__honeySnapStops=()=>{
-    const{activeStart,activeDistance}=metrics();
-    return[{y:activeStart},{y:activeStart+activeDistance}];
-  };
 
   function setImage(index,nextImage,instant=false){
     const product=PRODUCTS[index],slide=slides[index];
@@ -131,7 +123,7 @@
 
   function openDetails(index){
     if(detailIndex>=0)return;
-    const slide=slides[index];const link=slide.querySelector('[data-honey-details]');detailIndex=index;window.__honeyDetailOpen=true;setImage(index,state[index].image,true);
+    const slide=slides[index];const link=slide.querySelector('[data-honey-details]');detailIndex=index;setImage(index,state[index].image,true);
     animateCopyLayout(slide,()=>{slide.classList.add('is-detail');document.body.classList.add('details-open');if(link)link.textContent='Close Details'});
   }
 
@@ -140,7 +132,7 @@
     const current=shell.getBoundingClientRect();const probe=shell.cloneNode(true);probe.querySelector('.detail-content')?.remove();probe.style.cssText=`position:fixed;left:${current.left}px;top:-10000px;width:${current.width}px;transform:none;visibility:hidden;pointer-events:none;`;document.body.appendChild(probe);const collapsedHeight=probe.getBoundingClientRect().height;probe.remove();
     const targetTop=(innerHeight-collapsedHeight)/2;const dy=targetTop-current.top;slide.classList.add('is-closing');if(toggle)toggle.textContent='View Details';shell.getAnimations().forEach(animation=>animation.cancel());
     const animation=shell.animate([{transform:'translateY(0)'},{transform:`translateY(${dy}px)`}],{duration:820,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
-    animation.addEventListener('finish',()=>{slide.classList.remove('is-closing','is-detail');document.body.classList.remove('details-open');slide.scrollTop=0;animation.cancel();detailIndex=-1;window.__honeyDetailOpen=false;setImage(index,state[index].image,true)},{once:true});
+    animation.addEventListener('finish',()=>{slide.classList.remove('is-closing','is-detail');document.body.classList.remove('details-open');slide.scrollTop=0;animation.cancel();detailIndex=-1;setImage(index,state[index].image,true)},{once:true});
   }
 
   function closeDetails(index){
