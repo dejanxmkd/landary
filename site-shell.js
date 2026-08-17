@@ -8,10 +8,14 @@
 
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const countDuration=reduced?450:3000;
-  const moveDuration=reduced?220:650;
-  const navDuration=reduced?120:720;
+  const moveDuration=reduced?220:760;
+  const navDuration=reduced?120:700;
+  const navDelay=reduced?20:170;
   const contentDuration=reduced?120:720;
   let started=performance.now();
+  let logoDone=false;
+  let navDone=false;
+  let contentStarted=false;
 
   const tick=now=>{
     const t=Math.min(1,(now-started)/countDuration);
@@ -29,6 +33,26 @@
     return rect;
   }
 
+  function maybeRevealContent(){
+    if(contentStarted||!logoDone||!navDone)return;
+    contentStarted=true;
+    loader.classList.add('is-complete');
+    document.body.classList.add('content-entering');
+    setTimeout(()=>{
+      document.body.classList.add('site-ready');
+      document.body.classList.remove('nav-entering','content-entering','is-loading');
+      loader.hidden=true;
+    },contentDuration);
+  }
+
+  function startNavigation(){
+    document.body.classList.add('nav-entering');
+    setTimeout(()=>{
+      navDone=true;
+      maybeRevealContent();
+    },navDuration);
+  }
+
   function moveLogo(){
     loader.classList.add('is-moving');
     const from=loaderLogo.getBoundingClientRect();
@@ -40,6 +64,9 @@
     const dx=toCx-fromCx;
     const dy=toCy-fromCy;
     const scale=from.width?to.width/from.width:1;
+
+    setTimeout(startNavigation,navDelay);
+
     const animation=loaderLogo.animate([
       {transform:'translate3d(0,0,0) scale(1)'},
       {transform:`translate3d(${dx}px,${dy}px,0) scale(${scale})`}
@@ -49,23 +76,9 @@
       animation.cancel();
       loaderLogo.removeAttribute('style');
       navTarget.appendChild(loaderLogo);
-      revealNavigation();
+      logoDone=true;
+      maybeRevealContent();
     },{once:true});
-  }
-
-  function revealNavigation(){
-    requestAnimationFrame(()=>document.body.classList.add('nav-entering'));
-    setTimeout(revealContent,navDuration);
-  }
-
-  function revealContent(){
-    loader.classList.add('is-complete');
-    document.body.classList.add('content-entering');
-    setTimeout(()=>{
-      document.body.classList.add('site-ready');
-      document.body.classList.remove('nav-entering','content-entering','is-loading');
-      loader.hidden=true;
-    },contentDuration);
   }
 
   requestAnimationFrame(tick);
