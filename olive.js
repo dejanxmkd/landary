@@ -7,6 +7,7 @@
     {
       slug:'olive-500ml',
       name:'Giannos Greek Extra Virgin Olive Oil 500ml',
+      titleLines:['Giannos Greek Extra Virgin','Olive Oil 500ml'],
       price:20,
       description:'Greek extra virgin olive oil made for everyday cooking, finishing, dipping, and the moments gathered around the table.',
       packages:[['Single',1,10],['3-Bottle',3,15],['6-Bottle',6,20]],
@@ -18,6 +19,7 @@
     {
       slug:'olive-3l',
       name:'Giannos Extra Virgin Olive Oil 3L',
+      titleLines:['Giannos Extra Virgin','Olive Oil 3L'],
       price:75,
       description:'A generous 3 liter tin of Greek extra virgin olive oil for kitchens where olive oil is part of the everyday ritual.',
       packages:[['Single',1,10],['2-Tin',2,15],['4-Tin',4,20]],
@@ -35,13 +37,14 @@
 
   function productTemplate(product,index){
     const packageButtons=product.packages.map((item,itemIndex)=>`<button class="bag-option ${itemIndex===0?'is-selected':''}" type="button" data-olive-package="${itemIndex}"><span>${item[0]}</span><b>Save ${item[2]}%</b></button>`).join('');
+    const title=product.titleLines.map(line=>`<span>${line}</span>`).join('');
     return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#A2A315">
       <div class="olive-layout">
         <div class="olive-gallery">
           <div class="olive-image-stage"><img data-olive-image src="${product.images[0]}" alt="${product.name}"></div>
         </div>
         <div class="olive-copy"><div class="olive-shell">
-          <h2 class="copy-title olive-title">${product.name}</h2>
+          <h2 class="copy-title olive-title">${title}</h2>
           <p class="copy-description olive-description">${product.description}</p>
           <a class="view-details olive-view-details" href="#" data-olive-details>View Details</a>
           <div class="detail-content olive-detail">
