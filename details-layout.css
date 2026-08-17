@@ -1,72 +1,107 @@
-/* Shared View Details geometry for Coffee, Olive Oil and Honey. */
-.coffee-slide.is-detail .coffee-copy,
-.olive-slide.is-detail .olive-copy,
-.honey-slide.is-detail .honey-copy{
-  padding-left:clamp(28px,3.5vw,56px);
-  padding-right:clamp(28px,3.5vw,56px);
-}
+/* Shared product geometry: normal and View Details use the exact same anchor. */
 
-.coffee-slide.is-detail .copy-shell,
-.olive-slide.is-detail .olive-shell,
-.honey-slide.is-detail .honey-shell{
-  width:min(100%,560px);
-  max-width:560px;
-  margin-inline:auto;
-  text-align:center;
-}
+@media(min-width:761px){
+  .coffee-copy,
+  .olive-copy,
+  .honey-copy{
+    padding-left:clamp(28px,3.5vw,56px);
+    padding-right:clamp(28px,3.5vw,56px);
+  }
 
-.coffee-slide.is-detail .copy-description,
-.olive-slide.is-detail .olive-description,
-.honey-slide.is-detail .honey-description{
-  margin-left:auto;
-  margin-right:auto;
-}
+  .copy-shell,
+  .olive-shell,
+  .honey-shell{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:min(calc(100% - 56px),560px);
+    max-width:560px;
+    margin:0;
+    transform:translate(-50%,-50%);
+    transform-origin:center center;
+    text-align:center;
+  }
 
-.coffee-slide.is-detail .detail-content,
-.olive-slide.is-detail .detail-content,
-.honey-slide.is-detail .detail-content{
-  width:100%;
-  max-width:560px;
-  margin-left:auto;
-  margin-right:auto;
-}
+  .copy-description,
+  .olive-description,
+  .honey-description{
+    margin-left:auto;
+    margin-right:auto;
+  }
 
-.coffee-slide.is-detail .detail-meta,
-.olive-slide.is-detail .detail-meta,
-.honey-slide.is-detail .detail-meta,
-.coffee-slide.is-detail .detail-form,
-.olive-slide.is-detail .detail-form,
-.honey-slide.is-detail .detail-form{
-  width:100%;
-  margin-left:auto;
-  margin-right:auto;
-}
+  .honey-price-row{
+    justify-content:center;
+  }
 
-.coffee-slide.is-detail .detail-meta div,
-.olive-slide.is-detail .detail-meta div,
-.honey-slide.is-detail .detail-meta div{
-  justify-content:center;
-}
+  /* Details keeps the same viewport and the same summary coordinates. */
+  .coffee-slide.is-detail .coffee-copy,
+  .olive-slide.is-detail .olive-copy,
+  .honey-slide.is-detail .honey-copy{
+    position:sticky;
+    top:0;
+    align-self:start;
+    height:calc(100dvh - var(--site-header-height));
+    min-height:calc(100svh - var(--site-header-height));
+    padding-top:0;
+    padding-bottom:0;
+    overflow-x:hidden;
+    overflow-y:auto;
+  }
 
-.coffee-slide.is-detail .purchase-card__head,
-.olive-slide.is-detail .purchase-card__head,
-.honey-slide.is-detail .purchase-card__head{
-  text-align:left;
-}
+  .coffee-slide.is-detail .copy-shell,
+  .olive-slide.is-detail .olive-shell,
+  .honey-slide.is-detail .honey-shell{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:min(calc(100% - 56px),560px);
+    max-width:560px;
+    margin:0;
+    transform:translate(-50%,-50%);
+    text-align:center;
+  }
 
-.coffee-slide.is-detail .purchase-card__body,
-.olive-slide.is-detail .purchase-card__body,
-.honey-slide.is-detail .purchase-card__body,
-.coffee-slide.is-detail .bag-option,
-.olive-slide.is-detail .bag-option,
-.honey-slide.is-detail .bag-option{
-  text-align:left;
-}
+  /* Details grows below the unchanged summary instead of changing its height/position. */
+  .coffee-slide.is-detail .detail-content,
+  .olive-slide.is-detail .detail-content,
+  .honey-slide.is-detail .detail-content{
+    position:absolute;
+    left:0;
+    top:100%;
+    width:100%;
+    max-width:560px;
+    margin:30px 0 72px;
+    text-align:center;
+  }
 
-.coffee-slide.is-detail .honey-price-row,
-.olive-slide.is-detail .honey-price-row,
-.honey-slide.is-detail .honey-price-row{
-  justify-content:center;
+  .coffee-slide.is-detail .detail-meta,
+  .olive-slide.is-detail .detail-meta,
+  .honey-slide.is-detail .detail-meta,
+  .coffee-slide.is-detail .detail-form,
+  .olive-slide.is-detail .detail-form,
+  .honey-slide.is-detail .detail-form{
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .coffee-slide.is-detail .detail-meta div,
+  .olive-slide.is-detail .detail-meta div,
+  .honey-slide.is-detail .detail-meta div{
+    justify-content:center;
+  }
+
+  .coffee-slide.is-detail .purchase-card__head,
+  .olive-slide.is-detail .purchase-card__head,
+  .honey-slide.is-detail .purchase-card__head,
+  .coffee-slide.is-detail .purchase-card__body,
+  .olive-slide.is-detail .purchase-card__body,
+  .honey-slide.is-detail .purchase-card__body,
+  .coffee-slide.is-detail .bag-option,
+  .olive-slide.is-detail .bag-option,
+  .honey-slide.is-detail .bag-option{
+    text-align:left;
+  }
 }
 
 @media(max-width:760px){
@@ -85,16 +120,5 @@
   .honey-slide.is-detail .detail-content{
     width:100%;
     max-width:100%;
-    text-align:left;
-  }
-
-  .coffee-slide.is-detail .detail-meta div,
-  .olive-slide.is-detail .detail-meta div,
-  .honey-slide.is-detail .detail-meta div{
-    justify-content:flex-start;
-  }
-
-  .honey-slide.is-detail .honey-price-row{
-    justify-content:flex-start;
   }
 }
