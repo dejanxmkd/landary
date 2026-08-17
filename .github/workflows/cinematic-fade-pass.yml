@@ -1,0 +1,65 @@
+name: Cinematic fade pass
+on:
+  push:
+    paths:
+      - '.github/workflows/cinematic-fade-pass.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply cinematic fade system
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          style=Path('style.css')
+          s=style.read_text()
+          s=s.replace(".intro-copy{width:min(1420px,100%);text-align:center}", ".intro-copy{width:min(1420px,100%);text-align:center;opacity:0;filter:blur(14px);translate:0 34px;transition:opacity 900ms var(--ease),filter 1100ms var(--ease),translate 1100ms var(--ease);will-change:opacity,filter,translate}\n.section.is-cinematic-active .intro-copy{opacity:1;filter:blur(0);translate:0 0}")
+          s=s.replace(".product-frame img{display:block;width:min(36vw,540px);max-width:100%;max-height:82svh;object-fit:contain}", ".product-frame img{display:block;width:min(36vw,540px);max-width:100%;max-height:82svh;object-fit:contain;opacity:var(--scene-opacity,1);filter:blur(var(--scene-blur,0px));translate:0 var(--scene-image-y,0px);will-change:opacity,filter,translate}")
+          s=s.replace(".copy-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%);transform-origin:left top}", ".copy-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%);transform-origin:left top;opacity:var(--scene-opacity,1);filter:blur(var(--scene-blur,0px));translate:0 var(--scene-copy-y,0px);will-change:opacity,filter,translate}")
+          s += "\n@media(prefers-reduced-motion:reduce){.intro-copy{transition:none;opacity:1;filter:none;translate:none}.product-frame img,.copy-shell{filter:none;translate:none}}\n"
+          style.write_text(s)
+
+          app=Path('app.js')
+          a=app.read_text()
+          old="""  function renderHorizontal(){\n    const{start,distance}=sectionMetrics();\n    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));\n    const exact=progress*(PRODUCTS.length-1);\n    track.style.transform=`translate3d(${-exact*100}vw,0,0)`;\n  }"""
+          new="""  function renderHorizontal(){\n    const{start,distance}=sectionMetrics();\n    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));\n    const exact=progress*(PRODUCTS.length-1);\n    track.style.transform=`translate3d(${-exact*100}vw,0,0)`;\n    slides.forEach((slide,index)=>{\n      const delta=index-exact;\n      const distanceFromActive=Math.min(1,Math.abs(delta));\n      const opacity=Math.max(0,1-distanceFromActive*1.18);\n      const blur=distanceFromActive*15;\n      const direction=delta<0?-1:1;\n      slide.style.setProperty('--scene-opacity',opacity.toFixed(3));\n      slide.style.setProperty('--scene-blur',`${blur.toFixed(1)}px`);\n      slide.style.setProperty('--scene-image-y',`${(direction*distanceFromActive*24).toFixed(1)}px`);\n      slide.style.setProperty('--scene-copy-y',`${(direction*distanceFromActive*34).toFixed(1)}px`);\n    });\n  }"""
+          if old not in a:
+              raise SystemExit('renderHorizontal pattern not found')
+          a=a.replace(old,new)
+          marker="  slides.forEach((slide,index)=>{initImageCarousel(slide,index);updatePurchase(index)});"
+          observer="""  const introObserver=new IntersectionObserver(entries=>{\n    entries.forEach(entry=>entry.target.classList.toggle('is-cinematic-active',entry.isIntersecting&&entry.intersectionRatio>.45));\n  },{threshold:[0,.45,.7]});\n  document.querySelectorAll('.section').forEach(section=>introObserver.observe(section));\n\n"""
+          a=a.replace(marker,observer+marker)
+          app.write_text(a)
+
+          olive=Path('olive.js')
+          o=olive.read_text()
+          old="  function render(){const{start,distance}=metrics();const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));track.style.transform=`translate3d(${-progress*100}vw,0,0)`}"
+          new="""  function render(){\n    const{start,distance}=metrics();\n    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));\n    const exact=progress*(OLIVE_PRODUCTS.length-1);\n    track.style.transform=`translate3d(${-progress*100}vw,0,0)`;\n    slides.forEach((slide,index)=>{\n      const delta=index-exact;\n      const distanceFromActive=Math.min(1,Math.abs(delta));\n      const opacity=Math.max(0,1-distanceFromActive*1.18);\n      const blur=distanceFromActive*15;\n      const direction=delta<0?-1:1;\n      slide.style.setProperty('--scene-opacity',opacity.toFixed(3));\n      slide.style.setProperty('--scene-blur',`${blur.toFixed(1)}px`);\n      slide.style.setProperty('--scene-image-y',`${(direction*distanceFromActive*24).toFixed(1)}px`);\n      slide.style.setProperty('--scene-copy-y',`${(direction*distanceFromActive*34).toFixed(1)}px`);\n    });\n  }"""
+          if old not in o:
+              raise SystemExit('olive render pattern not found')
+          olive.write_text(o.replace(old,new))
+
+          olive_css=Path('olive.css')
+          c=olive_css.read_text()
+          c=c.replace(".olive-image-panel img{display:block;max-width:78%;max-height:78svh;object-fit:contain;pointer-events:none}", ".olive-image-panel img{display:block;max-width:78%;max-height:78svh;object-fit:contain;pointer-events:none;opacity:var(--scene-opacity,1);filter:blur(var(--scene-blur,0px));translate:0 var(--scene-image-y,0px);will-change:opacity,filter,translate}")
+          c=c.replace(".olive-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%)}", ".olive-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%);opacity:var(--scene-opacity,1);filter:blur(var(--scene-blur,0px));translate:0 var(--scene-copy-y,0px);will-change:opacity,filter,translate}")
+          c += "\n@media(prefers-reduced-motion:reduce){.olive-image-panel img,.olive-shell{filter:none;translate:none}}\n"
+          olive_css.write_text(c)
+
+          index=Path('index.html')
+          i=index.read_text().replace('202608171247','202608171257')
+          index.write_text(i)
+          PY
+      - name: Commit cinematic fade
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add style.css app.js olive.css olive.js index.html
+          git commit -m "Add cinematic fade in and fade out to scene elements"
+          git rm .github/workflows/cinematic-fade-pass.yml
+          git commit -m "Remove one-time cinematic fade workflow"
+          git push
