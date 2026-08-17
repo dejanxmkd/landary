@@ -243,19 +243,16 @@
     prev?.addEventListener('click',event=>{
       event.preventDefault();
       event.stopPropagation();
-      if(!slide.classList.contains('is-detail'))return;
       setImage(index,state[index].image===0?1:0);
     });
     next?.addEventListener('click',event=>{
       event.preventDefault();
       event.stopPropagation();
-      if(!slide.classList.contains('is-detail'))return;
       setImage(index,state[index].image===1?0:1);
     });
 
     let startX=0,startY=0,tracking=false,pointerId=null;
     swipeSurface.addEventListener('pointerdown',event=>{
-      if(!slide.classList.contains('is-detail'))return;
       if(event.button!==undefined&&event.button!==0)return;
       tracking=true;pointerId=event.pointerId;startX=event.clientX;startY=event.clientY;
       swipeSurface.setPointerCapture?.(event.pointerId);
