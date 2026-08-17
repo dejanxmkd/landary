@@ -1,0 +1,72 @@
+name: Refine single coffee format details
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/single-grind-format.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update single-format product details
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('app.js')
+          text = path.read_text()
+
+          old = '''  function grindOptionsTemplate(product){
+    const grinds=Object.keys(product.images);
+    if(!grinds.length)return '';
+    return `<section class="detail-block"><div class="grind-options" role="group" aria-label="Coffee format">${grinds.map(grind=>`<button class="choice-tab ${grind===product.defaultGrind?'is-selected':''}" type="button" data-grind="${grind}">${grind}</button>`).join('')}</div></section>`;
+  }
+'''
+
+          new = '''  function grindOptionsTemplate(product){
+    const grinds=Object.keys(product.images);
+    if(grinds.length<=1)return '';
+    return `<section class="detail-block"><div class="grind-options" role="group" aria-label="Coffee format">${grinds.map(grind=>`<button class="choice-tab ${grind===product.defaultGrind?'is-selected':''}" type="button" data-grind="${grind}">${grind}</button>`).join('')}</div></section>`;
+  }
+
+  function singleGrindMetaTemplate(product){
+    const grinds=Object.keys(product.images);
+    if(grinds.length!==1)return '';
+    return `<div><dt>Format</dt><dd>${grinds[0]}</dd></div>`;
+  }
+'''
+
+          if old not in text:
+              raise SystemExit('grindOptionsTemplate block not found')
+          text = text.replace(old, new, 1)
+
+          old_meta = '''            <dl class="detail-meta"><div><dt>Flavor Notes</dt><dd>${product.flavor}</dd></div><div><dt>Roast Profile</dt><dd>${product.roast}</dd></div><div><dt>Bag Size</dt><dd>${product.size}</dd></div></dl>'''
+          new_meta = '''            <dl class="detail-meta"><div><dt>Flavor Notes</dt><dd>${product.flavor}</dd></div><div><dt>Roast Profile</dt><dd>${product.roast}</dd></div><div><dt>Bag Size</dt><dd>${product.size}</dd></div>${singleGrindMetaTemplate(product)}</dl>'''
+          if old_meta not in text:
+              raise SystemExit('detail meta block not found')
+          text = text.replace(old_meta, new_meta, 1)
+          path.write_text(text)
+
+          index = Path('index.html')
+          html = index.read_text()
+          import re
+          html = re.sub(r'app\.js\?v=\d+', 'app.js?v=202608171155', html)
+          index.write_text(html)
+          PY
+
+          rm .github/workflows/single-grind-format.yml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js index.html .github/workflows/single-grind-format.yml
+          git commit -m "Show single coffee format as metadata"
+          git push
