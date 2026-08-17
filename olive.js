@@ -12,8 +12,8 @@
       description:'Greek extra virgin olive oil made for everyday cooking, finishing, dipping, and the moments gathered around the table.',
       packages:[['Single',1,10],['3-Bottle',3,15],['6-Bottle',6,20]],
       images:[
-        './assets/olive-oil/500ml/giannos-greek-extra-virgin-olive-oil-500ml-front.png',
-        './assets/olive-oil/500ml/giannos-greek-extra-virgin-olive-oil-500ml-back.png'
+        {label:'Front',src:'./assets/olive-oil/500ml/giannos-greek-extra-virgin-olive-oil-500ml-front.png'},
+        {label:'Back',src:'./assets/olive-oil/500ml/giannos-greek-extra-virgin-olive-oil-500ml-back.png'}
       ]
     },
     {
@@ -24,10 +24,10 @@
       description:'A generous 3 liter tin of Greek extra virgin olive oil for kitchens where olive oil is part of the everyday ritual.',
       packages:[['Single',1,10],['2-Tin',2,15],['4-Tin',4,20]],
       images:[
-        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-front.png',
-        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-front-angled.png',
-        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-side.png',
-        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-back.png'
+        {label:'Front',src:'./assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-front.png'},
+        {label:'Front angled',src:'./assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-front-angled.png'},
+        {label:'Side',src:'./assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-side.png'},
+        {label:'Back',src:'./assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-back.png'}
       ]
     }
   ];
@@ -35,14 +35,25 @@
   const state=OLIVE_PRODUCTS.map(()=>({purchase:'subscribe',packageIndex:0,qty:1,image:0}));
   const money=value=>`$${value.toFixed(2)}`;
 
+  function imageCarouselTemplate(product){
+    const panels=product.images.map((image,index)=>`<figure class="olive-image-panel" data-olive-image-panel="${index}"><img src="${image.src}" alt="${product.name} — ${image.label}" draggable="false"></figure>`).join('');
+    const dots=product.images.map((image,index)=>`<button class="product-dot ${index===0?'is-active':''}" type="button" data-olive-image-dot="${index}" aria-label="Show ${image.label} image" aria-pressed="${index===0?'true':'false'}"></button>`).join('');
+    return `<div class="olive-image-carousel" data-olive-carousel>
+      <div class="olive-image-viewport" data-olive-image-viewport>
+        <div class="olive-image-track" data-olive-image-track>${panels}</div>
+      </div>
+      <button class="carousel-arrow carousel-arrow--prev" type="button" data-olive-image-prev aria-label="Previous product image"><span class="material-icons" aria-hidden="true">chevron_left</span></button>
+      <button class="carousel-arrow carousel-arrow--next" type="button" data-olive-image-next aria-label="Next product image"><span class="material-icons" aria-hidden="true">chevron_right</span></button>
+      <div class="product-dots" aria-label="Product images">${dots}</div>
+    </div>`;
+  }
+
   function productTemplate(product,index){
     const packageButtons=product.packages.map((item,itemIndex)=>`<button class="bag-option ${itemIndex===0?'is-selected':''}" type="button" data-olive-package="${itemIndex}"><span>${item[0]}</span><b>Save ${item[2]}%</b></button>`).join('');
     const title=product.titleLines.map(line=>`<span>${line}</span>`).join('');
     return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#A2A315">
       <div class="olive-layout">
-        <div class="olive-gallery">
-          <div class="olive-image-stage"><img data-olive-image src="${product.images[0]}" alt="${product.name}"></div>
-        </div>
+        <div class="olive-gallery">${imageCarouselTemplate(product)}</div>
         <div class="olive-copy"><div class="olive-shell">
           <h2 class="copy-title olive-title">${title}</h2>
           <p class="copy-description olive-description">${product.description}</p>
@@ -92,6 +103,24 @@
   };
   window.__oliveDetailOpen=false;
 
+  function setImage(index,nextImage,instant=false){
+    const product=OLIVE_PRODUCTS[index],slide=slides[index];
+    const count=product.images.length;
+    const imageIndex=((nextImage%count)+count)%count;
+    state[index].image=imageIndex;
+    const imageTrack=slide.querySelector('[data-olive-image-track]');
+    if(imageTrack){
+      imageTrack.classList.toggle('is-instant',instant);
+      imageTrack.style.transform=`translate3d(${-imageIndex*100}%,0,0)`;
+      if(instant)requestAnimationFrame(()=>imageTrack.classList.remove('is-instant'));
+    }
+    slide.querySelectorAll('[data-olive-image-dot]').forEach(dot=>{
+      const active=Number(dot.dataset.oliveImageDot)===imageIndex;
+      dot.classList.toggle('is-active',active);
+      dot.setAttribute('aria-pressed',String(active));
+    });
+  }
+
   function update(index){
     const product=OLIVE_PRODUCTS[index],current=state[index],slide=slides[index];
     const pack=product.packages[current.packageIndex];
@@ -115,6 +144,7 @@
     const slide=slides[index];detailIndex=index;window.__oliveDetailOpen=true;
     slide.classList.add('is-detail');document.body.classList.add('olive-details-open');
     const link=slide.querySelector('[data-olive-details]');if(link)link.textContent='Close Details';
+    setImage(index,state[index].image,true);
   }
   function closeDetails(index){
     const slide=slides[index];slide.scrollTop=0;slide.classList.remove('is-detail');document.body.classList.remove('olive-details-open');
@@ -125,6 +155,9 @@
   track.addEventListener('click',event=>{
     const slide=event.target.closest('.olive-slide');if(!slide)return;
     const index=Number(slide.dataset.oliveIndex),current=state[index];
+    const prev=event.target.closest('[data-olive-image-prev]');if(prev){event.preventDefault();event.stopPropagation();setImage(index,current.image-1);return}
+    const next=event.target.closest('[data-olive-image-next]');if(next){event.preventDefault();event.stopPropagation();setImage(index,current.image+1);return}
+    const dot=event.target.closest('[data-olive-image-dot]');if(dot){event.preventDefault();event.stopPropagation();setImage(index,Number(dot.dataset.oliveImageDot));return}
     const detail=event.target.closest('[data-olive-details]');if(detail){event.preventDefault();slide.classList.contains('is-detail')?closeDetails(index):openDetails(index);return}
     const purchase=event.target.closest('[data-olive-purchase]');if(purchase){current.purchase=purchase.dataset.olivePurchase;update(index);return}
     const pack=event.target.closest('[data-olive-package]');if(pack){current.packageIndex=Number(pack.dataset.olivePackage);slide.querySelectorAll('[data-olive-package]').forEach(btn=>btn.classList.toggle('is-selected',btn===pack));update(index);return}
@@ -133,9 +166,21 @@
   });
 
   slides.forEach((slide,index)=>{
-    const image=slide.querySelector('[data-olive-image]');const stage=slide.querySelector('.olive-image-stage');if(!stage||!image)return;
-    let x=0;stage.addEventListener('pointerdown',event=>{x=event.clientX});
-    stage.addEventListener('pointerup',event=>{const dx=event.clientX-x;if(Math.abs(dx)<45)return;const count=OLIVE_PRODUCTS[index].images.length;state[index].image=dx<0?(state[index].image+1)%count:(state[index].image-1+count)%count;image.src=OLIVE_PRODUCTS[index].images[state[index].image]});
+    const viewport=slide.querySelector('[data-olive-image-viewport]');if(!viewport)return;
+    let startX=0,startY=0,tracking=false;
+    viewport.addEventListener('pointerdown',event=>{
+      if(event.target.closest('button'))return;
+      startX=event.clientX;startY=event.clientY;tracking=true;
+      if(viewport.setPointerCapture)viewport.setPointerCapture(event.pointerId);
+    });
+    viewport.addEventListener('pointerup',event=>{
+      if(!tracking)return;tracking=false;
+      const dx=event.clientX-startX,dy=event.clientY-startY;
+      if(Math.abs(dx)<45||Math.abs(dx)<=Math.abs(dy))return;
+      setImage(index,state[index].image+(dx<0?1:-1));
+    });
+    viewport.addEventListener('pointercancel',()=>{tracking=false});
+    setImage(index,0,true);
     update(index);
   });
 
