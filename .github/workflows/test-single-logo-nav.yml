@@ -1,0 +1,21 @@
+name: Test single logo nav
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-single-logo-nav.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check site-shell.js
+      - run: |
+          test "$(grep -o 'giannos-logo.svg' index.html | wc -l)" -eq 1
+          grep -q 'data-nav-logo-target' index.html
+          ! grep -q 'data-nav-logo ' index.html
+          grep -q 'background:var(--intro,#3d5825);color:#fff' site-shell.css
+          grep -q 'text-transform:none' site-shell.css
+          grep -q 'font-size:14px' site-shell.css
