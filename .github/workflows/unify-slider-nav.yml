@@ -1,0 +1,24 @@
+name: Unify slider navigation
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unify-slider-nav.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/unify_slider_nav.py
+      - run: node --check app.js
+      - run: node --check olive.js
+      - run: grep -q 'class="edge-nav edge-nav--prev"' app.js && grep -q 'class="edge-nav edge-nav--prev"' olive.js
+      - run: grep -q 'font-family:var(--font-title)' style.css && grep -q 'height:2px' style.css
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js olive.js style.css olive.css index.html
+          git commit -m "Unify coffee and olive slider navigation"
+          git push origin HEAD:main
