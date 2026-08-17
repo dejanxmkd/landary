@@ -72,11 +72,14 @@
     const honeyIntro=document.querySelector('.section--honey-intro');
     const honeyStory=document.querySelector('.section--honey-story');
     const{start,distance}=sectionMetrics();
-    const coffeeStep=distance/(PRODUCTS.length-1);
+    const gate=Math.min(120,Math.max(64,innerHeight*.14));
+    const coffeeStart=start+gate;
+    const coffeeDistance=Math.max(distance-gate,1);
+    const coffeeStep=coffeeDistance/(PRODUCTS.length-1);
     const stops=[];
     if(hero)stops.push({y:hero.offsetTop});
     if(story)stops.push({y:story.offsetTop});
-    PRODUCTS.forEach((_,index)=>stops.push({y:start+coffeeStep*index}));
+    PRODUCTS.forEach((_,index)=>stops.push({y:coffeeStart+coffeeStep*index}));
     if(oliveIntro)stops.push({y:oliveIntro.offsetTop});
     if(oliveStory)stops.push({y:oliveStory.offsetTop});
     if(typeof window.__oliveSnapStops==='function')stops.push(...window.__oliveSnapStops().map(stop=>({y:stop.y})));
@@ -87,7 +90,10 @@
 
   function renderHorizontal(){
     const{start,distance}=sectionMetrics();
-    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));
+    const gate=Math.min(120,Math.max(64,innerHeight*.14));
+    const activeStart=start+gate;
+    const activeDistance=Math.max(distance-gate,1);
+    const progress=Math.max(0,Math.min(1,(scrollY-activeStart)/activeDistance));
     const exact=progress*(PRODUCTS.length-1);
     track.style.transform=`translate3d(${-exact*100}vw,0,0)`;
     slides.forEach((slide,index)=>{
@@ -110,14 +116,14 @@
     if(Math.abs(scrollY-target)<3)return;
     snapping=true;
     scrollTo({top:target,behavior:'smooth'});
-    setTimeout(()=>{snapping=false},650);
+    setTimeout(()=>{snapping=false},460);
   }
 
   function onScroll(){
     if(detailIndex>=0||window.__oliveDetailOpen)return;
     renderHorizontal();
     clearTimeout(snapTimer);
-    snapTimer=setTimeout(snapToNearest,140);
+    snapTimer=setTimeout(snapToNearest,80);
   }
 
   function renderCarousel(index,animate=true){
@@ -240,7 +246,7 @@
     const groups=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection,honeyIntro,honeyStory].filter(Boolean);
     const y=scrollY;
     const vh=Math.max(innerHeight,1);
-    const gate=Math.min(180,vh*.22);
+    const gate=Math.min(120,Math.max(64,vh*.14));
 
     groups.forEach(group=>{
       group.classList.remove('is-sequence-active','is-sequence-leaving');

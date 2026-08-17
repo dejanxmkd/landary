@@ -15,7 +15,7 @@
 .olive-image-panel{flex:0 0 100%;width:100%;height:100%;display:grid;place-items:center;margin:0;padding:6svh 5vw}
 .olive-image-panel img{display:block;max-width:78%;max-height:78svh;object-fit:contain;pointer-events:none}
 .olive-slide:not(.is-detail) .olive-image-panel img,.olive-slide:not(.is-detail) .olive-shell{opacity:var(--micro-opacity,1);scale:var(--micro-scale,1);will-change:opacity,scale}
-.olive-scroll .olive-slide:first-child .olive-image-panel img,.olive-scroll .olive-slide:first-child .olive-shell{transition:opacity 900ms var(--ease),filter 1100ms var(--ease),translate 1100ms var(--ease),scale 1100ms var(--ease)}
+.olive-scroll .olive-slide:first-child .olive-image-panel img,.olive-scroll .olive-slide:first-child .olive-shell{transition:opacity 420ms var(--ease),filter 560ms var(--ease),translate 560ms var(--ease),scale 560ms var(--ease)}
 .olive-scroll:not(.is-entry-cinematic-active) .olive-slide:first-child .olive-image-panel img,.olive-scroll:not(.is-entry-cinematic-active) .olive-slide:first-child .olive-shell{opacity:0!important;filter:blur(14px);translate:0 38px;scale:.985}
 .olive-scroll.is-entry-cinematic-active .olive-slide:first-child .olive-image-panel img,.olive-scroll.is-entry-cinematic-active .olive-slide:first-child .olive-shell{opacity:1;filter:blur(0);translate:0 0;scale:1}
 .olive-image-carousel:hover .product-dots{opacity:1;pointer-events:auto}

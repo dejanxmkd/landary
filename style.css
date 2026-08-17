@@ -22,7 +22,7 @@ button,a{color:inherit}
 .intro-copy{width:min(1420px,100%);text-align:center;opacity:0;filter:blur(14px);translate:0 34px;transition:opacity 900ms var(--ease),filter 1100ms var(--ease),translate 1100ms var(--ease);will-change:opacity,filter,translate}
 .section.is-cinematic-active .intro-copy{opacity:1;filter:blur(0);translate:0 0}
 .section.is-cinematic-leaving .intro-copy{opacity:0;filter:blur(14px);translate:0 -34px}
-.coffee-scroll .coffee-slide:first-child .product-frame img,.coffee-scroll .coffee-slide:first-child .copy-shell{transition:opacity 900ms var(--ease),filter 1100ms var(--ease),translate 1100ms var(--ease),scale 1100ms var(--ease)}
+.coffee-scroll .coffee-slide:first-child .product-frame img,.coffee-scroll .coffee-slide:first-child .copy-shell{transition:opacity 420ms var(--ease),filter 560ms var(--ease),translate 560ms var(--ease),scale 560ms var(--ease)}
 .coffee-scroll:not(.is-entry-cinematic-active) .coffee-slide:first-child .product-frame img,.coffee-scroll:not(.is-entry-cinematic-active) .coffee-slide:first-child .copy-shell{opacity:0!important;filter:blur(14px);translate:0 38px;scale:.985}
 .coffee-scroll.is-entry-cinematic-active .coffee-slide:first-child .product-frame img,.coffee-scroll.is-entry-cinematic-active .coffee-slide:first-child .copy-shell{opacity:1;filter:blur(0);translate:0 0;scale:1}
 .display-title{margin:0;font-family:var(--font-title);font-size:clamp(86px,8.7vw,138px);font-weight:400;line-height:.88;letter-spacing:-.032em}

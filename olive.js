@@ -96,7 +96,10 @@
   function metrics(){const start=section.offsetTop;const distance=Math.max(section.offsetHeight-innerHeight,1);return{start,distance}}
   function render(){
     const{start,distance}=metrics();
-    const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));
+    const gate=Math.min(120,Math.max(64,innerHeight*.14));
+    const activeStart=start+gate;
+    const activeDistance=Math.max(distance-gate,1);
+    const progress=Math.max(0,Math.min(1,(scrollY-activeStart)/activeDistance));
     const exact=progress*(OLIVE_PRODUCTS.length-1);
     track.style.transform=`translate3d(${-progress*100}vw,0,0)`;
     slides.forEach((slide,index)=>{
@@ -106,7 +109,7 @@
     });
   }
 
-  window.__oliveSnapStops=()=>{const{start,distance}=metrics();return[{y:start},{y:start+distance}]};
+  window.__oliveSnapStops=()=>{const{start,distance}=metrics();const gate=Math.min(120,Math.max(64,innerHeight*.14));const activeStart=start+gate;const activeDistance=Math.max(distance-gate,1);return[{y:activeStart},{y:activeStart+activeDistance}]};
   window.__oliveDetailOpen=false;
 
   function setImage(index,nextImage,instant=false){
