@@ -3,15 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Landary — Coffee</title>
+  <title>GIANNOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500;600;700&family=Material+Icons&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=202608171455">
   <link rel="stylesheet" href="olive.css?v=202608171455">
   <link rel="stylesheet" href="honey.css?v=202608171455">
+  <link rel="stylesheet" href="site-shell.css?v=202608171458">
 </head>
-<body>
+<body class="is-loading">
+  <div class="site-loader" data-site-loader aria-label="Loading GIANNOS">
+    <div class="site-loader__inner">
+      <img class="site-loader__logo" data-loader-logo src="./assets/brand/giannos-logo.svg" alt="GIANNOS">
+      <div class="site-loader__counter" data-loader-counter aria-live="polite">0%</div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="site-announcement">FREE SHIPPING ON ALL ORDERS OVER $50</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <div class="site-nav__group site-nav__group--left">
+        <a class="site-nav__link" href="#olive-scroll">OLIVE OIL</a>
+        <a class="site-nav__link" href="#coffee-scroll">COFFEE</a>
+        <a class="site-nav__link" href="#coffee-scroll">ESPRESSO</a>
+        <a class="site-nav__link" href="#honey-scroll">HONEY</a>
+        <a class="site-nav__link" href="#">MERCH</a>
+      </div>
+
+      <a class="site-nav__brand" href="#" aria-label="GIANNOS home">
+        <img data-nav-logo src="./assets/brand/giannos-logo.svg" alt="GIANNOS">
+      </a>
+
+      <div class="site-nav__group site-nav__group--right">
+        <a class="site-nav__link" href="#">REWARDS</a>
+        <a class="site-nav__link" href="#">SUBSCRIPTIONS</a>
+        <a class="site-nav__link" href="#">LOCATIONS</a>
+        <a class="site-nav__link" href="#">LOGIN</a>
+        <a class="site-nav__link" href="#">CART <span class="site-nav__cart-count" aria-label="0 items">0</span></a>
+      </div>
+    </nav>
+  </header>
+
   <main class="landing">
     <section class="section section--hero" aria-labelledby="hero-title">
       <div class="intro-copy">
@@ -78,14 +111,15 @@
         </h2>
       </div>
     </section>
+
     <section class="honey-scroll" id="honey-scroll" aria-label="Honey collection">
       <div class="honey-sticky">
         <div class="honey-track" id="honey-track"></div>
       </div>
     </section>
-
   </main>
 
+  <script src="site-shell.js?v=202608171458"></script>
   <script src="app.js?v=202608171455"></script>
   <script src="olive.js?v=202608171455"></script>
   <script src="honey.js?v=202608171455"></script>
