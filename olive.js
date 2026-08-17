@@ -33,7 +33,7 @@
 
   function productTemplate(product,index){
     const packageButtons=product.packages.map((item,itemIndex)=>`<button class="bag-option ${itemIndex===0?'is-selected':''}" type="button" data-olive-package="${itemIndex}"><span>${item[0]}</span><b>Save ${item[2]}%</b></button>`).join('');
-    return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#365d23">
+    return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#A2A315">
       <div class="olive-layout">
         <div class="olive-gallery">
           <div class="olive-image-stage"><img data-olive-image src="${product.images[0]}" alt="${product.name}"></div>
@@ -82,8 +82,8 @@
 
   window.__oliveSnapStops=()=>{
     const{start,distance}=metrics();
-    const green=[54,93,35];
-    return [{y:start,color:green},{y:start+distance,color:green}];
+    const olive=[162,163,21];
+    return [{y:start,color:olive},{y:start+distance,color:olive}];
   };
   window.__oliveDetailOpen=false;
 
