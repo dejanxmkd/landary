@@ -42,8 +42,8 @@
       <div class="olive-image-viewport" data-olive-image-viewport>
         <div class="olive-image-track" data-olive-image-track>${panels}</div>
       </div>
-      <button class="olive-edge-nav olive-edge-nav--prev" type="button" data-olive-image-prev aria-label="Previous product image"><span>Prev</span><i aria-hidden="true"></i></button>
-      <button class="olive-edge-nav olive-edge-nav--next" type="button" data-olive-image-next aria-label="Next product image"><i aria-hidden="true"></i><span>Next</span></button>
+      <button class="edge-nav edge-nav--prev" type="button" data-olive-image-prev aria-label="Previous product image"><span>Prev</span><i aria-hidden="true"></i></button>
+      <button class="edge-nav edge-nav--next" type="button" data-olive-image-next aria-label="Next product image"><i aria-hidden="true"></i><span>Next</span></button>
       <div class="product-dots" aria-label="Product images">${dots}</div>
     </div>`;
   }

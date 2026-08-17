@@ -26,8 +26,8 @@
                 <figure class="product-frame image-panel"><img data-carousel-image="1" src="${pair[1]}" alt="${product.name} back"></figure>
               </div>
             </div>
-            <button class="carousel-arrow carousel-arrow--prev" type="button" data-image-prev aria-label="Previous product image"><span class="material-icons" aria-hidden="true">chevron_left</span></button>
-            <button class="carousel-arrow carousel-arrow--next" type="button" data-image-next aria-label="Next product image"><span class="material-icons" aria-hidden="true">chevron_right</span></button>
+            <button class="edge-nav edge-nav--prev" type="button" data-image-prev aria-label="Previous product image"><span>Prev</span><i aria-hidden="true"></i></button>
+            <button class="edge-nav edge-nav--next" type="button" data-image-next aria-label="Next product image"><i aria-hidden="true"></i><span>Next</span></button>
             <div class="product-dots" role="tablist" aria-label="Product images">
               <button class="product-dot is-active" type="button" data-image-dot="0" aria-label="Show front image" aria-selected="true"></button>
               <button class="product-dot" type="button" data-image-dot="1" aria-label="Show back image" aria-selected="false"></button>
