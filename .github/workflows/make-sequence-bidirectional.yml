@@ -1,0 +1,22 @@
+name: Make sequence bidirectional
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/make-sequence-bidirectional.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/make_sequence_bidirectional.py
+      - run: node --check app.js
+      - run: grep -q 'Deliberately keep both adjacent sections hidden' app.js
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js style.css olive.css index.html
+          git commit -m "Make section handoffs strictly bidirectional"
+          git push origin HEAD:main
