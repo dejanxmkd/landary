@@ -1,0 +1,24 @@
+name: Global scroll system
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/global-scroll-system.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python .github/scripts/global_scroll_system.py
+      - run: node --check app.js
+      - run: grep -q "function globalStops" app.js
+      - run: grep -q "function renderBackground" app.js
+      - run: grep -q "background:transparent" style.css
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js style.css
+          git commit -m "Add global snap and background blending"
+          git push origin HEAD:main
