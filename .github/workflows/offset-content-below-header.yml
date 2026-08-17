@@ -1,0 +1,40 @@
+name: Offset content below header
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/offset-content-below-header.yml'
+permissions:
+  contents: write
+jobs:
+  patch-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply patch
+        run: python3 .github/scripts/offset_content_below_header.py
+      - name: Syntax checks
+        run: |
+          node --check app.js
+          node --check olive.js
+          node --check honey.js
+      - name: Header offset assertions
+        run: |
+          grep -q -- '--site-header-height:102px' site-shell.css
+          grep -q 'padding-top:var(--site-header-height)' style.css
+          grep -q 'top:var(--site-header-height)' style.css
+          grep -q 'top:var(--site-header-height)' olive.css
+          grep -q 'top:var(--site-header-height)' honey.css
+          grep -q "coffeeSection.offsetTop-header" app.js
+          grep -q "section.offsetTop-header" olive.js
+          grep -q "section.offsetTop-header" honey.js
+          grep -q "sticky?.offsetHeight" app.js
+          grep -q "sticky?.offsetHeight" olive.js
+          grep -q "sticky?.offsetHeight" honey.js
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site-shell.css style.css olive.css honey.css app.js olive.js honey.js index.html
+          git commit -m "Place all content below fixed navigation"
+          git push origin HEAD:main
