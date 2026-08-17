@@ -69,6 +69,8 @@
     const story=document.querySelector('.section--story');
     const oliveIntro=document.querySelector('.section--olive-intro');
     const oliveStory=document.querySelector('.section--olive-story');
+    const honeyIntro=document.querySelector('.section--honey-intro');
+    const honeyStory=document.querySelector('.section--honey-story');
     const{start,distance}=sectionMetrics();
     const coffeeStep=distance/(PRODUCTS.length-1);
     const stops=[];
@@ -78,6 +80,8 @@
     if(oliveIntro)stops.push({y:oliveIntro.offsetTop});
     if(oliveStory)stops.push({y:oliveStory.offsetTop});
     if(typeof window.__oliveSnapStops==='function')stops.push(...window.__oliveSnapStops().map(stop=>({y:stop.y})));
+    if(honeyIntro)stops.push({y:honeyIntro.offsetTop});
+    if(honeyStory)stops.push({y:honeyStory.offsetTop});
     return stops.sort((a,b)=>a.y-b.y);
   }
 
@@ -231,7 +235,9 @@
     const oliveIntro=document.querySelector('.section--olive-intro');
     const oliveStory=document.querySelector('.section--olive-story');
     const oliveSection=document.getElementById('olive-scroll');
-    const groups=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection].filter(Boolean);
+    const honeyIntro=document.querySelector('.section--honey-intro');
+    const honeyStory=document.querySelector('.section--honey-story');
+    const groups=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection,honeyIntro,honeyStory].filter(Boolean);
     const y=scrollY;
     const vh=Math.max(innerHeight,1);
     const gate=Math.min(180,vh*.22);
