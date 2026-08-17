@@ -40,7 +40,7 @@ button,a{color:inherit}
 .edge-nav i{display:block;width:34px;height:2px;background:currentColor;opacity:1;transition:width 360ms var(--ease)}
 .edge-nav--prev{left:clamp(22px,3vw,52px)}
 .edge-nav--next{right:clamp(22px,3vw,52px)}
-.image-carousel:hover .edge-nav,.coffee-slide.is-detail .edge-nav,.olive-image-carousel:hover .edge-nav,.olive-slide.is-detail .edge-nav{opacity:1;pointer-events:auto}
+.coffee-slide.is-detail .edge-nav,.olive-slide.is-detail .edge-nav,.honey-slide.is-detail .edge-nav{opacity:1;pointer-events:auto}
 .edge-nav:hover{opacity:1!important}
 .edge-nav:hover i{width:48px}
 .product-dots{position:absolute;left:50%;bottom:clamp(28px,4.5svh,52px);z-index:5;display:flex;align-items:center;gap:8px;transform:translateX(-50%);opacity:0;pointer-events:none;transition:opacity 360ms ease}

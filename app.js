@@ -69,9 +69,9 @@
     track.style.transform=`translate3d(${-exact*100}vw,0,0)`;
     slides.forEach((slide,index)=>{
       const d=Math.min(1,Math.abs(index-exact));
-      slide.style.setProperty('--micro-opacity',(1-d*.10).toFixed(3));
-      slide.style.setProperty('--micro-scale',(1-d*.015).toFixed(4));
-      slide.style.setProperty('--micro-y',`${(d*10).toFixed(1)}px`);
+      slide.style.setProperty('--micro-opacity',(1-d*.12).toFixed(3));
+      slide.style.setProperty('--micro-scale',(1-d*.018).toFixed(4));
+      slide.style.setProperty('--micro-y',`${(d*14).toFixed(1)}px`);
     });
   }
 
