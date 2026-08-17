@@ -1,7 +1,7 @@
 .olive-scroll{position:relative;height:200svh;background:transparent}
-.olive-sticky{position:sticky;top:0;width:100%;height:100dvh;min-height:100svh;overflow:hidden;background:#365d23}
+.olive-sticky{position:sticky;top:0;width:100%;height:100dvh;min-height:100svh;overflow:hidden;background:#A2A315}
 .olive-track{display:flex;width:200vw;height:100dvh;min-height:100svh;transform:translate3d(0,0,0);will-change:transform}
-.olive-slide{--accent:#365d23;--olive-cream:#f3eedf;position:relative;flex:0 0 100vw;width:100vw;height:100dvh;min-height:100svh;background:#365d23;color:var(--olive-cream);overflow:hidden}
+.olive-slide{--accent:#A2A315;--olive-cream:#f3eedf;position:relative;flex:0 0 100vw;width:100vw;height:100dvh;min-height:100svh;background:#A2A315;color:var(--olive-cream);overflow:hidden}
 .olive-layout{position:relative;width:100%;height:100%;display:grid;grid-template-columns:48% 52%}
 .olive-gallery{position:relative;height:100%;overflow:hidden}
 .olive-image-stage{width:100%;height:100%;display:grid;place-items:center;padding:6svh 5vw}
@@ -21,7 +21,7 @@
 .olive-slide .frequency-select option{color:#222}
 .olive-slide .quantity-stepper{border-color:rgba(243,238,223,.34)}
 .olive-slide .quantity-stepper>span{border-color:rgba(243,238,223,.34)}
-.olive-slide .add-cart{background:var(--olive-cream);color:#365d23}
+.olive-slide .add-cart{background:var(--olive-cream);color:#A2A315}
 .olive-slide.is-detail{overflow-y:auto;overscroll-behavior:contain}
 .olive-slide.is-detail .olive-layout{height:auto;min-height:100dvh;align-items:start}
 .olive-slide.is-detail .olive-gallery{position:sticky;top:0;height:100dvh;min-height:100svh;align-self:start;overflow:hidden}
