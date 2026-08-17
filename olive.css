@@ -1,7 +1,7 @@
 .olive-scroll{position:relative;height:200svh;background:transparent}
-.olive-sticky{position:sticky;top:0;width:100%;height:100dvh;min-height:100svh;overflow:hidden;background:#fdf8ec}
-.olive-track{display:flex;width:200vw;height:100dvh;min-height:100svh;transform:translate3d(0,0,0);will-change:transform}
-.olive-slide{--accent:#fdf8ec;--olive-cream:#3d5825;position:relative;flex:0 0 100vw;width:100vw;height:100dvh;min-height:100svh;background:#fdf8ec;color:var(--olive-cream);overflow:hidden}
+.olive-sticky{position:sticky;top:var(--site-header-height);width:100%;height:calc(100dvh - var(--site-header-height));min-height:calc(100svh - var(--site-header-height));overflow:hidden;background:#fdf8ec}
+.olive-track{display:flex;width:200vw;height:calc(100dvh - var(--site-header-height));min-height:calc(100svh - var(--site-header-height));transform:translate3d(0,0,0);will-change:transform}
+.olive-slide{--accent:#fdf8ec;--olive-cream:#3d5825;position:relative;flex:0 0 100vw;width:100vw;height:calc(100dvh - var(--site-header-height));min-height:calc(100svh - var(--site-header-height));background:#fdf8ec;color:var(--olive-cream);overflow:hidden}
 .olive-layout{position:relative;width:min(100%,var(--site-container));margin:0 auto;padding-inline:var(--site-gutter);height:100%;display:grid;grid-template-columns:minmax(0,48fr) minmax(0,52fr);column-gap:clamp(32px,3vw,56px)}
 .olive-gallery{position:relative;height:100%;overflow:hidden}
 .olive-image-carousel{position:relative;width:100%;height:100%;touch-action:pan-y;user-select:none}
@@ -35,8 +35,8 @@
 .olive-slide .add-cart{background:#3d5825;color:#fdf8ec}
 .olive-slide.is-detail{overflow-y:auto;overscroll-behavior:contain}
 .olive-slide.is-detail .olive-layout{height:auto;min-height:100dvh;align-items:start}
-.olive-slide.is-detail .olive-gallery{position:sticky;top:0;height:100dvh;min-height:100svh;align-self:start;overflow:hidden}
-.olive-slide.is-detail .olive-image-carousel,.olive-slide.is-detail .olive-image-viewport,.olive-slide.is-detail .olive-image-track{height:100dvh;min-height:100svh}
+.olive-slide.is-detail .olive-gallery{position:sticky;top:0;height:calc(100dvh - var(--site-header-height));min-height:calc(100svh - var(--site-header-height));align-self:start;overflow:hidden}
+.olive-slide.is-detail .olive-image-carousel,.olive-slide.is-detail .olive-image-viewport,.olive-slide.is-detail .olive-image-track{height:calc(100dvh - var(--site-header-height));min-height:calc(100svh - var(--site-header-height))}
 .olive-slide.is-detail .olive-copy{position:sticky;top:0;align-self:start;height:max-content;min-height:0;overflow:visible;padding:180px 5vw 72px 0}
 .olive-slide.is-detail .olive-shell{position:relative;left:auto;top:auto;transform:none;will-change:transform}
 .olive-slide.is-detail .detail-content{max-height:1800px;margin-top:30px;opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:max-height 1000ms var(--ease),opacity 520ms ease 100ms,transform 1000ms var(--ease),margin-top 1000ms var(--ease),visibility 0s linear 0s}

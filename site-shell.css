@@ -1,6 +1,6 @@
 /* Site-wide loading intro and persistent navigation. */
 body.is-loading{overflow:hidden;height:100dvh}
-:root{--site-container:1600px;--site-gutter:clamp(24px,3vw,48px)}
+:root{--site-container:1600px;--site-gutter:clamp(24px,3vw,48px);--site-header-height:102px}
 
 .site-loader{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:var(--paper,#fdf8ec);opacity:1;visibility:visible;transition:opacity 420ms ease,visibility 0s linear 420ms}
 .site-loader.is-complete{opacity:0;visibility:hidden;pointer-events:none}
@@ -32,6 +32,7 @@ body.site-ready .site-header{pointer-events:auto}
   .site-nav__brand .site-loader__logo{width:102px}
 }
 @media(max-width:900px){
+  :root{--site-header-height:92px}
   .site-announcement{height:28px;font-size:9px}
   .site-nav{height:auto;min-height:64px;grid-template-columns:1fr auto 1fr;padding:6px 16px}
   .site-nav__group{display:none}

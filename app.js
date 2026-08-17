@@ -57,8 +57,10 @@
   let detailIndex=-1;
 
   function sectionMetrics(){
-    const start=coffeeSection.offsetTop;
-    const distance=Math.max(coffeeSection.offsetHeight-innerHeight,1);
+    const sticky=coffeeSection.querySelector('.coffee-sticky');
+    const header=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--site-header-height'))||0;
+    const start=coffeeSection.offsetTop-header;
+    const distance=Math.max(coffeeSection.offsetHeight-(sticky?.offsetHeight||innerHeight),1);
     return {start,distance};
   }
 

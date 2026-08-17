@@ -76,8 +76,10 @@
   let detailIndex=-1;
 
   function metrics(){
-    const start=section.offsetTop;
-    const distance=Math.max(section.offsetHeight-innerHeight,1);
+    const sticky=section.querySelector('.honey-sticky');
+    const header=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--site-header-height'))||0;
+    const start=section.offsetTop-header;
+    const distance=Math.max(section.offsetHeight-(sticky?.offsetHeight||innerHeight),1);
     return{start,distance};
   }
 
