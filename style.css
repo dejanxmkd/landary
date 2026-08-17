@@ -121,3 +121,8 @@ body.details-open{overflow:hidden}
 .coffee-slide:not(.is-detail) .edge-nav,.olive-slide:not(.is-detail) .edge-nav,.honey-slide:not(.is-detail) .edge-nav,.coffee-slide:not(.is-detail) .product-dots,.olive-slide:not(.is-detail) .product-dots,.honey-slide:not(.is-detail) .product-dots{opacity:0!important;pointer-events:none!important}
 
 @media(max-width:900px){:root{--site-header-height:92px}}
+
+/* Normal product view: product imagery is 20% smaller; detail gallery keeps full size. */
+.coffee-slide:not(.is-detail) .product-frame img{width:min(28.8vw,432px);max-height:65.6svh}
+@media(max-width:1000px){.coffee-slide:not(.is-detail) .product-frame img{width:min(33.6vw,376px)}}
+@media(max-width:760px){.coffee-slide:not(.is-detail) .product-frame img{width:min(56vw,264px);max-height:36.8svh}}
