@@ -51,7 +51,7 @@
   function productTemplate(product,index){
     const packageButtons=product.packages.map((item,itemIndex)=>`<button class="bag-option ${itemIndex===0?'is-selected':''}" type="button" data-olive-package="${itemIndex}"><span>${item[0]}</span><b>Save ${item[2]}%</b></button>`).join('');
     const title=product.titleLines.map(line=>`<span>${line}</span>`).join('');
-    return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#A2A315">
+    return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#3d5825">
       <div class="olive-layout">
         <div class="olive-gallery">${imageCarouselTemplate(product)}</div>
         <div class="olive-copy"><div class="olive-shell">
@@ -98,8 +98,7 @@
 
   window.__oliveSnapStops=()=>{
     const{start,distance}=metrics();
-    const olive=[162,163,21];
-    return [{y:start,color:olive},{y:start+distance,color:olive}];
+    return [{y:start},{y:start+distance}];
   };
   window.__oliveDetailOpen=false;
 
