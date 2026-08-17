@@ -144,6 +144,7 @@
     const slide=slides[index];
     const toggle=slide.querySelector('[data-toggle-details]');
     detailIndex=index;
+    updateImages(index,false);
     animateCopyLayout(slide,()=>{
       slide.classList.add('is-detail');
       document.body.classList.add('details-open');
@@ -208,8 +209,6 @@
     const slide=event.target.closest('.coffee-slide');if(!slide)return;const index=Number(slide.dataset.index);const current=state[index];
     const toggle=event.target.closest('[data-toggle-details]');if(toggle){event.preventDefault();if(slide.classList.contains('is-detail'))closeDetails(index);else openDetails(index);return}
     const imageDot=event.target.closest('[data-image-dot]');if(imageDot){setImage(index,Number(imageDot.dataset.imageDot));return}
-    if(event.target.closest('[data-image-prev]')){setImage(index,state[index].image===0?1:0);return}
-    if(event.target.closest('[data-image-next]')){setImage(index,state[index].image===1?0:1);return}
     const grind=event.target.closest('[data-grind]');if(grind){current.grind=grind.dataset.grind;slide.querySelectorAll('[data-grind]').forEach(btn=>btn.classList.toggle('is-selected',btn===grind));updateImages(index,false);return}
     const purchase=event.target.closest('[data-purchase]');if(purchase){current.purchase=purchase.dataset.purchase;updatePurchase(index);return}
     const bags=event.target.closest('[data-bags]');if(bags){current.bags=Number(bags.dataset.bags);current.discount=Number(bags.dataset.discount);slide.querySelectorAll('[data-bags]').forEach(btn=>btn.classList.toggle('is-selected',btn===bags));updatePurchase(index);return}
@@ -219,11 +218,38 @@
 
   slides.forEach((slide,index)=>{
     const carousel=slide.querySelector('[data-image-carousel]');
-    if(!carousel)return;
-    let startX=0,startY=0,tracking=false;
-    carousel.addEventListener('pointerdown',event=>{if(!slide.classList.contains('is-detail'))return;tracking=true;startX=event.clientX;startY=event.clientY;carousel.setPointerCapture?.(event.pointerId)});
-    carousel.addEventListener('pointerup',event=>{if(!tracking)return;tracking=false;const dx=event.clientX-startX;const dy=event.clientY-startY;if(Math.abs(dx)>46&&Math.abs(dx)>Math.abs(dy)*1.25)setImage(index,dx<0?1:0)});
-    carousel.addEventListener('pointercancel',()=>{tracking=false});
+    const swipeSurface=carousel?.querySelector('.image-viewport');
+    const prev=carousel?.querySelector('[data-image-prev]');
+    const next=carousel?.querySelector('[data-image-next]');
+    if(!carousel||!swipeSurface)return;
+
+    prev?.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      if(!slide.classList.contains('is-detail'))return;
+      setImage(index,state[index].image===0?1:0);
+    });
+    next?.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      if(!slide.classList.contains('is-detail'))return;
+      setImage(index,state[index].image===1?0:1);
+    });
+
+    let startX=0,startY=0,tracking=false,pointerId=null;
+    swipeSurface.addEventListener('pointerdown',event=>{
+      if(!slide.classList.contains('is-detail'))return;
+      if(event.button!==undefined&&event.button!==0)return;
+      tracking=true;pointerId=event.pointerId;startX=event.clientX;startY=event.clientY;
+      swipeSurface.setPointerCapture?.(event.pointerId);
+    });
+    swipeSurface.addEventListener('pointerup',event=>{
+      if(!tracking||event.pointerId!==pointerId)return;
+      tracking=false;pointerId=null;
+      const dx=event.clientX-startX;const dy=event.clientY-startY;
+      if(Math.abs(dx)>46&&Math.abs(dx)>Math.abs(dy)*1.25)setImage(index,dx<0?1:0);
+    });
+    swipeSurface.addEventListener('pointercancel',()=>{tracking=false;pointerId=null});
   });
 
   addEventListener('scroll',onScroll,{passive:true});
