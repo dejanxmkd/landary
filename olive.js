@@ -42,8 +42,8 @@
       <div class="olive-image-viewport" data-olive-image-viewport>
         <div class="olive-image-track" data-olive-image-track>${panels}</div>
       </div>
-      <button class="carousel-arrow carousel-arrow--prev" type="button" data-olive-image-prev aria-label="Previous product image"><span class="material-icons" aria-hidden="true">chevron_left</span></button>
-      <button class="carousel-arrow carousel-arrow--next" type="button" data-olive-image-next aria-label="Next product image"><span class="material-icons" aria-hidden="true">chevron_right</span></button>
+      <button class="olive-edge-nav olive-edge-nav--prev" type="button" data-olive-image-prev aria-label="Previous product image"><span>Prev</span><i aria-hidden="true"></i></button>
+      <button class="olive-edge-nav olive-edge-nav--next" type="button" data-olive-image-next aria-label="Next product image"><i aria-hidden="true"></i><span>Next</span></button>
       <div class="product-dots" aria-label="Product images">${dots}</div>
     </div>`;
   }
@@ -51,10 +51,10 @@
   function productTemplate(product,index){
     const packageButtons=product.packages.map((item,itemIndex)=>`<button class="bag-option ${itemIndex===0?'is-selected':''}" type="button" data-olive-package="${itemIndex}"><span>${item[0]}</span><b>Save ${item[2]}%</b></button>`).join('');
     const title=product.titleLines.map(line=>`<span>${line}</span>`).join('');
-    return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#3d5825">
-      <div class="olive-layout">
-        <div class="olive-gallery">${imageCarouselTemplate(product)}</div>
-        <div class="olive-copy"><div class="olive-shell">
+    return `<article class="coffee-slide olive-slide" data-olive-index="${index}" style="--accent:#3d5825">
+      <div class="coffee-layout olive-layout">
+        <div class="coffee-gallery olive-gallery">${imageCarouselTemplate(product)}</div>
+        <div class="coffee-copy olive-copy"><div class="copy-shell olive-shell">
           <h2 class="copy-title olive-title">${title}</h2>
           <p class="copy-description olive-description">${product.description}</p>
           <a class="view-details olive-view-details" href="#" data-olive-details>View Details</a>
@@ -106,10 +106,7 @@
     });
   }
 
-  window.__oliveSnapStops=()=>{
-    const{start,distance}=metrics();
-    return [{y:start},{y:start+distance}];
-  };
+  window.__oliveSnapStops=()=>{const{start,distance}=metrics();return[{y:start},{y:start+distance}]};
   window.__oliveDetailOpen=false;
 
   function setImage(index,nextImage,instant=false){
@@ -151,14 +148,24 @@
   function openDetails(index){
     if(detailIndex>=0)return;
     const slide=slides[index];detailIndex=index;window.__oliveDetailOpen=true;
-    slide.classList.add('is-detail');document.body.classList.add('olive-details-open');
+    slide.classList.add('is-detail');document.body.classList.add('details-open');
     const link=slide.querySelector('[data-olive-details]');if(link)link.textContent='Close Details';
     setImage(index,state[index].image,true);
   }
+
+  function finishClose(index){
+    const slide=slides[index];const shell=slide.querySelector('.copy-shell');const toggle=slide.querySelector('[data-olive-details]');if(!shell)return;
+    const current=shell.getBoundingClientRect();const probe=shell.cloneNode(true);probe.querySelector('.detail-content')?.remove();probe.style.cssText=`position:fixed;left:${current.left}px;top:-10000px;width:${current.width}px;transform:none;visibility:hidden;pointer-events:none;`;document.body.appendChild(probe);const collapsedHeight=probe.getBoundingClientRect().height;probe.remove();
+    const targetTop=(innerHeight-collapsedHeight)/2;const dy=targetTop-current.top;slide.classList.add('is-closing');if(toggle)toggle.textContent='View Details';shell.getAnimations().forEach(animation=>animation.cancel());
+    const animation=shell.animate([{transform:'translateY(0)'},{transform:`translateY(${dy}px)`}],{duration:820,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
+    animation.addEventListener('finish',()=>{slide.classList.remove('is-closing','is-detail');document.body.classList.remove('details-open');slide.scrollTop=0;animation.cancel();detailIndex=-1;window.__oliveDetailOpen=false;setImage(index,state[index].image,true)},{once:true});
+  }
+
   function closeDetails(index){
-    const slide=slides[index];slide.scrollTop=0;slide.classList.remove('is-detail');document.body.classList.remove('olive-details-open');
-    const link=slide.querySelector('[data-olive-details]');if(link)link.textContent='View Details';
-    detailIndex=-1;window.__oliveDetailOpen=false;
+    const slide=slides[index];if(slide.classList.contains('is-closing'))return;const startTop=slide.scrollTop;if(startTop<=2){finishClose(index);return}
+    const duration=Math.min(650,Math.max(360,startTop*.35));const started=performance.now();const ease=t=>1-Math.pow(1-t,4);slide.classList.add('is-returning');
+    const step=now=>{const t=Math.min(1,(now-started)/duration);slide.scrollTop=startTop*(1-ease(t));if(t<1){requestAnimationFrame(step);return}slide.scrollTop=0;slide.classList.remove('is-returning');finishClose(index)};
+    requestAnimationFrame(step);
   }
 
   track.addEventListener('click',event=>{
@@ -189,8 +196,7 @@
       setImage(index,state[index].image+(dx<0?1:-1));
     });
     viewport.addEventListener('pointercancel',()=>{tracking=false});
-    setImage(index,0,true);
-    update(index);
+    setImage(index,0,true);update(index);
   });
 
   addEventListener('scroll',()=>{if(detailIndex<0)render()},{passive:true});
