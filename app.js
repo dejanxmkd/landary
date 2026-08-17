@@ -58,6 +58,12 @@
   let snapTimer=0;
   let snapping=false;
 
+  function sectionMetrics(){
+    const start=coffeeSection.offsetTop;
+    const distance=Math.max(coffeeSection.offsetHeight-innerHeight,1);
+    return {start,distance};
+  }
+
   function globalStops(){
     const hero=document.querySelector('.section--hero');
     const story=document.querySelector('.section--story');
