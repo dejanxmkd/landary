@@ -1,0 +1,12 @@
+name: Inspect olive oil zip
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inspect-olive-zip.yml'
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: unzip -l Giannos_Olive_Oil_4K_Clean_Transparent.zip
