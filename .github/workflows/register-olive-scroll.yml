@@ -1,0 +1,23 @@
+name: Register olive scroll
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/register-olive-scroll.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python .github/scripts/register_olive_scroll.py
+      - run: node --check app.js
+      - run: node --check olive.js
+      - run: grep -q "__oliveSnapStops" app.js
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js
+          git commit -m "Integrate olive products with global scroll"
+          git push origin HEAD:main
