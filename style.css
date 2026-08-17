@@ -126,3 +126,7 @@ body.details-open{overflow:hidden}
 .coffee-scroll .coffee-slide:first-child .product-frame img,.coffee-scroll .coffee-slide:first-child .copy-shell{opacity:0!important;filter:blur(14px);translate:0 38px;scale:.985}
 .coffee-scroll.is-sequence-active:not(.is-sequence-leaving) .coffee-slide:first-child .product-frame img,.coffee-scroll.is-sequence-active:not(.is-sequence-leaving) .coffee-slide:first-child .copy-shell{opacity:1!important;filter:blur(0);translate:0 0;scale:1}
 .coffee-scroll.is-sequence-leaving .coffee-slide:last-child .product-frame img,.coffee-scroll.is-sequence-leaving .coffee-slide:last-child .copy-shell{opacity:0!important;filter:blur(14px);translate:0 -38px;scale:.985;transition:opacity 700ms var(--ease),filter 850ms var(--ease),translate 850ms var(--ease),scale 850ms var(--ease)}
+
+/* Bidirectional section gating: no incoming content during the boundary gap. */
+.section:not(.is-sequence-active) .intro-copy{pointer-events:none}
+.coffee-scroll:not(.is-sequence-active) .coffee-slide:first-child .product-frame img,.coffee-scroll:not(.is-sequence-active) .coffee-slide:first-child .copy-shell{pointer-events:none}

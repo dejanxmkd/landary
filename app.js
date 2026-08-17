@@ -226,32 +226,44 @@
   });
 
   function updateSectionSequence(){
-    if(detailIndex>=0||window.__oliveDetailOpen)return;
     const hero=document.querySelector('.section--hero');
     const story=document.querySelector('.section--story');
     const oliveIntro=document.querySelector('.section--olive-intro');
     const oliveStory=document.querySelector('.section--olive-story');
     const oliveSection=document.getElementById('olive-scroll');
-    const h=Math.max(innerHeight,1);
-    const revealLine=h*.10;
-    const leaveStart=h*.42;
+    const groups=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection].filter(Boolean);
+    const y=scrollY;
+    const vh=Math.max(innerHeight,1);
+    const gate=Math.min(180,vh*.22);
 
-    const ordered=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection].filter(Boolean);
-    ordered.forEach((node,index)=>{
-      const top=node.getBoundingClientRect().top;
-      const prev=index>0?ordered[index-1]:null;
-      const prevBottom=prev?prev.getBoundingClientRect().bottom:-Infinity;
-      const canReveal=index===0 ? top<=revealLine : (top<=revealLine && prevBottom<=h*.12);
-      node.classList.toggle('is-sequence-active',canReveal);
-
-      const next=index<ordered.length-1?ordered[index+1]:null;
-      if(next){
-        const nextTop=next.getBoundingClientRect().top;
-        node.classList.toggle('is-sequence-leaving',nextTop<=leaveStart);
-      }else{
-        node.classList.remove('is-sequence-leaving');
-      }
+    groups.forEach(group=>{
+      group.classList.remove('is-sequence-active','is-sequence-leaving');
     });
+
+    for(let i=0;i<groups.length;i++){
+      const group=groups[i];
+      const start=group.offsetTop;
+      const end=start+group.offsetHeight;
+      const isFirst=i===0;
+      const isLast=i===groups.length-1;
+      const enterAt=isFirst?start:start+gate;
+      const leaveAt=isLast?end:end-gate;
+
+      if(y>=enterAt&&y<leaveAt){
+        group.classList.add('is-sequence-active');
+        break;
+      }
+
+      if(y>=leaveAt&&y<end&& !isLast){
+        group.classList.add('is-sequence-leaving');
+        break;
+      }
+
+      if(y>=start&&y<enterAt&& !isFirst){
+        // Deliberately keep both adjacent sections hidden inside the handoff gap.
+        break;
+      }
+    }
   }
 
   const introObserver=new IntersectionObserver(entries=>{

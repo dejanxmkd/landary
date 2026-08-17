@@ -53,3 +53,6 @@
 /* Same gated handoff for the olive collection. */
 .olive-scroll .olive-slide:first-child .olive-image-panel img,.olive-scroll .olive-slide:first-child .olive-shell{opacity:0!important;filter:blur(14px);translate:0 38px;scale:.985}
 .olive-scroll.is-sequence-active:not(.is-sequence-leaving) .olive-slide:first-child .olive-image-panel img,.olive-scroll.is-sequence-active:not(.is-sequence-leaving) .olive-slide:first-child .olive-shell{opacity:1!important;filter:blur(0);translate:0 0;scale:1}
+
+/* Match the same bidirectional boundary gate used by the rest of the page. */
+.olive-scroll:not(.is-sequence-active) .olive-slide:first-child .olive-image-panel img,.olive-scroll:not(.is-sequence-active) .olive-slide:first-child .olive-shell{pointer-events:none}
