@@ -11,10 +11,16 @@
 .olive-image-panel{flex:0 0 100%;width:100%;height:100%;display:grid;place-items:center;margin:0;padding:6svh 5vw}
 .olive-image-panel img{display:block;max-width:78%;max-height:78svh;object-fit:contain;pointer-events:none}
 .olive-slide:not(.is-detail) .olive-image-panel img,.olive-slide:not(.is-detail) .olive-shell{opacity:var(--micro-opacity,1);scale:var(--micro-scale,1);will-change:opacity,scale}
-.olive-image-carousel:hover .carousel-arrow{opacity:1;transform:translateY(-50%) scale(1);pointer-events:auto}
+.olive-edge-nav{position:absolute;top:50%;z-index:6;display:flex;align-items:center;gap:11px;padding:12px 0;border:0;background:transparent;color:#3d5825;opacity:0;transform:translateY(-50%);cursor:pointer;pointer-events:none;transition:opacity 260ms ease,gap 360ms var(--ease)}
+.olive-edge-nav span{font-size:11px;font-weight:700;line-height:1;text-transform:uppercase;letter-spacing:.16em}
+.olive-edge-nav i{display:block;width:34px;height:1px;background:currentColor;opacity:.72;transition:width 360ms var(--ease),opacity 260ms ease}
+.olive-edge-nav--prev{left:clamp(22px,3vw,52px)}
+.olive-edge-nav--next{right:clamp(22px,3vw,52px)}
+.olive-image-carousel:hover .olive-edge-nav,.olive-slide.is-detail .olive-edge-nav{opacity:.72;pointer-events:auto}
+.olive-edge-nav:hover{opacity:1!important;gap:15px}
+.olive-edge-nav:hover i{width:48px;opacity:1}
 .olive-image-carousel:hover .product-dots{opacity:1;pointer-events:auto}
 .olive-slide.is-detail .product-dots{opacity:1;pointer-events:auto}
-.olive-slide.is-detail .carousel-arrow{pointer-events:auto}
 .olive-copy{position:relative;height:100%;padding:0 5vw 0 0;overflow:hidden}
 .olive-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%)}
 .olive-title{color:var(--olive-cream);text-transform:none}
@@ -37,9 +43,9 @@
 .olive-slide.is-detail .olive-gallery{position:sticky;top:0;height:100dvh;min-height:100svh;align-self:start;overflow:hidden}
 .olive-slide.is-detail .olive-image-carousel,.olive-slide.is-detail .olive-image-viewport,.olive-slide.is-detail .olive-image-track{height:100dvh;min-height:100svh}
 .olive-slide.is-detail .olive-copy{position:sticky;top:0;align-self:start;height:max-content;min-height:0;overflow:visible;padding:180px 5vw 72px 0}
-.olive-slide.is-detail .olive-shell{position:relative;left:auto;top:auto;transform:none}
+.olive-slide.is-detail .olive-shell{position:relative;left:auto;top:auto;transform:none;will-change:transform}
 .olive-slide.is-detail .detail-content{max-height:1800px;margin-top:30px;opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:max-height 1000ms var(--ease),opacity 520ms ease 100ms,transform 1000ms var(--ease),margin-top 1000ms var(--ease),visibility 0s linear 0s}
-body.olive-details-open{overflow:hidden}
-@media(max-width:760px){.olive-layout{display:block}.olive-gallery{position:absolute;inset:0 0 auto;height:52%}.olive-image-panel{padding:4svh 8vw}.olive-image-panel img{max-width:72%;max-height:45svh}.olive-image-carousel .carousel-arrow{width:44px;height:44px}.olive-image-carousel .carousel-arrow--prev{left:16px}.olive-image-carousel .carousel-arrow--next{right:16px}.olive-image-carousel .product-dots{bottom:18px}.olive-copy{position:absolute;left:0;right:0;bottom:0;height:48%;padding:0 20px;text-align:center}.olive-shell{left:50%;top:50%;width:calc(100vw - 40px);transform:translate(-50%,-50%)}.olive-title{font-size:clamp(36px,10vw,48px)}.olive-title span{white-space:normal}.olive-description{margin:16px auto 0;font-size:16px}.olive-view-details{margin-top:18px}.olive-slide.is-detail .olive-layout{display:block;min-height:100dvh}.olive-slide.is-detail .olive-gallery{position:sticky;top:0;height:56dvh;min-height:56svh}.olive-slide.is-detail .olive-image-carousel,.olive-slide.is-detail .olive-image-viewport,.olive-slide.is-detail .olive-image-track{height:56dvh;min-height:56svh}.olive-slide.is-detail .olive-copy{position:relative;left:auto;right:auto;bottom:auto;height:auto;padding:110px 20px 60px;text-align:left}.olive-slide.is-detail .olive-shell{position:relative;left:auto;top:auto;width:100%;transform:none}.olive-slide .bag-options{grid-template-columns:1fr}.olive-slide .subscription-benefits{grid-template-columns:1fr}.olive-slide .quantity-stepper button,.olive-slide .quantity-stepper>span{min-height:64px}.olive-slide .add-cart{min-height:72px}}
-
+.olive-slide.is-detail.is-returning .view-details{pointer-events:none;opacity:.55}
+.olive-slide.is-detail.is-closing .detail-content{max-height:0;margin-top:0;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);transition:max-height 950ms var(--ease),opacity 360ms ease,transform 950ms var(--ease),margin-top 950ms var(--ease),visibility 0s linear 950ms}
+@media(max-width:760px){.olive-layout{display:block}.olive-gallery{position:absolute;inset:0 0 auto;height:52%}.olive-image-panel{padding:4svh 8vw}.olive-image-panel img{max-width:72%;max-height:45svh}.olive-edge-nav{top:48%;gap:8px}.olive-edge-nav span{font-size:10px}.olive-edge-nav i{width:22px}.olive-edge-nav--prev{left:16px}.olive-edge-nav--next{right:16px}.olive-image-carousel .product-dots{bottom:18px}.olive-copy{position:absolute;left:0;right:0;bottom:0;height:48%;padding:0 20px;text-align:center}.olive-shell{left:50%;top:50%;width:calc(100vw - 40px);transform:translate(-50%,-50%)}.olive-title{font-size:clamp(36px,10vw,48px)}.olive-title span{white-space:normal}.olive-description{margin:16px auto 0;font-size:16px}.olive-view-details{margin-top:18px}.olive-slide.is-detail .olive-layout{display:block;min-height:100dvh}.olive-slide.is-detail .olive-gallery{position:sticky;top:0;height:56dvh;min-height:56svh}.olive-slide.is-detail .olive-image-carousel,.olive-slide.is-detail .olive-image-viewport,.olive-slide.is-detail .olive-image-track{height:56dvh;min-height:56svh}.olive-slide.is-detail .olive-copy{position:relative;left:auto;right:auto;bottom:auto;height:auto;padding:110px 20px 60px;text-align:left}.olive-slide.is-detail .olive-shell{position:relative;left:auto;top:auto;width:100%;transform:none;will-change:transform}.olive-slide .bag-options{grid-template-columns:1fr}.olive-slide .subscription-benefits{grid-template-columns:1fr}.olive-slide .quantity-stepper button,.olive-slide .quantity-stepper>span{min-height:64px}.olive-slide .add-cart{min-height:72px}}
 @media(prefers-reduced-motion:reduce){.olive-slide{--micro-opacity:1!important;--micro-scale:1!important}}
