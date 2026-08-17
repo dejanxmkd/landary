@@ -10,7 +10,7 @@
 
   function grindOptionsTemplate(product){
     const grinds=Object.keys(product.images);
-    if(!grinds.length)return '';
+    if(grinds.length<=1)return '';
     return `<section class="detail-block"><div class="grind-options" role="group" aria-label="Coffee format">${grinds.map(grind=>`<button class="choice-tab ${grind===product.defaultGrind?'is-selected':''}" type="button" data-grind="${grind}">${grind}</button>`).join('')}</div></section>`;
   }
 
@@ -39,7 +39,7 @@
           <p class="copy-description">${product.description}</p>
           <a class="view-details" href="#" data-toggle-details>View Details</a>
           <div class="detail-content">
-            <dl class="detail-meta"><div><dt>Flavor Notes</dt><dd>${product.flavor}</dd></div><div><dt>Roast Profile</dt><dd>${product.roast}</dd></div><div><dt>Bag Size</dt><dd>${product.size}</dd></div></dl>
+            <dl class="detail-meta"><div><dt>Flavor Notes</dt><dd>${product.flavor}</dd></div><div><dt>Roast Profile</dt><dd>${product.roast}</dd></div><div><dt>Bag Size</dt><dd>${product.size}</dd></div>${Object.keys(product.images).length===1?`<div><dt>Format</dt><dd>${Object.keys(product.images)[0]}</dd></div>`:""}</dl>
             <div class="detail-form">
               ${grindOptionsTemplate(product)}
               <section class="detail-block purchase-card is-selected" data-purchase-card="subscribe"><button class="purchase-card__head" type="button" data-purchase="subscribe"><span class="material-icons radio-icon" aria-hidden="true">radio_button_checked</span><strong>Subscribe &amp; Save</strong><span class="purchase-card__prices"><s data-subscribe-original>$20.00</s><b data-subscribe-price>$18.00</b></span></button><div class="purchase-card__body"><h3>Select Quantity</h3><div class="bag-options"><button class="bag-option is-selected" type="button" data-bags="1" data-discount="10"><span>Single</span><b>Save 10%</b></button><button class="bag-option" type="button" data-bags="3" data-discount="15"><span>3-Bags</span><b>Save 15%</b></button><button class="bag-option" type="button" data-bags="6" data-discount="20"><span>6-Bags</span><b>Save 20%</b></button></div><h3>Select Frequency</h3><div class="frequency-field"><select class="frequency-select" aria-label="Delivery frequency"><option>Every Month</option><option>Every 2 Months</option><option>Every 3 Months</option><option>Deliver every 21 days</option><option>Deliver every 30 days</option><option>Deliver every 60 days</option></select><span class="material-icons frequency-field__icon" aria-hidden="true">expand_more</span></div><div class="subscription-benefits"><span><i class="material-icons" aria-hidden="true">check_circle</i><em>Up to 20% off on every order</em></span><span><i class="material-icons" aria-hidden="true">check_circle</i><em>Free shipping within the US</em></span><span><i class="material-icons" aria-hidden="true">check_circle</i><em>Early access to new products</em></span></div></div></section>
