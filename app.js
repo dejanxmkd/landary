@@ -83,6 +83,7 @@
     PRODUCTS.forEach((_,index)=>stops.push({y:start+coffeeStep*index,color:productColors[index]}));
     if(oliveIntro)stops.push({y:oliveIntro.offsetTop,color:WHITE});
     if(oliveStory)stops.push({y:oliveStory.offsetTop,color:WHITE});
+    if(typeof window.__oliveSnapStops==='function')stops.push(...window.__oliveSnapStops());
     return stops.sort((a,b)=>a.y-b.y);
   }
 
@@ -113,7 +114,7 @@
   }
 
   function snapToNearest(){
-    if(detailIndex>=0||snapping)return;
+    if(detailIndex>=0||window.__oliveDetailOpen||snapping)return;
     const stops=globalStops();
     if(!stops.length)return;
     let target=stops[0].y;
@@ -129,7 +130,7 @@
   }
 
   function onScroll(){
-    if(detailIndex>=0)return;
+    if(detailIndex>=0||window.__oliveDetailOpen)return;
     renderHorizontal();
     renderBackground();
     clearTimeout(snapTimer);
