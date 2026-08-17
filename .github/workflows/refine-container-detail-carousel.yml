@@ -1,0 +1,47 @@
+name: Refine container and detail carousel
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refine-container-detail-carousel.yml'
+permissions:
+  contents: write
+jobs:
+  patch-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply patch
+        run: python3 .github/scripts/refine_container_and_detail_carousel.py
+      - name: Syntax checks
+        run: |
+          node --check app.js
+          node --check olive.js
+          node --check honey.js
+          node --check site-shell.js
+      - name: Layout assertions
+        run: |
+          grep -q -- '--site-container:1600px' site-shell.css
+          grep -q 'font-size:16px' site-shell.css
+          grep -q 'body.site-transitioning .site-header' site-shell.css
+          grep -q 'width:min(100%,var(--site-container))' style.css
+          grep -q 'width:min(100%,var(--site-container))' olive.css
+          grep -q 'width:min(100%,var(--site-container))' honey.css
+      - name: Detail-only carousel assertions
+        run: |
+          ! grep -q '.image-carousel:hover .product-dots' style.css
+          ! grep -q '.olive-image-carousel:hover .product-dots' olive.css
+          ! grep -q '.honey-image-carousel:hover .product-dots' honey.css
+          grep -q "if(!slide.classList.contains('is-detail'))return" app.js
+          grep -q "if(!slide.classList.contains('is-detail'))return" olive.js
+          grep -q "if(!slide.classList.contains('is-detail'))return" honey.js
+          grep -q 'state\[index\].image=0' app.js
+          grep -q 'setImage(index,0,true)' olive.js
+          grep -q 'setImage(index,0,true)' honey.js
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site-shell.css site-shell.js style.css olive.css honey.css app.js olive.js honey.js index.html
+          git commit -m "Align content container and make image carousel detail-only"
+          git push origin HEAD:main
