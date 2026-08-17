@@ -43,9 +43,9 @@ button,a{color:inherit}
 .image-carousel:hover .product-dots{opacity:1;pointer-events:auto}
 .product-frame{width:100%;height:100%;display:grid;place-items:center;margin:0;padding:5svh 5vw}
 .product-frame--secondary{display:none}
-.product-frame img{display:block;width:min(36vw,540px);max-width:100%;max-height:82svh;object-fit:contain;opacity:var(--scene-opacity,1);filter:blur(var(--scene-blur,0px));translate:0 var(--scene-image-y,0px);will-change:opacity,filter,translate}
+.product-frame img{display:block;width:min(36vw,540px);max-width:100%;max-height:82svh;object-fit:contain}
 .coffee-copy{position:relative;height:100%;padding:0 5vw 0 0;overflow:hidden}
-.copy-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%);transform-origin:left top;opacity:var(--scene-opacity,1);filter:blur(var(--scene-blur,0px));translate:0 var(--scene-copy-y,0px);will-change:opacity,filter,translate}
+.copy-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%);transform-origin:left top}
 .copy-title{margin:0;font-family:var(--font-title);font-size:clamp(48px,4.7vw,72px);line-height:.94;font-weight:400;letter-spacing:-.032em;white-space:nowrap}
 .copy-description{max-width:590px;margin:26px 0 0;color:var(--muted);font-size:19px;line-height:1.62}
 .view-details{display:inline-block;margin-top:30px;font-size:18px;line-height:1.65;font-weight:500;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:rgba(61,88,37,.72);transition:opacity .25s ease}
