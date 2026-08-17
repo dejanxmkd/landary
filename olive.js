@@ -11,8 +11,8 @@
       description:'Greek extra virgin olive oil made for everyday cooking, finishing, dipping, and the moments gathered around the table.',
       packages:[['Single',1,10],['3-Bottle',3,15],['6-Bottle',6,20]],
       images:[
-        'https://www.giannos.com/cdn/shop/files/Giannos_Olive_Oil_Resized_-_Front.png?v=1777448601&width=1946',
-        'https://www.giannos.com/cdn/shop/files/Giannos_Olive_Oil_Resized_-_Back.png?v=1777448601&width=1946'
+        './assets/olive-oil/500ml/giannos-greek-extra-virgin-olive-oil-500ml-front.png',
+        './assets/olive-oil/500ml/giannos-greek-extra-virgin-olive-oil-500ml-back.png'
       ]
     },
     {
@@ -22,8 +22,10 @@
       description:'A generous 3 liter tin of Greek extra virgin olive oil for kitchens where olive oil is part of the everyday ritual.',
       packages:[['Single',1,10],['2-Tin',2,15],['4-Tin',4,20]],
       images:[
-        'https://www.giannos.com/cdn/shop/files/olive-oil-3L-tin-front.jpg?v=1775600164&width=1946',
-        'https://www.giannos.com/cdn/shop/files/olive-oil-3L-tin-angled.jpg?v=1775600169&width=1946'
+        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-front.png',
+        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-front-angled.png',
+        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-side.png',
+        './assets/olive-oil/3l/giannos-greek-extra-virgin-olive-oil-3-liter-back.png'
       ]
     }
   ];
@@ -130,7 +132,7 @@
   slides.forEach((slide,index)=>{
     const image=slide.querySelector('[data-olive-image]');const stage=slide.querySelector('.olive-image-stage');if(!stage||!image)return;
     let x=0;stage.addEventListener('pointerdown',event=>{x=event.clientX});
-    stage.addEventListener('pointerup',event=>{const dx=event.clientX-x;if(Math.abs(dx)<45)return;state[index].image=dx<0?1:0;image.src=OLIVE_PRODUCTS[index].images[state[index].image]});
+    stage.addEventListener('pointerup',event=>{const dx=event.clientX-x;if(Math.abs(dx)<45)return;const count=OLIVE_PRODUCTS[index].images.length;state[index].image=dx<0?(state[index].image+1)%count:(state[index].image-1+count)%count;image.src=OLIVE_PRODUCTS[index].images[state[index].image]});
     update(index);
   });
 
