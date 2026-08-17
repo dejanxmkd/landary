@@ -12,6 +12,14 @@
   width:min(100%,560px);
   max-width:560px;
   margin-inline:auto;
+  text-align:center;
+}
+
+.coffee-slide.is-detail .copy-description,
+.olive-slide.is-detail .olive-description,
+.honey-slide.is-detail .honey-description{
+  margin-left:auto;
+  margin-right:auto;
 }
 
 .coffee-slide.is-detail .detail-content,
@@ -19,6 +27,46 @@
 .honey-slide.is-detail .detail-content{
   width:100%;
   max-width:560px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.coffee-slide.is-detail .detail-meta,
+.olive-slide.is-detail .detail-meta,
+.honey-slide.is-detail .detail-meta,
+.coffee-slide.is-detail .detail-form,
+.olive-slide.is-detail .detail-form,
+.honey-slide.is-detail .detail-form{
+  width:100%;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.coffee-slide.is-detail .detail-meta div,
+.olive-slide.is-detail .detail-meta div,
+.honey-slide.is-detail .detail-meta div{
+  justify-content:center;
+}
+
+.coffee-slide.is-detail .purchase-card__head,
+.olive-slide.is-detail .purchase-card__head,
+.honey-slide.is-detail .purchase-card__head{
+  text-align:left;
+}
+
+.coffee-slide.is-detail .purchase-card__body,
+.olive-slide.is-detail .purchase-card__body,
+.honey-slide.is-detail .purchase-card__body,
+.coffee-slide.is-detail .bag-option,
+.olive-slide.is-detail .bag-option,
+.honey-slide.is-detail .bag-option{
+  text-align:left;
+}
+
+.coffee-slide.is-detail .honey-price-row,
+.olive-slide.is-detail .honey-price-row,
+.honey-slide.is-detail .honey-price-row{
+  justify-content:center;
 }
 
 @media(max-width:760px){
@@ -37,5 +85,16 @@
   .honey-slide.is-detail .detail-content{
     width:100%;
     max-width:100%;
+    text-align:left;
+  }
+
+  .coffee-slide.is-detail .detail-meta div,
+  .olive-slide.is-detail .detail-meta div,
+  .honey-slide.is-detail .detail-meta div{
+    justify-content:flex-start;
+  }
+
+  .honey-slide.is-detail .honey-price-row{
+    justify-content:flex-start;
   }
 }
