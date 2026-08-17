@@ -18,8 +18,8 @@ jobs:
           fetch-depth: 0
       - name: Update single-format product details
         run: |
-          python3 -c "from pathlib import Path; p=Path('app.js'); s=p.read_text(); s=s.replace(\"if(!grinds.length)return '';\",\"if(grinds.length<=1)return '';\",1); old='''<div><dt>Bag Size</dt><dd>${product.size}</dd></div></dl>'''; new='''<div><dt>Bag Size</dt><dd>${product.size}</dd></div>${Object.keys(product.images).length===1?`<div><dt>Format</dt><dd>${Object.keys(product.images)[0]}</dd></div>`:''}</dl>'''; assert old in s; p.write_text(s.replace(old,new,1))"
-          python3 -c "from pathlib import Path; import re; p=Path('index.html'); s=p.read_text(); p.write_text(re.sub(r'app\\.js\\?v=\\d+','app.js?v=202608171156',s))"
+          echo 'CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApwPVBhdGgoImFwcC5qcyIpCnM9cC5yZWFkX3RleHQoKQpzPXMucmVwbGFjZSgiaWYoIWdyaW5kcy5sZW5ndGgpcmV0dXJuICcnOyIsImlmKGdyaW5kcy5sZW5ndGg8PTEpcmV0dXJuICcnOyIsMSkKb2xkPSc8ZGl2PjxkdD5CYWcgU2l6ZTwvZHQ+PGRkPiR7cHJvZHVjdC5zaXplfTwvZGQ+PC9kaXY+PC9kbD4nCm5ldz0nPGRpdj48ZHQ+QmFnIFNpemU8L2R0PjxkZD4ke3Byb2R1Y3Quc2l6ZX08L2RkPjwvZGl2PiR7T2JqZWN0LmtleXMocHJvZHVjdC5pbWFnZXMpLmxlbmd0aD09PTE/YDxkaXY+PGR0PkZvcm1hdDwvZHQ+PGRkPiR7T2JqZWN0LmtleXMocHJvZHVjdC5pbWFnZXMpWzBdfTwvZGQ+PC9kaXY+YDoiIn08L2RsPicKaWYgb2xkIG5vdCBpbiBzOgogICAgcmFpc2UgU3lzdGVtRXhpdCgiZGV0YWlsIG1ldGEgYmxvY2sgbm90IGZvdW5kIikKcC53cml0ZV90ZXh0KHMucmVwbGFjZShvbGQsbmV3LDEpKQppZHg9UGF0aCgiaW5kZXguaHRtbCIpCmg9aWR4LnJlYWRfdGV4dCgpCmltcG9ydCByZQppZHgud3JpdGVfdGV4dChyZS5zdWIocidhcHBcLmpzXD92PVxkKycsJ2FwcC5qcz92PTIwMjYwODE3MTE1NycsaCkpCg==' | base64 -d > /tmp/patch.py
+          python3 /tmp/patch.py
           rm .github/workflows/single-grind-format.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
