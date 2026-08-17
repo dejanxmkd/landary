@@ -32,33 +32,41 @@
   const money=value=>`$${value.toFixed(2)}`;
 
   function productTemplate(product,index){
-    const packageButtons=product.packages.map((item,itemIndex)=>`<button class="olive-package ${itemIndex===0?'is-selected':''}" type="button" data-olive-package="${itemIndex}"><span>${item[0]}</span><b>Save ${item[2]}%</b></button>`).join('');
-    return `<article class="olive-slide" data-olive-index="${index}">
+    const packageButtons=product.packages.map((item,itemIndex)=>`<button class="bag-option ${itemIndex===0?'is-selected':''}" type="button" data-olive-package="${itemIndex}"><span>${item[0]}</span><b>Save ${item[2]}%</b></button>`).join('');
+    return `<article class="olive-slide" data-olive-index="${index}" style="--accent:#365d23">
       <div class="olive-layout">
         <div class="olive-gallery">
-          <div class="olive-image-stage">
-            <img data-olive-image src="${product.images[0]}" alt="${product.name}">
-          </div>
+          <div class="olive-image-stage"><img data-olive-image src="${product.images[0]}" alt="${product.name}"></div>
         </div>
         <div class="olive-copy"><div class="olive-shell">
-          <h2 class="olive-title">${product.name}</h2>
-          <p class="olive-description">${product.description}</p>
-          <a class="olive-view-details" href="#" data-olive-details>View Details</a>
-          <div class="olive-detail">
-            <div class="olive-price-row"><span>Greek Extra Virgin Olive Oil</span><strong>${money(product.price)}</strong></div>
-            <section class="olive-card is-selected" data-olive-purchase-card="subscribe">
-              <button class="olive-card-head" type="button" data-olive-purchase="subscribe"><span class="material-icons">radio_button_checked</span><strong>Subscribe &amp; Save</strong><span class="olive-card-price"><s data-olive-sub-original>${money(product.price)}</s><b data-olive-sub-price>${money(product.price*.9)}</b></span></button>
-              <div class="olive-card-body">
-                <span class="olive-label">Select Quantity</span>
-                <div class="olive-package-options">${packageButtons}</div>
-                <span class="olive-label">Select Frequency</span>
-                <div class="olive-frequency"><select aria-label="Delivery frequency"><option>Deliver every month</option><option>Deliver every 2 months</option><option>Deliver every 3 months</option></select><span class="material-icons">expand_more</span></div>
-                <div class="olive-benefits"><span><i class="material-icons">check_circle</i>Up to 20% off on every order</span><span><i class="material-icons">check_circle</i>Free shipping within the US</span><span><i class="material-icons">check_circle</i>Early access to new products</span></div>
-              </div>
-            </section>
-            <section class="olive-card" data-olive-purchase-card="one-time"><button class="olive-card-head" type="button" data-olive-purchase="one-time"><span class="material-icons">radio_button_unchecked</span><strong>One Time Purchase</strong><span class="olive-card-price"><b data-olive-one-price>${money(product.price)}</b></span></button></section>
-            <div class="olive-cart-row"><button type="button" data-olive-minus><span class="material-icons">remove</span></button><span data-olive-qty>1</span><button type="button" data-olive-plus><span class="material-icons">add</span></button></div>
-            <button class="olive-add-cart" type="button">Add to Cart · <span data-olive-total>${money(product.price*.9)}</span></button>
+          <h2 class="copy-title olive-title">${product.name}</h2>
+          <p class="copy-description olive-description">${product.description}</p>
+          <a class="view-details olive-view-details" href="#" data-olive-details>View Details</a>
+          <div class="detail-content olive-detail">
+            <dl class="detail-meta">
+              <div><dt>Product</dt><dd>Greek Extra Virgin Olive Oil</dd></div>
+              <div><dt>Size</dt><dd>${index===0?'500ml':'3L'}</dd></div>
+              <div><dt>Price</dt><dd>${money(product.price)}</dd></div>
+            </dl>
+            <div class="detail-form">
+              <section class="detail-block purchase-card is-selected" data-olive-purchase-card="subscribe">
+                <button class="purchase-card__head" type="button" data-olive-purchase="subscribe"><span class="material-icons radio-icon">radio_button_checked</span><strong>Subscribe &amp; Save</strong><span class="purchase-card__prices"><s data-olive-sub-original>${money(product.price)}</s><b data-olive-sub-price>${money(product.price*.9)}</b></span></button>
+                <div class="purchase-card__body">
+                  <h3>Select Quantity</h3>
+                  <div class="bag-options">${packageButtons}</div>
+                  <h3>Select Frequency</h3>
+                  <div class="frequency-field"><select class="frequency-select" aria-label="Delivery frequency"><option>Every Month</option><option>Every 2 Months</option><option>Every 3 Months</option></select><span class="material-icons frequency-field__icon">expand_more</span></div>
+                  <div class="subscription-benefits"><span><i class="material-icons">check_circle</i><em>Up to 20% off on every order</em></span><span><i class="material-icons">check_circle</i><em>Free shipping within the US</em></span><span><i class="material-icons">check_circle</i><em>Early access to new products</em></span></div>
+                </div>
+              </section>
+              <section class="detail-block purchase-card" data-olive-purchase-card="one-time">
+                <button class="purchase-card__head" type="button" data-olive-purchase="one-time"><span class="material-icons radio-icon">radio_button_unchecked</span><strong>One Time Purchase</strong><span class="purchase-card__prices"><b data-olive-one-price>${money(product.price)}</b></span></button>
+              </section>
+              <section class="detail-block cart-block">
+                <div class="quantity-stepper"><button type="button" data-olive-minus aria-label="Decrease quantity"><span class="material-icons">remove</span></button><span data-olive-qty>1</span><button type="button" data-olive-plus aria-label="Increase quantity"><span class="material-icons">add</span></button></div>
+                <button class="add-cart" type="button">Add to Cart · <span data-olive-total>${money(product.price*.9)}</span></button>
+              </section>
+            </div>
           </div>
         </div></div>
       </div>
@@ -74,8 +82,8 @@
 
   window.__oliveSnapStops=()=>{
     const{start,distance}=metrics();
-    const cream=[243,238,223];
-    return [{y:start,color:cream},{y:start+distance,color:cream}];
+    const green=[54,93,35];
+    return [{y:start,color:green},{y:start+distance,color:green}];
   };
   window.__oliveDetailOpen=false;
 
@@ -93,7 +101,7 @@
     slide.querySelectorAll('[data-olive-purchase-card]').forEach(card=>{
       const selected=card.dataset.olivePurchaseCard===current.purchase;
       card.classList.toggle('is-selected',selected);
-      const icon=card.querySelector('.material-icons');if(icon)icon.textContent=selected?'radio_button_checked':'radio_button_unchecked';
+      const icon=card.querySelector('.radio-icon');if(icon)icon.textContent=selected?'radio_button_checked':'radio_button_unchecked';
     });
   }
 
@@ -120,11 +128,8 @@
   });
 
   slides.forEach((slide,index)=>{
-    const image=slide.querySelector('[data-olive-image]');
-    const stage=slide.querySelector('.olive-image-stage');
-    if(!stage||!image)return;
-    let x=0;
-    stage.addEventListener('pointerdown',event=>{x=event.clientX});
+    const image=slide.querySelector('[data-olive-image]');const stage=slide.querySelector('.olive-image-stage');if(!stage||!image)return;
+    let x=0;stage.addEventListener('pointerdown',event=>{x=event.clientX});
     stage.addEventListener('pointerup',event=>{const dx=event.clientX-x;if(Math.abs(dx)<45)return;state[index].image=dx<0?1:0;image.src=OLIVE_PRODUCTS[index].images[state[index].image]});
     update(index);
   });
