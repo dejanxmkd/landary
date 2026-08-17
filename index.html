@@ -37,53 +37,6 @@
     </section>
   </main>
 
-  <script src="app.js?v=202608141750"></script>
-  <script>
-    (()=>{
-      const carousels=[...document.querySelectorAll('[data-image-carousel]')];
-      carousels.forEach(carousel=>{
-        const slide=carousel.closest('.coffee-slide');
-        const viewport=carousel.querySelector('.image-viewport');
-        const prev=carousel.querySelector('[data-image-prev]');
-        const next=carousel.querySelector('[data-image-next]');
-        if(!slide||!viewport)return;
-
-        const goTo=imageIndex=>{
-          const dot=slide.querySelector(`[data-image-dot="${imageIndex}"]`);
-          dot?.click();
-        };
-        const currentIndex=()=>slide.querySelector('[data-image-dot].is-active')?.dataset.imageDot==='1'?1:0;
-
-        prev?.addEventListener('click',()=>{
-          if(slide.classList.contains('is-detail'))return;
-          goTo(currentIndex()===0?1:0);
-        });
-        next?.addEventListener('click',()=>{
-          if(slide.classList.contains('is-detail'))return;
-          goTo(currentIndex()===1?0:1);
-        });
-
-        let startX=0,startY=0,tracking=false,pointerId=null;
-        viewport.addEventListener('pointerdown',event=>{
-          if(slide.classList.contains('is-detail'))return;
-          if(event.button!==undefined&&event.button!==0)return;
-          tracking=true;
-          pointerId=event.pointerId;
-          startX=event.clientX;
-          startY=event.clientY;
-          viewport.setPointerCapture?.(event.pointerId);
-        });
-        viewport.addEventListener('pointerup',event=>{
-          if(slide.classList.contains('is-detail')||!tracking||event.pointerId!==pointerId)return;
-          tracking=false;
-          pointerId=null;
-          const dx=event.clientX-startX;
-          const dy=event.clientY-startY;
-          if(Math.abs(dx)>46&&Math.abs(dx)>Math.abs(dy)*1.25)goTo(dx<0?1:0);
-        });
-        viewport.addEventListener('pointercancel',()=>{tracking=false;pointerId=null});
-      });
-    })();
-  </script>
+  <script src="app.js?v=202608171135"></script>
 </body>
 </html>
