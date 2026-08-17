@@ -86,6 +86,11 @@
     const progress=Math.max(0,Math.min(1,(scrollY-start)/distance));
     const exact=progress*(PRODUCTS.length-1);
     track.style.transform=`translate3d(${-exact*100}vw,0,0)`;
+    slides.forEach((slide,index)=>{
+      const distanceFromActive=Math.min(1,Math.abs(index-exact));
+      slide.style.setProperty('--micro-opacity',(1-distanceFromActive*.06).toFixed(3));
+      slide.style.setProperty('--micro-scale',(1-distanceFromActive*.012).toFixed(4));
+    });
   }
 
   function snapToNearest(){
