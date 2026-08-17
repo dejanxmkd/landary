@@ -225,6 +225,25 @@
     if(event.target.closest('[data-qty-plus]')){current.qty+=1;updatePurchase(index)}
   });
 
+  function updateBoundaryCinematics(){
+    const story=document.querySelector('.section--story');
+    const oliveStory=document.querySelector('.section--olive-story');
+    const oliveSection=document.getElementById('olive-scroll');
+    const threshold=innerHeight*.72;
+
+    const coffeeTop=coffeeSection.getBoundingClientRect().top;
+    const coffeeEntering=coffeeTop<=threshold;
+    coffeeSection.classList.toggle('is-entry-cinematic-active',coffeeEntering);
+    if(story)story.classList.toggle('is-cinematic-leaving',coffeeEntering&&coffeeTop>-innerHeight*.35);
+
+    if(oliveSection){
+      const oliveTop=oliveSection.getBoundingClientRect().top;
+      const oliveEntering=oliveTop<=threshold;
+      oliveSection.classList.toggle('is-entry-cinematic-active',oliveEntering);
+      if(oliveStory)oliveStory.classList.toggle('is-cinematic-leaving',oliveEntering&&oliveTop>-innerHeight*.35);
+    }
+  }
+
   const introObserver=new IntersectionObserver(entries=>{
     entries.forEach(entry=>entry.target.classList.toggle('is-cinematic-active',entry.isIntersecting&&entry.intersectionRatio>.45));
   },{threshold:[0,.45,.7]});
@@ -232,8 +251,9 @@
 
   slides.forEach((slide,index)=>{initImageCarousel(slide,index);updatePurchase(index)});
   addEventListener('scroll',onScroll,{passive:true});
-  addEventListener('resize',()=>{if(detailIndex<0){renderHorizontal()}});
+  addEventListener('scroll',updateBoundaryCinematics,{passive:true});
+  addEventListener('resize',()=>{if(detailIndex<0){renderHorizontal()}updateBoundaryCinematics()});
   addEventListener('keydown',event=>{if(event.key==='Escape'&&detailIndex>=0)closeDetails(detailIndex)});
   history.scrollRestoration='auto';
-  requestAnimationFrame(()=>{renderHorizontal()});
+  requestAnimationFrame(()=>{renderHorizontal();updateBoundaryCinematics()});
 })();
