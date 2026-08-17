@@ -225,23 +225,33 @@
     if(event.target.closest('[data-qty-plus]')){current.qty+=1;updatePurchase(index)}
   });
 
-  function updateBoundaryCinematics(){
+  function updateSectionSequence(){
+    if(detailIndex>=0||window.__oliveDetailOpen)return;
+    const hero=document.querySelector('.section--hero');
     const story=document.querySelector('.section--story');
+    const oliveIntro=document.querySelector('.section--olive-intro');
     const oliveStory=document.querySelector('.section--olive-story');
     const oliveSection=document.getElementById('olive-scroll');
-    const threshold=innerHeight*.72;
+    const h=Math.max(innerHeight,1);
+    const revealLine=h*.10;
+    const leaveStart=h*.42;
 
-    const coffeeTop=coffeeSection.getBoundingClientRect().top;
-    const coffeeEntering=coffeeTop<=threshold;
-    coffeeSection.classList.toggle('is-entry-cinematic-active',coffeeEntering);
-    if(story)story.classList.toggle('is-cinematic-leaving',coffeeEntering&&coffeeTop>-innerHeight*.35);
+    const ordered=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection].filter(Boolean);
+    ordered.forEach((node,index)=>{
+      const top=node.getBoundingClientRect().top;
+      const prev=index>0?ordered[index-1]:null;
+      const prevBottom=prev?prev.getBoundingClientRect().bottom:-Infinity;
+      const canReveal=index===0 ? top<=revealLine : (top<=revealLine && prevBottom<=h*.12);
+      node.classList.toggle('is-sequence-active',canReveal);
 
-    if(oliveSection){
-      const oliveTop=oliveSection.getBoundingClientRect().top;
-      const oliveEntering=oliveTop<=threshold;
-      oliveSection.classList.toggle('is-entry-cinematic-active',oliveEntering);
-      if(oliveStory)oliveStory.classList.toggle('is-cinematic-leaving',oliveEntering&&oliveTop>-innerHeight*.35);
-    }
+      const next=index<ordered.length-1?ordered[index+1]:null;
+      if(next){
+        const nextTop=next.getBoundingClientRect().top;
+        node.classList.toggle('is-sequence-leaving',nextTop<=leaveStart);
+      }else{
+        node.classList.remove('is-sequence-leaving');
+      }
+    });
   }
 
   const introObserver=new IntersectionObserver(entries=>{
@@ -251,9 +261,9 @@
 
   slides.forEach((slide,index)=>{initImageCarousel(slide,index);updatePurchase(index)});
   addEventListener('scroll',onScroll,{passive:true});
-  addEventListener('scroll',updateBoundaryCinematics,{passive:true});
-  addEventListener('resize',()=>{if(detailIndex<0){renderHorizontal()}updateBoundaryCinematics()});
+  addEventListener('scroll',updateSectionSequence,{passive:true});
+  addEventListener('resize',()=>{if(detailIndex<0){renderHorizontal()}updateSectionSequence()});
   addEventListener('keydown',event=>{if(event.key==='Escape'&&detailIndex>=0)closeDetails(detailIndex)});
   history.scrollRestoration='auto';
-  requestAnimationFrame(()=>{renderHorizontal();updateBoundaryCinematics()});
+  requestAnimationFrame(()=>{renderHorizontal();updateSectionSequence()});
 })();
