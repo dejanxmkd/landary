@@ -85,6 +85,7 @@
     if(typeof window.__oliveSnapStops==='function')stops.push(...window.__oliveSnapStops().map(stop=>({y:stop.y})));
     if(honeyIntro)stops.push({y:honeyIntro.offsetTop});
     if(honeyStory)stops.push({y:honeyStory.offsetTop});
+    if(typeof window.__honeySnapStops==='function')stops.push(...window.__honeySnapStops().map(stop=>({y:stop.y})));
     return stops.sort((a,b)=>a.y-b.y);
   }
 
@@ -104,7 +105,7 @@
   }
 
   function snapToNearest(){
-    if(detailIndex>=0||window.__oliveDetailOpen||snapping)return;
+    if(detailIndex>=0||window.__oliveDetailOpen||window.__honeyDetailOpen||snapping)return;
     const stops=globalStops();
     if(!stops.length)return;
     let target=stops[0].y;
@@ -120,7 +121,7 @@
   }
 
   function onScroll(){
-    if(detailIndex>=0||window.__oliveDetailOpen)return;
+    if(detailIndex>=0||window.__oliveDetailOpen||window.__honeyDetailOpen)return;
     renderHorizontal();
     clearTimeout(snapTimer);
     snapTimer=setTimeout(snapToNearest,80);
@@ -243,7 +244,8 @@
     const oliveSection=document.getElementById('olive-scroll');
     const honeyIntro=document.querySelector('.section--honey-intro');
     const honeyStory=document.querySelector('.section--honey-story');
-    const groups=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection,honeyIntro,honeyStory].filter(Boolean);
+    const honeySection=document.getElementById('honey-scroll');
+    const groups=[hero,story,coffeeSection,oliveIntro,oliveStory,oliveSection,honeyIntro,honeyStory,honeySection].filter(Boolean);
     const y=scrollY;
     const vh=Math.max(innerHeight,1);
     const gate=Math.min(120,Math.max(64,vh*.14));
