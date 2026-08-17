@@ -2,8 +2,8 @@
   const loader=document.querySelector('[data-site-loader]');
   const loaderLogo=document.querySelector('[data-loader-logo]');
   const counter=document.querySelector('[data-loader-counter]');
-  const navLogo=document.querySelector('[data-nav-logo]');
-  if(!loader||!loaderLogo||!counter||!navLogo){document.body.classList.remove('is-loading');document.body.classList.add('site-ready');return}
+  const navTarget=document.querySelector('[data-nav-logo-target]');
+  if(!loader||!loaderLogo||!counter||!navTarget){document.body.classList.remove('is-loading');document.body.classList.add('site-ready');return}
 
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const countDuration=reduced?450:3000;
@@ -22,7 +22,7 @@
   function moveLogo(){
     loader.classList.add('is-moving');
     const from=loaderLogo.getBoundingClientRect();
-    const to=navLogo.getBoundingClientRect();
+    const to=navTarget.getBoundingClientRect();
     const fromCx=from.left+from.width/2;
     const fromCy=from.top+from.height/2;
     const toCx=to.left+to.width/2;
@@ -36,12 +36,14 @@
     ],{duration:moveDuration,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
 
     animation.addEventListener('finish',()=>{
+      animation.cancel();
+      loaderLogo.removeAttribute('style');
+      navTarget.appendChild(loaderLogo);
       document.body.classList.add('site-ready');
       loader.classList.add('is-complete');
       setTimeout(()=>{
         document.body.classList.remove('is-loading');
         loader.hidden=true;
-        animation.cancel();
       },reduced?40:440);
     },{once:true});
   }
