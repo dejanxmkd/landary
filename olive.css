@@ -2,7 +2,7 @@
 .olive-sticky{position:sticky;top:0;width:100%;height:100dvh;min-height:100svh;overflow:hidden;background:#fdf8ec}
 .olive-track{display:flex;width:200vw;height:100dvh;min-height:100svh;transform:translate3d(0,0,0);will-change:transform}
 .olive-slide{--accent:#fdf8ec;--olive-cream:#3d5825;position:relative;flex:0 0 100vw;width:100vw;height:100dvh;min-height:100svh;background:#fdf8ec;color:var(--olive-cream);overflow:hidden}
-.olive-layout{position:relative;width:100%;height:100%;display:grid;grid-template-columns:minmax(0,48fr) minmax(0,52fr);column-gap:clamp(32px,3vw,56px)}
+.olive-layout{position:relative;width:min(100%,var(--site-container));margin:0 auto;padding-inline:var(--site-gutter);height:100%;display:grid;grid-template-columns:minmax(0,48fr) minmax(0,52fr);column-gap:clamp(32px,3vw,56px)}
 .olive-gallery{position:relative;height:100%;overflow:hidden}
 .olive-image-carousel{position:relative;width:100%;height:100%;touch-action:pan-y;user-select:none}
 .olive-image-carousel::before,.olive-image-carousel::after{content:'';position:absolute;top:0;bottom:0;z-index:4;width:clamp(40px,4.5vw,72px);pointer-events:none}
@@ -15,7 +15,6 @@
 .olive-image-panel{flex:0 0 100%;width:100%;height:100%;display:grid;place-items:center;margin:0;padding:6svh 5vw}
 .olive-image-panel img{display:block;max-width:78%;max-height:78svh;object-fit:contain;pointer-events:none}
 .olive-slide:not(.is-detail) .olive-image-panel img,.olive-slide:not(.is-detail) .olive-shell{opacity:var(--micro-opacity,1);scale:var(--micro-scale,1);translate:0 var(--micro-y,0px);will-change:opacity,scale,translate}
-.olive-image-carousel:hover .product-dots{opacity:1;pointer-events:auto}
 .olive-slide.is-detail .product-dots{opacity:1;pointer-events:auto}
 .olive-copy{position:relative;height:100%;padding:0 5vw 0 0;overflow:hidden}
 .olive-shell{position:absolute;left:0;top:50%;width:min(44vw,720px);transform:translateY(-50%)}

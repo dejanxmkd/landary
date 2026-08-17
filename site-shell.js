@@ -21,6 +21,7 @@
 
   function moveLogo(){
     loader.classList.add('is-moving');
+    document.body.classList.add('site-transitioning');
     const from=loaderLogo.getBoundingClientRect();
     const to=navTarget.getBoundingClientRect();
     const fromCx=from.left+from.width/2;
@@ -40,6 +41,7 @@
       loaderLogo.removeAttribute('style');
       navTarget.appendChild(loaderLogo);
       document.body.classList.add('site-ready');
+      document.body.classList.remove('site-transitioning');
       loader.classList.add('is-complete');
       setTimeout(()=>{
         document.body.classList.remove('is-loading');

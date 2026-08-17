@@ -118,15 +118,16 @@
     const next=slide.querySelector('[data-image-next]');
     if(!viewport)return;
 
-    prev?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();toggleCarousel(index)});
-    next?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();toggleCarousel(index)});
+    prev?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(!slide.classList.contains('is-detail'))return;toggleCarousel(index)});
+    next?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(!slide.classList.contains('is-detail'))return;toggleCarousel(index)});
 
     slide.querySelectorAll('[data-image-dot]').forEach(dot=>{
-      dot.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();setCarouselImage(index,Number(dot.dataset.imageDot))});
+      dot.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(!slide.classList.contains('is-detail'))return;setCarouselImage(index,Number(dot.dataset.imageDot))});
     });
 
     let gesture=null;
     viewport.addEventListener('pointerdown',event=>{
+      if(!slide.classList.contains('is-detail'))return;
       if(event.pointerType==='mouse'&&event.button!==0)return;
       gesture={id:event.pointerId,x:event.clientX,y:event.clientY};
       viewport.setPointerCapture?.(event.pointerId);
@@ -169,7 +170,7 @@
     const current=shell.getBoundingClientRect();const probe=shell.cloneNode(true);probe.querySelector('.detail-content')?.remove();probe.style.cssText=`position:fixed;left:${current.left}px;top:-10000px;width:${current.width}px;transform:none;visibility:hidden;pointer-events:none;`;document.body.appendChild(probe);const collapsedHeight=probe.getBoundingClientRect().height;probe.remove();
     const targetTop=(innerHeight-collapsedHeight)/2;const dy=targetTop-current.top;slide.classList.add('is-closing');if(toggle)toggle.textContent='View Details';shell.getAnimations().forEach(animation=>animation.cancel());
     const animation=shell.animate([{transform:'translateY(0)'},{transform:`translateY(${dy}px)`}],{duration:820,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
-    animation.addEventListener('finish',()=>{slide.classList.remove('is-closing','is-detail');document.body.classList.remove('details-open');slide.scrollTop=0;animation.cancel();detailIndex=-1},{once:true});
+    animation.addEventListener('finish',()=>{slide.classList.remove('is-closing','is-detail');document.body.classList.remove('details-open');slide.scrollTop=0;state[index].image=0;renderCarousel(index,false);animation.cancel();detailIndex=-1},{once:true});
   }
 
   function closeDetails(index){
